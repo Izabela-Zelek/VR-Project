@@ -113,6 +113,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seeds: {fileID: 452665394145066917, guid: 483f53cdebc4f0049952af392d425bbf, type: 3}
+  growingPlant: {fileID: 452665394145066917, guid: 13d84864dd0143c438887c653a03b194,
+    type: 3}
+  turnipPlant: {fileID: 452665394145066917, guid: 13d3e08bc9e321e4fa71ccdf5aa2ba4c,
+    type: 3}
   plantState: 0
 --- !u!1 &4484163506449304775
 GameObject:
