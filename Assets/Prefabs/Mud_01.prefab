@@ -97,7 +97,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: aaff327437b0be14f9c6d1be9b411708, type: 3}
 --- !u!114 &-6450047250121036480
@@ -117,6 +117,8 @@ MonoBehaviour:
     type: 3}
   turnipPlant: {fileID: 452665394145066917, guid: 13d3e08bc9e321e4fa71ccdf5aa2ba4c,
     type: 3}
+  dryMat: {fileID: 2100000, guid: 468cbc1dfddc9f049aa27eb085daed29, type: 2}
+  wetMat: {fileID: 2100000, guid: e30dafe057b1599408aaf261c30456a9, type: 2}
   plantState: 0
 --- !u!1 &4484163506449304775
 GameObject:

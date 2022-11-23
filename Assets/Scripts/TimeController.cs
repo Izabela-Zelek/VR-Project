@@ -37,7 +37,7 @@ public class TimeController : MonoBehaviour
     //[SerializeField]
     //private Material nightSky;
 
-    private DateTime currentTime;
+    public DateTime currentTime;
     private TimeSpan sunriseTime;
     private TimeSpan sunsetTime;
     public int dayNr = 1;
