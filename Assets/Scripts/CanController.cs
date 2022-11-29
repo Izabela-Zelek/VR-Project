@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 public class CanController : MonoBehaviour
 {
     public InputActionProperty rightSelect;
+
+    private float waterTime = 2.0f;
     //private void Update()
     //{
     //    Debug.DrawRay(transform.GetChild(1).transform.position, transform.up + transform.forward, Color.black, 1);
@@ -33,6 +35,25 @@ public class CanController : MonoBehaviour
         if (other.tag == "SeedArea")
         {
             transform.GetChild(1).transform.GetChild(0).GetComponent<RainController>().turnOffWater();
+            waterTime = 2.0f;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "SeedArea" && rightSelect.action.ReadValue<float>() >= 0.1f)
+        {
+            waterTime -= Time.deltaTime;
+            Debug.Log(waterTime);
+            if (waterTime <= 0)
+            { 
+                other.transform.parent.GetComponent<FarmScript>().makeWatered(); 
+            }
+        }
+        else if(other.tag == "SeedArea" && rightSelect.action.ReadValue<float>() < 0.1f)
+        {
+            transform.GetChild(1).transform.GetChild(0).GetComponent<RainController>().turnOffWater();
+            waterTime = 2.0f;
         }
     }
 }

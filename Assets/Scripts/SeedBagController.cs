@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class SeedBagController : MonoBehaviour
 {
+    public string plantType;
     public GameObject seed;
     public InputActionProperty rightSelect;
     private int max_seed = 20;
@@ -14,6 +15,12 @@ public class SeedBagController : MonoBehaviour
     private bool pickedPlot = false;
     public Transform SpawnPoint;
     float timer = 0.5f;
+    private PlantController plantController = new PlantController();
+
+    private void Start()
+    {
+        plantController = GameObject.Find("GameManager").GetComponent<PlantController>();
+    }
     private void Update()
     {
         if(seed_count >= max_seed - 1)
@@ -52,7 +59,7 @@ public class SeedBagController : MonoBehaviour
                         }
                         else
                         {
-                            other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds();
+                            other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds(plantController.getPlant(plantType));
                         }
                     }
 

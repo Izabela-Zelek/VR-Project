@@ -29,12 +29,4 @@ public class RainController : MonoBehaviour
     {
         water.Stop();
     }
-
-    void OnParticleCollision(GameObject other)
-    {
-        if (other.tag == "Farm")
-        {
-            other.GetComponent<FarmScript>().makeWatered();
-        }
-    }
 }

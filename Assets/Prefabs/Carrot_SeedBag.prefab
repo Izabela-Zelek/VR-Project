@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1206041402
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1206041403}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1206041403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1206041402}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.1857, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7925066836599234264}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &328093747382079621
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,9 +44,11 @@ GameObject:
   - component: {fileID: 3888437387019861990}
   - component: {fileID: 5576279750707126398}
   - component: {fileID: 5511234430248873997}
-  - component: {fileID: 266885681193302371}
-  m_Layer: 0
-  m_Name: Little_Vase
+  - component: {fileID: 9112520663830120199}
+  - component: {fileID: 9112520663830120198}
+  - component: {fileID: 9112520663830120200}
+  m_Layer: 7
+  m_Name: Carrot_SeedBag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,12 +61,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 328093747382079621}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.8635006, y: 0.789, z: -0.328}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2411444517759901787}
+  - {fileID: 1206041403}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -65,7 +99,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8060325625621315149, guid: 761f086b8ea3d3b498c848051eb930a8, type: 3}
+  - {fileID: 2100000, guid: 37e3676422813414287cab5068ca7a31, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -190,7 +224,7 @@ MonoBehaviour:
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
   m_AttachEaseInTime: 0.15
-  m_MovementType: 1
+  m_MovementType: 2
   m_VelocityDamping: 0
   m_VelocityScale: 1
   m_AngularVelocityDamping: 1
@@ -228,8 +262,8 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
---- !u!64 &266885681193302371
-MeshCollider:
+--- !u!65 &9112520663830120199
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -238,10 +272,69 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2531105754668317806, guid: 761f086b8ea3d3b498c848051eb930a8, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.30690968, y: 0.47693536, z: 0.35438758}
+  m_Center: {x: -0.0000018328427, y: -0.042078767, z: 0.00000005960464}
+--- !u!114 &9112520663830120198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328093747382079621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66fddda44f55594fb745def23ce2298, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inSlot: 0
+  slotRotation: {x: 0, y: 0, z: 0}
+  currentSlot: {fileID: 0}
+  isHeld: 0
+  rightSelect:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Right Select
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: e3b477ba-5d36-4bfd-a1e7-f57ed31f2497
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f,
+      type: 3}
+  targetTime: 1
+  parent: {fileID: 0}
+  isLarge: 0
+--- !u!114 &9112520663830120200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328093747382079621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddccfe9756bb1f04d92a04b8bed3e5a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantType: Carrot
+  seed: {fileID: 7851481559956426126, guid: 6ef24172408c70b4398ad32d4f7e43ef, type: 3}
+  rightSelect:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Right Select
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 030096e1-6401-47a7-bbef-0dae81e0af12
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f,
+      type: 3}
+  SpawnPoint: {fileID: 1206041403}
 --- !u!1 &2698247034771702492
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,7 +442,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2992369371405821661}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.24, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

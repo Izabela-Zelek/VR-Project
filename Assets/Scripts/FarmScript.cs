@@ -15,7 +15,7 @@ public class FarmScript : MonoBehaviour
 {
     public GameObject seeds;
     public GameObject growingPlant;
-    public GameObject turnipPlant;
+    private GameObject grownPlant;
     public Material dryMat;
     public Material wetMat;
     public PlantState plantState;
@@ -29,13 +29,15 @@ public class FarmScript : MonoBehaviour
         plantState = PlantState.Bare;
         currentDay = GameObject.Find("TimeController").GetComponent<TimeController>().dayNr;
     }
-    public void plantSeeds()
+    public void plantSeeds(GameObject t_plant)
     {
         if (plantState == PlantState.Bare)
         {
             Vector3 pos = new Vector3(transform.position.x, 0.02625f, transform.position.z);
             Instantiate(seeds, pos, Quaternion.identity, gameObject.transform);
             plantState = PlantState.Seed;
+
+            grownPlant = t_plant;
         }
     }
     private void Update()
@@ -66,7 +68,7 @@ public class FarmScript : MonoBehaviour
                 Debug.Log(plantState);
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
                 Destroy(gameObject.transform.GetChild(1).gameObject);
-                Instantiate(turnipPlant, pos, Quaternion.identity, gameObject.transform);
+                Instantiate(grownPlant, pos, Quaternion.identity, gameObject.transform);
             }
         }
     }
