@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class HoeScript : MonoBehaviour
 {
@@ -8,28 +9,38 @@ public class HoeScript : MonoBehaviour
     public Transform tip;
     public GameObject farm;
     private List<Vector3> dirtPos = new List<Vector3>();
+    private XRDirectInteractor rightInteractor = new XRDirectInteractor();
+    private XRDirectInteractor leftInteractor = new XRDirectInteractor();
     private bool free = true;
+    private void Start()
+    {
+        rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
+        leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
+    }
 
     private void Update()
     {
-        if (gameObject.activeSelf)
-        {
-            if (tip.transform.position.y <= 0.17f)
+        if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+        { 
+            if (gameObject.activeSelf)
             {
-                Vector3 pos = new Vector3(Mathf.Round(tip.position.x), 0, Mathf.Round(tip.position.z));
-                for (int i = 0; i < dirtPos.Count; i++)
+                if (tip.transform.position.y <= 0.17f)
                 {
-                    if (pos == dirtPos[i])
+                    Vector3 pos = new Vector3(Mathf.Round(tip.position.x), 0, Mathf.Round(tip.position.z));
+                    for (int i = 0; i < dirtPos.Count; i++)
                     {
-                        free = false;
+                        if (pos == dirtPos[i])
+                        {
+                            free = false;
+                        }
                     }
+                    if (free)
+                    {
+                        Instantiate(dirtPatch, pos, Quaternion.identity, farm.transform);
+                        dirtPos.Add(pos);
+                    }
+                    free = true;
                 }
-                if (free)
-                {
-                    Instantiate(dirtPatch, pos, Quaternion.identity, farm.transform);
-                    dirtPos.Add(pos);
-                }
-                free = true;
             }
         }
     }
