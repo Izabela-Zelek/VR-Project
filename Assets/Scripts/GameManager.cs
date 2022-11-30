@@ -14,4 +14,15 @@ public class GameManager : MonoBehaviour
     {
         moneyText.text = "$" + money.ToString();
     }
+
+    public void UpdateMoney(int newMoney)
+    {
+        money = newMoney;
+        moneyText.text = "$" + money.ToString();
+    }
+
+    public int GetMoney()
+    {
+        return money;
+    }
 }

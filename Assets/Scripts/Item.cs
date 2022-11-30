@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class Item : MonoBehaviour
 {
@@ -11,8 +12,17 @@ public class Item : MonoBehaviour
     public bool isHeld = false;
     public InputActionProperty rightSelect;
     public float targetTime = 1.0f;
-    public GameObject parent;
+    private GameObject parent;
     public bool isLarge = false;
+    private XRDirectInteractor rightInteractor = new XRDirectInteractor();
+    private XRDirectInteractor leftInteractor = new XRDirectInteractor();
+
+    private void Start()
+    {
+        rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
+        leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
+        parent = GameObject.Find("SmallStuff");
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -20,50 +30,57 @@ public class Item : MonoBehaviour
         {
             if (other.tag == "RightHand")
             {
-                if (rightSelect.action.ReadValue<float>() > 0.1f)
+                if ( (rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) ||( leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
                 {
-                    isHeld = true;
-                    targetTime = 2.0f;
-                    if (currentSlot != null)
+                    if (rightSelect.action.ReadValue<float>() > 0.1f)
                     {
-                        currentSlot.RemoveItem();
-                        transform.position = other.gameObject.transform.position;
-                        inSlot = false;
-                        currentSlot = null;
-                        gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                        gameObject.GetComponent<BoxCollider>().isTrigger = false;
+                        isHeld = true;
+                        targetTime = 2.0f;
+                        if (currentSlot != null)
+                        {
+                            currentSlot.RemoveItem();
+                            gameObject.transform.SetParent(parent.transform);
+                            transform.position = other.gameObject.transform.position;
+                            inSlot = false;
+                            currentSlot = null;
+                            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+                            gameObject.GetComponent<BoxCollider>().isTrigger = false;
+
+                        }
 
                     }
-
                 }
             }
         }
         else
         {
             if (other.tag == "RightHand")
-        {
-                if (rightSelect.action.ReadValue<float>() > 0.1f) 
+            {
+                if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
                 {
-                    isHeld = true;
-                    targetTime = 2.0f;
-                    if (currentSlot != null)
+                    if (rightSelect.action.ReadValue<float>() > 0.1f)
                     {
-                        currentSlot.RemoveItem();
-                        gameObject.transform.SetParent(parent.transform, false);
-                        Vector3 scale = gameObject.transform.localScale;
+                        isHeld = true;
+                        targetTime = 2.0f;
+                        if (currentSlot != null)
+                        {
+                            currentSlot.RemoveItem();
+                            gameObject.transform.SetParent(parent.transform);
+                            Vector3 scale = gameObject.transform.localScale;
 
-                        scale.Set(0.5f, 0.5f, 0.5f);
+                            scale.Set(0.5f, 0.5f, 0.5f);
 
-                        gameObject.transform.localScale = scale;
-                        gameObject.transform.position = other.gameObject.transform.position;
-                        inSlot = false;
-                        currentSlot = null;
-                        gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                        gameObject.GetComponent<MeshCollider>().isTrigger = false;
+                            gameObject.transform.localScale = scale;
+                            gameObject.transform.position = other.gameObject.transform.position;
+                            inSlot = false;
+                            currentSlot = null;
+                            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+                            gameObject.GetComponent<MeshCollider>().isTrigger = false;
 
+
+                        }
 
                     }
-
                 }
         
             }
@@ -81,6 +98,22 @@ public class Item : MonoBehaviour
         if (rightSelect.action.ReadValue<float>() == 0 && targetTime <= 0)
         {
             isHeld = false;
+        }
+
+        if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+        {
+            isHeld = true;
+            targetTime = 2.0f;
+            if (currentSlot != null)
+            {
+                currentSlot.RemoveItem();
+                gameObject.transform.SetParent(parent.transform);
+                inSlot = false;
+                currentSlot = null;
+                gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+                gameObject.GetComponent<BoxCollider>().isTrigger = false;
+
+            }
         }
     }
 }

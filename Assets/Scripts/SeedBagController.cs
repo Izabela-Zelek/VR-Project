@@ -2,16 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class SeedBagController : MonoBehaviour
 {
     public string plantType;
     public GameObject seed;
     public InputActionProperty rightSelect;
+    private XRDirectInteractor rightInteractor = new XRDirectInteractor();
+    private XRDirectInteractor leftInteractor = new XRDirectInteractor();
     private int max_seed = 20;
     private int seed_count = 0;
-    private string plotName;
+    public string plotName;
     private bool pickedPlot = false;
     public Transform SpawnPoint;
     float timer = 0.5f;
@@ -20,49 +22,55 @@ public class SeedBagController : MonoBehaviour
     private void Start()
     {
         plantController = GameObject.Find("GameManager").GetComponent<PlantController>();
+        rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
+        leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
     }
     private void Update()
     {
-        if(seed_count >= max_seed - 1)
+        if (seed_count >= max_seed - 1)
         {
             timer -= Time.deltaTime;
 
             if (timer <= 0)
-            { 
-                Destroy(gameObject); 
+            {
+                Destroy(gameObject);
             }
         }
     }
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "SeedArea" && rightSelect.action.ReadValue<float>() >= 0.1f)
+
+        if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
         {
-            if (!pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().plantState == PlantState.Bare)
-            {
-                float number = Random.Range(0.0f, 5.0f);
-                other.gameObject.transform.parent.name = other.gameObject.transform.parent.name + number.ToString(); 
-                plotName = other.gameObject.transform.parent.name;
-                pickedPlot = true;
-            }
-            if (other.gameObject.transform.parent.name == plotName)
+            if (other.tag == "SeedArea" && rightSelect.action.ReadValue<float>() >= 0.1f)
             {
                 RaycastHit seen;
                 Ray raydirection = new Ray(transform.position, transform.up);
+
                 if (Physics.Raycast(raydirection, out seen, 5))
                 {
                     if (seen.collider.tag == "Ground")
                     {
-                        if (seed_count < max_seed)
+                        if (!pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().plantState == PlantState.Bare)
                         {
-                            Instantiate(seed, SpawnPoint.position, Quaternion.identity);
-                            seed_count++;
+                            float number = Random.Range(0.0f, 5.0f);
+                            other.gameObject.transform.parent.name = other.gameObject.transform.parent.name + number.ToString();
+                            plotName = other.gameObject.transform.parent.name;
+                            pickedPlot = true;
                         }
-                        else
+                        if (other.gameObject.transform.parent.name == plotName)
                         {
-                            other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds(plantController.getPlant(plantType));
+                            if (seed_count < max_seed)
+                            {
+                                Instantiate(seed, SpawnPoint.position, Quaternion.identity);
+                                seed_count++;
+                            }
+                            else
+                            {
+                                other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds(plantController.getPlant(plantType));
+                            }
                         }
                     }
-
                 }
             }
         }

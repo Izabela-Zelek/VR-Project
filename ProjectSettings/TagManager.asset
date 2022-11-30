@@ -20,9 +20,9 @@ TagManager:
   - TPSpot
   - Slot
   - NoCollisions
-  - 
-  - 
-  - 
+  - Hands
+  - Interactive
+  - Furniture
   - 
   - 
   - 

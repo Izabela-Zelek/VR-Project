@@ -27,7 +27,7 @@ public class FarmScript : MonoBehaviour
     private void Start()
     {
         plantState = PlantState.Bare;
-        currentDay = GameObject.Find("TimeController").GetComponent<TimeController>().dayNr;
+        currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
     }
     public void plantSeeds(GameObject t_plant)
     {
@@ -42,7 +42,7 @@ public class FarmScript : MonoBehaviour
     }
     private void Update()
     {
-        if(GameObject.Find("TimeController").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "01:00")
+        if(GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "01:00")
         {
             gameObject.GetComponent<MeshRenderer>().material = dryMat;
             watered = false;
@@ -50,20 +50,20 @@ public class FarmScript : MonoBehaviour
 
         }
 
-        if (GameObject.Find("TimeController").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "00:00")
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "00:00")
         {
-            if (GameObject.Find("TimeController").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Seed && watered)
+            if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Seed && watered)
             {
-                currentDay = GameObject.Find("TimeController").GetComponent<TimeController>().dayNr;
+                currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
                 plantState++;
                 Debug.Log(plantState);
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
                 Destroy(gameObject.transform.GetChild(1).gameObject);
                 Instantiate(growingPlant, pos, Quaternion.identity, gameObject.transform);
             }
-            else if (GameObject.Find("TimeController").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Growing && watered)
+            else if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Growing && watered)
             {
-                currentDay = GameObject.Find("TimeController").GetComponent<TimeController>().dayNr;
+                currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
                 plantState++;
                 Debug.Log(plantState);
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
