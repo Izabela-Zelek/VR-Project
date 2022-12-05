@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - SeedArea
   - Farm
+  - Produce
   layers:
   - Default
   - TransparentFX

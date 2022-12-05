@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33000012411497276}
   - component: {fileID: 23000011228277260}
   - component: {fileID: 64000014021002932}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Eggplant_Fruit
   m_TagString: Untagged
   m_Icon: {fileID: 0}

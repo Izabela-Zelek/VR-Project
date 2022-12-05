@@ -16,6 +16,7 @@ public class FarmScript : MonoBehaviour
     public GameObject seeds;
     public GameObject growingPlant;
     private GameObject grownPlant;
+    private GameObject fruitType;
     public Material dryMat;
     public Material wetMat;
     public PlantState plantState;
@@ -40,6 +41,10 @@ public class FarmScript : MonoBehaviour
             grownPlant = t_plant;
         }
     }
+    public void setFruitType(GameObject t_plant)
+    {
+        fruitType = t_plant;
+    }
     private void Update()
     {
         if(GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "01:00")
@@ -54,12 +59,19 @@ public class FarmScript : MonoBehaviour
         {
             if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Seed && watered)
             {
+                //currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
+                //plantState++;
+                //Debug.Log(plantState);
+                //Vector3 pos = gameObject.transform.GetChild(1).transform.position;
+                //Destroy(gameObject.transform.GetChild(1).gameObject);
+                //Instantiate(growingPlant, pos, Quaternion.identity, gameObject.transform);
                 currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
                 plantState++;
                 Debug.Log(plantState);
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
+                pos.y = checkFruitYPos(fruitType.name);
                 Destroy(gameObject.transform.GetChild(1).gameObject);
-                Instantiate(growingPlant, pos, Quaternion.identity, gameObject.transform);
+                Instantiate(fruitType, pos, Quaternion.identity, gameObject.transform);
             }
             else if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Growing && watered)
             {
@@ -70,6 +82,21 @@ public class FarmScript : MonoBehaviour
                 Destroy(gameObject.transform.GetChild(1).gameObject);
                 Instantiate(grownPlant, pos, Quaternion.identity, gameObject.transform);
             }
+            else if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Grown && watered)
+            {
+                currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
+                plantState++;
+                Debug.Log(plantState);
+                Vector3 pos = gameObject.transform.GetChild(1).transform.position;
+                pos.y = checkFruitYPos(fruitType.name);
+                Destroy(gameObject.transform.GetChild(1).gameObject);
+                Instantiate(fruitType, pos, Quaternion.identity, gameObject.transform);
+            }
+        }
+
+        if(gameObject.transform.childCount == 1)
+        {
+            plantState = PlantState.Bare;
         }
     }
    
@@ -77,5 +104,20 @@ public class FarmScript : MonoBehaviour
     {
         gameObject.GetComponent<MeshRenderer>().material = wetMat;
         watered = true;
+    }
+
+    private float checkFruitYPos(string name)
+    {
+        float value = gameObject.transform.GetChild(1).transform.position.y;
+
+        if (name.Contains("Carrot"))
+        {
+            value = 0.1f;
+        }
+        else if(name.Contains("Turnip"))
+        {
+            value = 0.1f;
+        }
+        return value;
     }
 }

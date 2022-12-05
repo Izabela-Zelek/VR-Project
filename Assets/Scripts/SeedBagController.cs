@@ -68,6 +68,7 @@ public class SeedBagController : MonoBehaviour
                             else
                             {
                                 other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds(plantController.getPlant(plantType));
+                                other.gameObject.transform.parent.GetComponent<FarmScript>().setFruitType(plantController.getFruit(plantType));
                             }
                         }
                     }
