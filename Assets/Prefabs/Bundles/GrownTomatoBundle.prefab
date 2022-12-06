@@ -718,6 +718,86 @@ MonoBehaviour:
     m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f,
       type: 3}
   price: 60
+--- !u!1001 &3198763282048553570
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 930797603902814223}
+    m_Modifications:
+    - target: {fileID: 19178154140187646, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: stem
+      value: 
+      objectReference: {fileID: 7001460856434354183}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.247
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0552
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.1953
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5240797155344822671, guid: ef3894414d7cb844384e24dde329bbad,
+        type: 3}
+      propertyPath: m_Name
+      value: Tomato_Fruit
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ef3894414d7cb844384e24dde329bbad, type: 3}
+--- !u!4 &7265149536780314633 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5239574516815067755, guid: ef3894414d7cb844384e24dde329bbad,
+    type: 3}
+  m_PrefabInstance: {fileID: 3198763282048553570}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3251215771848461801
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1746,118 +1826,6 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7169118283350508351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: beb09f5adac6df14e8f5a6333bdc9949, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stem: {fileID: 7001460856434354183}
-  rightSelect:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Right Select
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 70f5b2b7-3d93-46b8-88ca-0c3a1083f36e
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f,
-      type: 3}
-  price: 60
---- !u!1001 &7267907098761412607
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 930797603902814223}
-    m_Modifications:
-    - target: {fileID: 1000010004241426, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_Name
-      value: Tomato_Fruit
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.247
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.0552
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.1953
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 270
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b7d665c36e398ab4c939d7785859287d, type: 3}
---- !u!4 &7265149536780314633 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4000011252979702, guid: b7d665c36e398ab4c939d7785859287d,
-    type: 3}
-  m_PrefabInstance: {fileID: 7267907098761412607}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7268606935109575661 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1000010004241426, guid: b7d665c36e398ab4c939d7785859287d,
-    type: 3}
-  m_PrefabInstance: {fileID: 7267907098761412607}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &3179655875713837468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7268606935109575661}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: beb09f5adac6df14e8f5a6333bdc9949, type: 3}

@@ -22,6 +22,7 @@ public class FarmScript : MonoBehaviour
     public PlantState plantState;
     private int currentDay;
     private bool watered = false;
+    private CapsuleController sleepArea;
 
     private ParticleCollisionEvent[] collisionEvents = new ParticleCollisionEvent[16];
 
@@ -29,6 +30,7 @@ public class FarmScript : MonoBehaviour
     {
         plantState = PlantState.Bare;
         currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
+        sleepArea = GameObject.Find("Bed").gameObject.transform.GetChild(0).gameObject.transform.Find("Collider").GetComponent<CapsuleController>();
     }
     public void plantSeeds(GameObject t_plant)
     {
@@ -47,7 +49,7 @@ public class FarmScript : MonoBehaviour
     }
     private void Update()
     {
-        if(GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "01:00")
+        if(sleepArea.asleep)
         {
             gameObject.GetComponent<MeshRenderer>().material = dryMat;
             watered = false;
@@ -55,23 +57,26 @@ public class FarmScript : MonoBehaviour
 
         }
 
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "00:00")
+        if (sleepArea.asleep)
         {
             if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Seed && watered)
             {
-                //currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
-                //plantState++;
-                //Debug.Log(plantState);
-                //Vector3 pos = gameObject.transform.GetChild(1).transform.position;
-                //Destroy(gameObject.transform.GetChild(1).gameObject);
-                //Instantiate(growingPlant, pos, Quaternion.identity, gameObject.transform);
                 currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
                 plantState++;
                 Debug.Log(plantState);
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
-                pos.y = checkFruitYPos(fruitType.name);
                 Destroy(gameObject.transform.GetChild(1).gameObject);
-                Instantiate(fruitType, pos, Quaternion.identity, gameObject.transform);
+                Instantiate(growingPlant, pos, Quaternion.identity, gameObject.transform);
+
+                //USED FOR TESTING
+
+                //currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
+                //plantState++;
+                //Debug.Log(plantState);
+                //Vector3 pos = gameObject.transform.GetChild(1).transform.position;
+                //pos.y = checkFruitYPos(fruitType.name);
+                //Destroy(gameObject.transform.GetChild(1).gameObject);
+                //Instantiate(fruitType, pos, Quaternion.identity, gameObject.transform);
             }
             else if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Growing && watered)
             {

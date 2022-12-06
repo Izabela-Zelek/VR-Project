@@ -8,7 +8,7 @@ public class SellController : MonoBehaviour
     {
         if(other.tag == "Produce")
         {
-            GameObject.Find("GameManager").GetComponent<GameManager>().UpdateMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() + other.GetComponent<FruitController>().price);
+            GameObject.Find("GameManager").GetComponent<GameManager>().UpdateMoney(other.GetComponent<FruitController>().price);
             Destroy(other.gameObject);
         }
     }
