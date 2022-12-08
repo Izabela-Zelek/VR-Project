@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     private int addedMoney = 0;
     private bool addMoney = false;
     public bool asleep = false;
+    public bool shopOpen = true;
     // Start is called before the first frame update
     void Start()
     {

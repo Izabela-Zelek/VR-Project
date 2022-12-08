@@ -49,17 +49,9 @@ public class FarmScript : MonoBehaviour
     }
     private void Update()
     {
-        if(sleepArea.asleep)
-        {
-            gameObject.GetComponent<MeshRenderer>().material = dryMat;
-            watered = false;
-            Debug.Log("NO NOWATER");
-
-        }
-
         if (sleepArea.asleep)
         {
-            if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Seed && watered)
+            if (plantState == PlantState.Seed && watered)
             {
                 currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
                 plantState++;
@@ -78,7 +70,7 @@ public class FarmScript : MonoBehaviour
                 //Destroy(gameObject.transform.GetChild(1).gameObject);
                 //Instantiate(fruitType, pos, Quaternion.identity, gameObject.transform);
             }
-            else if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Growing && watered)
+            else if (plantState == PlantState.Growing && watered)
             {
                 currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
                 plantState++;
@@ -87,7 +79,7 @@ public class FarmScript : MonoBehaviour
                 Destroy(gameObject.transform.GetChild(1).gameObject);
                 Instantiate(grownPlant, pos, Quaternion.identity, gameObject.transform);
             }
-            else if (GameObject.Find("GameManager").GetComponent<TimeController>().dayNr > currentDay && plantState == PlantState.Grown && watered)
+            else if (plantState == PlantState.Grown && watered)
             {
                 currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
                 plantState++;
@@ -99,7 +91,15 @@ public class FarmScript : MonoBehaviour
             }
         }
 
-        if(gameObject.transform.childCount == 1)
+        if (sleepArea.asleep)
+        {
+            gameObject.GetComponent<MeshRenderer>().material = dryMat;
+            watered = false;
+            Debug.Log("NO NOWATER");
+
+        }
+
+        if (gameObject.transform.childCount == 1)
         {
             plantState = PlantState.Bare;
         }

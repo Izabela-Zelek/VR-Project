@@ -7,14 +7,20 @@ public class CapsuleController : MonoBehaviour
     public AnimController animator;
     public GameObject awakeSpawn;
     public bool asleep = false;
+    private bool called = false;
 
     private void Update()
     {
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "01:00")
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "00:00" && !called)
         {
             animator.GetComponent<AnimController>().getTired();
             asleep = true;
             StartCoroutine(Wait(10.0f, GameObject.Find("XR Origin").gameObject));
+            called = true;
+        }
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "07:00" && called)
+        {
+            called = false;
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -23,7 +29,7 @@ public class CapsuleController : MonoBehaviour
         {
             animator.GetComponent<AnimController>().getTired();
             asleep = true;
-            StartCoroutine(Wait(10.0f, other.gameObject));
+            StartCoroutine(Wait(0.5f, other.gameObject));
         }
     }
     IEnumerator Wait(float time, GameObject other)
@@ -32,6 +38,7 @@ public class CapsuleController : MonoBehaviour
         other.transform.position = awakeSpawn.transform.position;
         animator.GetComponent<AnimController>().awaken();
         asleep = false;
+        GameObject.Find("GameManager").GetComponent<TimeController>().newDay();    
     }
 
 }

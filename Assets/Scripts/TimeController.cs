@@ -64,16 +64,16 @@ public class TimeController : MonoBehaviour
         currentTime = currentTime.AddSeconds(Time.deltaTime * TimeMultiplier);
 
        timeText.text =  currentTime.ToString("HH:mm");
-        if(currentTime.ToString("HH:mm") == "00:00" && addDay)
-        {
-            dayNr++;
-            dayText.text = "Day " + dayNr.ToString();
-            addDay = false;
-        }
-        if(!addDay && currentTime.ToString("HH:mm") != "00:00")
-        {
-            addDay = true;
-        }
+        //if(currentTime.ToString("HH:mm") == "05:00" && addDay)
+        //{
+        //    dayNr++;
+        //    dayText.text = "Day " + dayNr.ToString();
+        //    addDay = false;
+        //}
+        //if(!addDay && currentTime.ToString("HH:mm") != "05:00" && !addDay)
+        //{
+        //    addDay = true;
+        //}
     }
     private TimeSpan CalculateTime(TimeSpan fromTime, TimeSpan toTime)
     {
@@ -115,5 +115,12 @@ public class TimeController : MonoBehaviour
         sun.intensity = Mathf.Lerp(0, maxSunIntensity, lightChange.Evaluate(dotProduct));
         moon.intensity = Mathf.Lerp(maxMoonIntensity, 0, lightChange.Evaluate(dotProduct));
         RenderSettings.ambientLight = Color.Lerp(nightAmbientLight, dayAmbientLight, lightChange.Evaluate(dotProduct));
+    }
+
+    public void newDay()
+    {
+        dayNr += 1;
+        dayText.text = "Day " + dayNr.ToString();
+        currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
     }
 }
