@@ -13,6 +13,7 @@ public class MapEditor : MonoBehaviour
     public Transform camLeft;
 
     public InputActionProperty rightSelect;
+    public InputActionProperty rotate;
 
     public MeshRenderer option1;
     public MeshRenderer option2;
@@ -48,6 +49,19 @@ public class MapEditor : MonoBehaviour
     private
     void Update()
     {
+        
+        if(rotate.action.ReadValue<Vector2>().x == 0)
+        {
+            Debug.Log("PAUSE");
+        }
+        else if (rotate.action.ReadValue<Vector2>().x > 0)
+        {
+            Debug.Log("RIGHT");
+        }
+        else if (rotate.action.ReadValue<Vector2>().x < 0)
+        {
+            Debug.Log("LEFT");
+        }
 
         if (rightSelect.action.ReadValue<float>() >= 0.1f)
         {
@@ -143,6 +157,21 @@ public class MapEditor : MonoBehaviour
                 foreach (GameObject item in followObjects)
                 {
                     item.transform.position = new Vector3(pos.x,item.transform.position.y,pos.z);
+                }
+
+                if (rotate.action.ReadValue<Vector2>().x > 0)
+                {
+                    foreach (GameObject item in followObjects)
+                    {
+                        item.transform.eulerAngles = new Vector3(item.transform.eulerAngles.x, item.transform.eulerAngles.y + 1, item.transform.eulerAngles.z);
+                    }
+                }
+                else if (rotate.action.ReadValue<Vector2>().x < 0)
+                {
+                    foreach (GameObject item in followObjects)
+                    {
+                        item.transform.eulerAngles = new Vector3(item.transform.eulerAngles.x, item.transform.eulerAngles.y - 1, item.transform.eulerAngles.z);
+                    }
                 }
             }
         }
