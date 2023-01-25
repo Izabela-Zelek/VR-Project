@@ -30,6 +30,8 @@ public class MapEditor : MonoBehaviour
 
     private Material notChosenMat;
     private Material chosenMat;
+
+    private List<GameObject> followObjects = new List<GameObject>();
     private void Start()
     {
         mapDistance = Vector3.Distance(centre.position, left.position);
@@ -53,6 +55,24 @@ public class MapEditor : MonoBehaviour
             if (rayInteractor.TryGetCurrent3DRaycastHit(out res))
             {
                 Vector3 hitPoint = res.point; // the coordinate that the ray hits
+
+                float yDistance = Mathf.Sqrt((hitPoint.y - centre.position.y) * (hitPoint.y - centre.position.y));
+                float zDistance = Mathf.Sqrt((hitPoint.z - centre.position.z) * (hitPoint.z - centre.position.z));
+
+                if (hitPoint.z > centre.position.z)
+                {
+                    zDistance = -zDistance;
+                }
+                zDistance = zDistance * multiplier;
+
+                if (hitPoint.y > centre.position.y)
+                {
+                    yDistance = -yDistance;
+                }
+                yDistance = yDistance * multiplier;
+
+                Vector3 pos = new Vector3(camCentre.position.x + yDistance, 0.0f, camCentre.position.z + zDistance);
+
                 if (res.collider.name == "Tree1" && !clicked)
                 {
                     if (chosenOption != 1)
@@ -84,25 +104,31 @@ public class MapEditor : MonoBehaviour
                 else if (res.collider.name == "Map" && !clicked)
                 {
                     clicked = true;
-                    float yDistance = Mathf.Sqrt((hitPoint.y - centre.position.y) * (hitPoint.y - centre.position.y));
-                    float zDistance = Mathf.Sqrt((hitPoint.z - centre.position.z) * (hitPoint.z - centre.position.z));
-
-                    if (hitPoint.z > centre.position.z)
-                    {
-                        zDistance = -zDistance;
-                    }
-                    zDistance = zDistance * multiplier;
-
-                    if (hitPoint.y > centre.position.y)
-                    {
-                        yDistance = -yDistance;
-                    }
-                    yDistance = yDistance * multiplier;
-
-                    Vector3 pos = new Vector3(camCentre.position.x + yDistance, 0.0f, camCentre.position.z + zDistance);
 
                     switch (chosenOption)
                     {
+                        case 0:
+                            Collider[] hitColliders = Physics.OverlapSphere(pos, 1.0f);
+                            foreach (var hitCollider in hitColliders)
+                            {
+                                if(hitCollider.tag != "Ground" && hitCollider.tag != "Plane" && hitCollider.tag != "Boundary")
+                                {
+                                    GameObject hit = hitCollider.gameObject;
+                                    while (hit.transform.parent != null)
+                                    {
+                                        if (hit.transform.parent.tag == "Parent")
+                                        {
+                                            break;
+                                        }
+                                        hit = hit.transform.parent.gameObject;
+                                    }
+                                    Debug.Log(hit.name);
+                                    Debug.Log(hit.transform.parent);
+                                    followObjects.Add(hit);
+                                }
+                            }
+
+                            break;
                         case 1:
                             Instantiate(tree, pos, Quaternion.identity);
                             break;
@@ -113,11 +139,17 @@ public class MapEditor : MonoBehaviour
                    
                    
                 }
+
+                foreach (GameObject item in followObjects)
+                {
+                    item.transform.position = new Vector3(pos.x,item.transform.position.y,pos.z);
+                }
             }
         }
         else if (rightSelect.action.ReadValue<float>() <= 0.0f)
         {
             clicked = false;
+            followObjects.Clear();
         }
     }
 

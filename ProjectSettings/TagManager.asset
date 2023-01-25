@@ -9,6 +9,9 @@ TagManager:
   - SeedArea
   - Farm
   - Produce
+  - Plane
+  - Parent
+  - Boundary
   layers:
   - Default
   - TransparentFX
