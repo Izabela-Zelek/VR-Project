@@ -2,7 +2,10 @@
 *When no placing option is chosen, and click on object on app, object follow cursor
 *Then when let go, place
 *When held and joystick moved to right, rotate right, when left, rotate left
--Add house options
--Add market options
--Add capsule to enter for map editing
+*Add house options
+*Add capsule to enter for map editing
 -Add button to leave map editing
+-Add rotation gizmo (upon each rotation spawn a new rot gizmo, delete when placed)
+-Add NPC paths (wander)
+-Add NPC paths (follow path)
+-Add option to edit NPC paths

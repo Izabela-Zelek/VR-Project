@@ -17,6 +17,7 @@ public class MapEditor : MonoBehaviour
 
     public MeshRenderer option1;
     public MeshRenderer option2;
+    public MeshRenderer option3;
 
     private float mapDistance;
     private float camDistance;
@@ -25,12 +26,17 @@ public class MapEditor : MonoBehaviour
     private int chosenOption = 0;
 
     private bool clicked = false;
+    private bool rotating = false;
 
     private GameObject tree;
     private GameObject tree2;
+    private GameObject house;
 
     private Material notChosenMat;
     private Material chosenMat;
+
+    LineRenderer lineRenderer = new LineRenderer();
+    Vector3[] positions = new Vector3[3];
 
     private List<GameObject> followObjects = new List<GameObject>();
     private void Start()
@@ -42,9 +48,11 @@ public class MapEditor : MonoBehaviour
 
         tree = Resources.Load("Tree_1_1") as GameObject;
         tree2 = Resources.Load("Tree_1_2") as GameObject;
+        house = Resources.Load("ShopGuyHouse") as GameObject;
 
         notChosenMat = Resources.Load("notChosen_mat") as Material;
         chosenMat = Resources.Load("chosen_mat") as Material;
+
     }
     private
     void Update()
@@ -115,6 +123,20 @@ public class MapEditor : MonoBehaviour
                         chosenOption = 0;
                     }
                 }
+                else if (res.collider.name == "House" && !clicked)
+                {
+                    if (chosenOption != 3)
+                    {
+                        resetColours();
+                        chosenOption = 3;
+                        option3.material = chosenMat;
+                    }
+                    else
+                    {
+                        resetColours();
+                        chosenOption = 0;
+                    }
+                }
                 else if (res.collider.name == "Map" && !clicked)
                 {
                     clicked = true;
@@ -149,6 +171,9 @@ public class MapEditor : MonoBehaviour
                         case 2:
                             Instantiate(tree2, pos, Quaternion.identity);
                             break;
+                        case 3:
+                            Instantiate(house, pos, Quaternion.identity);
+                            break;
                     }
                    
                    
@@ -159,8 +184,15 @@ public class MapEditor : MonoBehaviour
                     item.transform.position = new Vector3(pos.x,item.transform.position.y,pos.z);
                 }
 
+                if (!rotating && followObjects.Count > 0)
+                {
+                    positions[0] = followObjects[0].transform.position;
+                    positions[1] = followObjects[0].transform.position + followObjects[0].transform.forward*10;
+                }
+
                 if (rotate.action.ReadValue<Vector2>().x > 0)
                 {
+                    rotating = true;
                     foreach (GameObject item in followObjects)
                     {
                         item.transform.eulerAngles = new Vector3(item.transform.eulerAngles.x, item.transform.eulerAngles.y + 1, item.transform.eulerAngles.z);
@@ -168,23 +200,36 @@ public class MapEditor : MonoBehaviour
                 }
                 else if (rotate.action.ReadValue<Vector2>().x < 0)
                 {
+                    rotating = true;
                     foreach (GameObject item in followObjects)
                     {
                         item.transform.eulerAngles = new Vector3(item.transform.eulerAngles.x, item.transform.eulerAngles.y - 1, item.transform.eulerAngles.z);
                     }
+
                 }
+                //if (rotating && followObjects.Count > 0)
+                //{
+                //    positions[2] = followObjects[0].transform.position + followObjects[0].transform.forward * 10;
+
+                //    lineRenderer.SetPositions(positions);
+                //}
             }
+           
         }
         else if (rightSelect.action.ReadValue<float>() <= 0.0f)
         {
             clicked = false;
             followObjects.Clear();
+            rotating = false;
         }
+
+
     }
 
     void resetColours()
     {
         option1.material = notChosenMat;
         option2.material = notChosenMat;
+        option3.material = notChosenMat;
     }
 }
