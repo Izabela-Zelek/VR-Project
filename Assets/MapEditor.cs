@@ -195,6 +195,14 @@ public class MapEditor : MonoBehaviour
                     rotating = true;
                     foreach (GameObject item in followObjects)
                     {
+                        for (int i = 0; i < item.transform.childCount; i++)
+                        {
+                            if (item.transform.GetChild(i).name == "Rotation")
+                            {
+                                item.transform.GetChild(i).gameObject.SetActive(true);
+                            }
+                        }
+
                         item.transform.eulerAngles = new Vector3(item.transform.eulerAngles.x, item.transform.eulerAngles.y + 1, item.transform.eulerAngles.z);
                     }
                 }
@@ -203,6 +211,14 @@ public class MapEditor : MonoBehaviour
                     rotating = true;
                     foreach (GameObject item in followObjects)
                     {
+                        for(int i =0; i < item.transform.childCount;i++)
+                        {
+                            if(item.transform.GetChild(i).name == "Rotation")
+                            {
+                                item.transform.GetChild(i).gameObject.SetActive(true);
+                            }
+                        }
+                      
                         item.transform.eulerAngles = new Vector3(item.transform.eulerAngles.x, item.transform.eulerAngles.y - 1, item.transform.eulerAngles.z);
                     }
 
@@ -218,6 +234,17 @@ public class MapEditor : MonoBehaviour
         }
         else if (rightSelect.action.ReadValue<float>() <= 0.0f)
         {
+            foreach (GameObject item in followObjects)
+            {
+                for (int i = 0; i < item.transform.childCount; i++)
+                {
+                    if (item.transform.GetChild(i).name == "Rotation")
+                    {
+                        item.transform.GetChild(i).gameObject.SetActive(false);
+                    }
+                }
+
+            }
             clicked = false;
             followObjects.Clear();
             rotating = false;
