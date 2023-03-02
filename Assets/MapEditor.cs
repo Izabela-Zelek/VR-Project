@@ -58,18 +58,18 @@ public class MapEditor : MonoBehaviour
     void Update()
     {
         
-        if(rotate.action.ReadValue<Vector2>().x == 0)
-        {
-            Debug.Log("PAUSE");
-        }
-        else if (rotate.action.ReadValue<Vector2>().x > 0)
-        {
-            Debug.Log("RIGHT");
-        }
-        else if (rotate.action.ReadValue<Vector2>().x < 0)
-        {
-            Debug.Log("LEFT");
-        }
+        //if(rotate.action.ReadValue<Vector2>().x == 0)
+        //{
+        //    Debug.Log("PAUSE");
+        //}
+        //else if (rotate.action.ReadValue<Vector2>().x > 0)
+        //{
+        //    Debug.Log("RIGHT");
+        //}
+        //else if (rotate.action.ReadValue<Vector2>().x < 0)
+        //{
+        //    Debug.Log("LEFT");
+        //}
 
         if (rightSelect.action.ReadValue<float>() >= 0.1f)
         {
@@ -223,12 +223,6 @@ public class MapEditor : MonoBehaviour
                     }
 
                 }
-                //if (rotating && followObjects.Count > 0)
-                //{
-                //    positions[2] = followObjects[0].transform.position + followObjects[0].transform.forward * 10;
-
-                //    lineRenderer.SetPositions(positions);
-                //}
             }
            
         }

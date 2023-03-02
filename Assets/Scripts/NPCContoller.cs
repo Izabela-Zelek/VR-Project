@@ -4,36 +4,38 @@ using UnityEngine;
 
 public class NPCContoller : MonoBehaviour
 {
-    private float circleRadius = 100;
-    private float distance = 40;
+    public float circleRadius = 100;
+    public float distance = 40;
 
     private Rigidbody rb;
 
     public float wanderWeight = 10.0f;
     public float maxSpeed = 8;
     public float maxForce = 10;
-
+    private float angle;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-    }
-    // Update is called once per frame
-    void Update()
-    {
+        angle = Random.Range(0, 360) * Mathf.Deg2Rad;
 
     }
 
     private void FixedUpdate()
     {
+        //SimpleWander();
+        //transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
+
+
+
         rb.AddForce(Wander() * wanderWeight);
 
         Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5f * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
     }
 
     private Vector3 Wander()
     {
-        float angle = Random.Range(0, 360) * Mathf.Deg2Rad;
+        angle = angle + Random.Range(-20, 20) * Mathf.Deg2Rad;
 
         Vector3 futurePos = transform.position + rb.velocity * distance;
         Vector3 pointOnCircle = futurePos;
@@ -50,5 +52,10 @@ public class NPCContoller : MonoBehaviour
         }
 
         return steer;
+    }
+
+    private void SimpleWander()
+    {
+        angle = angle + Random.Range(-180, 180) * Mathf.Deg2Rad;
     }
 }
