@@ -8,7 +8,7 @@ public class NPCContoller : MonoBehaviour
     public float distance = 40;
 
     private Rigidbody rb;
-
+    private float yPos;
     public float wanderWeight = 10.0f;
     public float maxSpeed = 8;
     public float maxForce = 10;
@@ -17,20 +17,16 @@ public class NPCContoller : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         angle = Random.Range(0, 360) * Mathf.Deg2Rad;
-
+        yPos = transform.localPosition.y;
     }
 
     private void FixedUpdate()
     {
-        //SimpleWander();
-        //transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
-
-
-
         rb.AddForce(Wander() * wanderWeight);
 
         Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
+        transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
     }
 
     private Vector3 Wander()

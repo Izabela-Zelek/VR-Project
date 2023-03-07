@@ -16,17 +16,20 @@ public class PathMover : MonoBehaviour
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;
     private Rigidbody rb;
+    private float yPos;
     private bool pathForward = true;
-    public float id = -1;
+    public int id = -1;
     void Start()
     {
         if(id == -1)
         {
-            id = Random.Range(0, 10);
+            id = Random.Range(0, 10000);
         }
         rb = GetComponent<Rigidbody>();
         //FindAnyObjectByType<PathFollowing>().OnNewPathCreated += SetPoints;
         SetPointsByChildren();
+        yPos = transform.localPosition.y;
+
     }
 
     private void SetPoints(IEnumerable<Vector3> points)
@@ -88,6 +91,7 @@ public class PathMover : MonoBehaviour
             Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
             //rb.velocity += steeringForce;
+            transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
         }
     }
 
