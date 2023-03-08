@@ -5,13 +5,15 @@ using UnityEngine.AI;
 
 public class PathMover : MonoBehaviour
 {
-    public List<Vector3> path;
+    public List<GameObject> path;
     public float speed = 5.0f;
     public float mass = 5.0f;
     public float maxSteer = 15.0f;
     public float pathRadius = 1.0f;
-
     public int currentWaypointIndex = 0;
+    private Animator animator;
+
+    private bool isStopped = false;
     private Vector3 targetWaypoint;
     private Vector3 desiredVelocity;
     private Vector3 steeringForce;
@@ -19,34 +21,46 @@ public class PathMover : MonoBehaviour
     private float yPos;
     private bool pathForward = true;
     public int id = -1;
+
+    public bool hadLoiter = false;
     void Start()
     {
         if(id == -1)
         {
-            id = Random.Range(0, 10000);
+            id = Random.Range(10, 10000);
         }
         rb = GetComponent<Rigidbody>();
         //FindAnyObjectByType<PathFollowing>().OnNewPathCreated += SetPoints;
         SetPointsByChildren();
         yPos = transform.localPosition.y;
+        animator = GetComponent<Animator>();
 
     }
 
-    private void SetPoints(IEnumerable<Vector3> points)
+    public void SetDefaultPath(int newId)
     {
-        path = (List<Vector3>)points;
+        id = newId;
+        GameObject pathObject = GameObject.Find("Path" + id);
+        for (int i = 0; i < pathObject.transform.childCount; i++)
+        {
+            path.Add(pathObject.transform.GetChild(i).gameObject);
+        }
+
         targetWaypoint = GetClosestPointOnPath(transform.position);
     }
 
     private void SetPointsByChildren()
     {
-        GameObject pathObject = GameObject.Find("Path" + id);
-        for(int i = 0;i < pathObject.transform.childCount;i++)
+        if (id != -1)
         {
-            path.Add(pathObject.transform.GetChild(i).transform.position);
+            GameObject pathObject = GameObject.Find("Path" + id);
+            for (int i = 0; i < pathObject.transform.childCount; i++)
+            {
+                path.Add(pathObject.transform.GetChild(i).gameObject);
+            }
+
+            targetWaypoint = GetClosestPointOnPath(transform.position);
         }
-        
-        targetWaypoint = GetClosestPointOnPath(transform.position);
     }
 
     void Update()
@@ -57,41 +71,63 @@ public class PathMover : MonoBehaviour
 
             if (distance <= pathRadius)
             {
-                if(pathForward)
+                if (path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime() > 0 && !hadLoiter)
                 {
-                    currentWaypointIndex++;
+                    rb.velocity = Vector3.zero;
+                    animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
+                    isStopped = true;
+                    StartCoroutine(Loiter(path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
                 }
-                else if(!pathForward)
+
+                if (!isStopped)
                 {
-                    currentWaypointIndex--;
+                    if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                    {
+                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                    }
+                    if (pathForward)
+                    {
+                        currentWaypointIndex++;
+                        hadLoiter = false;
+                    }
+                    else if (!pathForward)
+                    {
+                        currentWaypointIndex--;
+                        hadLoiter = false;
+                    }
+                    if (currentWaypointIndex >= path.Count && pathForward)
+                    {
+                        pathForward = false;
+                        currentWaypointIndex = path.Count - 1;
+                    }
+                    else if (currentWaypointIndex < 0 && !pathForward)
+                    {
+                        pathForward = true;
+                        currentWaypointIndex = 0;
+                    }
+                    targetWaypoint = path[currentWaypointIndex].transform.position;
                 }
-                if (currentWaypointIndex >= path.Count && pathForward) 
-                {
-                    pathForward = false;
-                    currentWaypointIndex= path.Count - 1;
-                }
-                else if(currentWaypointIndex< 0 && !pathForward)
-                {
-                    pathForward = true;
-                    currentWaypointIndex = 0;
-                }
-                targetWaypoint = path[currentWaypointIndex];
+
             }
 
-            desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
-            steeringForce = desiredVelocity - rb.velocity;
-            steeringForce /= mass;
-
-            if (steeringForce.magnitude > maxSteer)
+            if (!isStopped)
             {
-                steeringForce = steeringForce.normalized * maxSteer;
-            }
+                desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
+                steeringForce = desiredVelocity - rb.velocity;
+                steeringForce /= mass;
 
-            rb.AddForce(steeringForce);
-            Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
-            //rb.velocity += steeringForce;
-            transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+                if (steeringForce.magnitude > maxSteer)
+                {
+                    steeringForce = steeringForce.normalized * maxSteer;
+                }
+
+                rb.AddForce(steeringForce);
+                Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
+                //rb.velocity += steeringForce;
+                transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+
+            }
         }
     }
 
@@ -102,7 +138,7 @@ public class PathMover : MonoBehaviour
 
         for (int i = 0; i < path.Count; i++)
         {
-            Vector3 pathPoint = path[i];
+            Vector3 pathPoint = path[i].transform.position;
             float distance = Vector3.Distance(position, pathPoint);
             if (distance < closestDistance)
             {
@@ -113,5 +149,12 @@ public class PathMover : MonoBehaviour
         }
 
         return closestPoint;
+    }
+
+    private IEnumerator Loiter(int time)
+    {
+        yield return new WaitForSeconds(time);
+        isStopped = false;
+        hadLoiter = true;
     }
 }

@@ -13,6 +13,7 @@ public class NPCContoller : MonoBehaviour
     public float maxSpeed = 8;
     public float maxForce = 10;
     private float angle;
+    
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -53,5 +54,10 @@ public class NPCContoller : MonoBehaviour
     private void SimpleWander()
     {
         angle = angle + Random.Range(-180, 180) * Mathf.Deg2Rad;
+    }
+
+    public void Avoid(Vector3 force)
+    {
+        rb.AddForce(force);
     }
 }
