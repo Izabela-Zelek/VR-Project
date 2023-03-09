@@ -58,6 +58,10 @@ public class NPCContoller : MonoBehaviour
 
     public void Avoid(Vector3 force)
     {
+        if(rb == null)
+        {
+            rb = GetComponent<Rigidbody>();
+        }
         rb.AddForce(force);
     }
 }
