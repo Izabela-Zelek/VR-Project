@@ -41,7 +41,6 @@ public class TimeController : MonoBehaviour
     private TimeSpan sunriseTime;
     private TimeSpan sunsetTime;
     public int dayNr = 1;
-    private bool addDay = true;
 
     void Start()
     {

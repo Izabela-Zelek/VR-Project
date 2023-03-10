@@ -14,8 +14,8 @@ public class Item : MonoBehaviour
     public float targetTime = 1.0f;
     private GameObject parent;
     public bool isLarge = false;
-    private XRDirectInteractor rightInteractor = new XRDirectInteractor();
-    private XRDirectInteractor leftInteractor = new XRDirectInteractor();
+    private XRDirectInteractor rightInteractor;
+    private XRDirectInteractor leftInteractor;
 
     private void Start()
     {

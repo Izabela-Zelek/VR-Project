@@ -9,15 +9,15 @@ public class SeedBagController : MonoBehaviour
     public string plantType;
     public GameObject seed;
     public InputActionProperty rightSelect;
-    private XRDirectInteractor rightInteractor = new XRDirectInteractor();
-    private XRDirectInteractor leftInteractor = new XRDirectInteractor();
+    private XRDirectInteractor rightInteractor;
+    private XRDirectInteractor leftInteractor;
     private int max_seed = 20;
     private int seed_count = 0;
     public string plotName;
     private bool pickedPlot = false;
     public Transform SpawnPoint;
     float timer = 0.5f;
-    private PlantController plantController = new PlantController();
+    private PlantController plantController;
 
     private void Start()
     {

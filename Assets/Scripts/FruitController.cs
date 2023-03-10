@@ -10,8 +10,8 @@ public class FruitController : MonoBehaviour
     private GameObject stem;
     private Transform parent;
     private bool pickedUp = false;
-    private XRDirectInteractor rightInteractor = new XRDirectInteractor();
-    private XRDirectInteractor leftInteractor = new XRDirectInteractor();
+    private XRDirectInteractor rightInteractor;
+    private XRDirectInteractor leftInteractor;
     [SerializeField]
     private InputActionProperty rightSelect;
     public int price;

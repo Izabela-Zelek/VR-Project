@@ -5,7 +5,7 @@ using UnityEngine;
 public class ObjectAvoidance : MonoBehaviour
 {
     private Vector3 avoidance_force;
-    private float max_avoidance = 60;
+    private float max_avoidance = 90;
 
     private void OnTriggerEnter(Collider other)
     {

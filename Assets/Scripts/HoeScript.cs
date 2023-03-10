@@ -9,8 +9,8 @@ public class HoeScript : MonoBehaviour
     public Transform tip;
     public GameObject farm;
     private List<Vector3> dirtPos = new List<Vector3>();
-    private XRDirectInteractor rightInteractor = new XRDirectInteractor();
-    private XRDirectInteractor leftInteractor = new XRDirectInteractor();
+    private XRDirectInteractor rightInteractor;
+    private XRDirectInteractor leftInteractor;
     private bool free = true;
     private void Start()
     {
