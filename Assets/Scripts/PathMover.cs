@@ -39,6 +39,7 @@ public class PathMover : MonoBehaviour
 
     public void SetDefaultPath(int newId)
     {
+        path.Clear();
         id = newId;
         GameObject pathObject = GameObject.Find("Path" + id);
         for (int i = 0; i < pathObject.transform.childCount; i++)
@@ -47,11 +48,12 @@ public class PathMover : MonoBehaviour
         }
 
         targetWaypoint = GetClosestPointOnPath(transform.position);
+        transform.LookAt(new Vector3(targetWaypoint.x,0,targetWaypoint.z));
     }
 
     private void SetPointsByChildren()
     {
-        if (id != -1)
+        if (id != -1 && path.Count == 0)
         {
             GameObject pathObject = GameObject.Find("Path" + id);
             for (int i = 0; i < pathObject.transform.childCount; i++)
