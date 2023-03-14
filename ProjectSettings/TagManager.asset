@@ -12,6 +12,7 @@ TagManager:
   - Plane
   - Parent
   - Boundary
+  - marker
   layers:
   - Default
   - TransparentFX

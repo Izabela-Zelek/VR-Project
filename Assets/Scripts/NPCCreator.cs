@@ -42,7 +42,7 @@ public class NPCCreator : MonoBehaviour
             chosenPath.transform.GetChild(i).GetChild(0).gameObject.SetActive(true);
         }
 
-        if(oldChosen != -1)
+        if(oldChosen != -1 && npcPath != oldChosen)
         {
             chosenPath = GameObject.Find("Path" + oldChosen);
             for (int i = 0; i < chosenPath.transform.childCount; i++)
@@ -52,6 +52,15 @@ public class NPCCreator : MonoBehaviour
         }
         
         oldChosen = npcPath;
+    }
+
+    public void hidePath(int npcPath)
+    {
+        GameObject chosenPath = GameObject.Find("Path" + npcPath);
+        for (int i = 0; i < chosenPath.transform.childCount; i++)
+        {
+            chosenPath.transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
+        }
     }
 
     public void ClearMap()
@@ -83,6 +92,15 @@ public class NPCCreator : MonoBehaviour
                 {
                     closestDistance = distance;
                     closestPath = i + 1;
+
+                    if(closestPath == 5)
+                    {
+                        closestPath = 6;
+                    }
+                    else if(closestPath == 4)
+                    {
+                        closestPath = 5;
+                    }
                 }
             }
         }

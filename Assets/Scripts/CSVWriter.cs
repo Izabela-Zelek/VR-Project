@@ -17,8 +17,22 @@ public class CSVWriter : MonoBehaviour
 
     private void Start()
     {
-        _filename1 = Application.dataPath + "/path5.csv";
-        _filename2 = Application.dataPath + "/path6.csv";
+        _filename1 = Application.dataPath + "/Resources/path5.csv";
+        _filename2 = Application.dataPath + "/Resources/path6.csv";
+
+        if (File.Exists(_filename1))
+        {
+            UnlockCustom(5);
+        }
+        if (File.Exists(_filename2))
+        {
+            UnlockCustom(6);
+        }
+    }
+
+    private void UnlockCustom(int customID)
+    {
+        GetComponent<MapEditor>().Unlock(customID);
     }
     public void addFile()
     { 
@@ -51,6 +65,15 @@ public class CSVWriter : MonoBehaviour
             }
 
             tw.Close();
+
+            if(_fileUsed == 5)
+            {
+                UnlockCustom(5);
+            }
+            else if(_fileUsed == 6)
+            {
+                UnlockCustom(6);
+            }
         }
 
         return _fileUsed;
@@ -62,10 +85,12 @@ public class CSVWriter : MonoBehaviour
         {
             case 5:
                 File.Delete(_filename1);
+                GetComponent<MapEditor>().Lock(5);
                 RefreshEditorProjectWindow();
                 break;
             case 6:
                 File.Delete(_filename2);
+                GetComponent<MapEditor>().Lock(6);
                 RefreshEditorProjectWindow();
                 break;
         }
