@@ -70,4 +70,9 @@ public class GameManager : MonoBehaviour
             player.transform.GetChild(0).GetChild(4).gameObject.SetActive(false);
         }
     }
+
+    public bool IsInMap()
+    {
+        return inMap;
+    }
 }

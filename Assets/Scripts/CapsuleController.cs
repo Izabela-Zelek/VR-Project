@@ -13,10 +13,13 @@ public class CapsuleController : MonoBehaviour
     {
         if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "00:00" && !called)
         {
-            animator.GetComponent<AnimController>().getTired();
-            asleep = true;
-            StartCoroutine(Wait(10.0f, GameObject.Find("XR Origin").gameObject));
-            called = true;
+            if (!GameObject.Find("GameManager").GetComponent<GameManager>().IsInMap())
+            {
+                animator.GetComponent<AnimController>().getTired();
+                asleep = true;
+                StartCoroutine(Wait(10.0f, GameObject.Find("XR Origin").gameObject));
+                called = true;
+            }
         }
         if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "07:00" && called)
         {

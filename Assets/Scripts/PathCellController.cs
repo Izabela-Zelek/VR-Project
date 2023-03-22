@@ -11,4 +11,9 @@ public class PathCellController : MonoBehaviour
     {
         return loiterTime;
     }
+
+    public void IncreaseLoiterTime(int newLoiter)
+    {
+        loiterTime = newLoiter;
+    }
 }

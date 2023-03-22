@@ -32,10 +32,6 @@ public class TimeController : MonoBehaviour
     private TextMeshProUGUI dayText;
     [SerializeField]
     private TextMeshProUGUI timeText;
-    //[SerializeField]
-    //private Material daySky;
-    //[SerializeField]
-    //private Material nightSky;
 
     public DateTime currentTime;
     private TimeSpan sunriseTime;
@@ -63,16 +59,6 @@ public class TimeController : MonoBehaviour
         currentTime = currentTime.AddSeconds(Time.deltaTime * TimeMultiplier);
 
        timeText.text =  currentTime.ToString("HH:mm");
-        //if(currentTime.ToString("HH:mm") == "05:00" && addDay)
-        //{
-        //    dayNr++;
-        //    dayText.text = "Day " + dayNr.ToString();
-        //    addDay = false;
-        //}
-        //if(!addDay && currentTime.ToString("HH:mm") != "05:00" && !addDay)
-        //{
-        //    addDay = true;
-        //}
     }
     private TimeSpan CalculateTime(TimeSpan fromTime, TimeSpan toTime)
     {
@@ -94,7 +80,6 @@ public class TimeController : MonoBehaviour
 
             double percentage = timeSinceSunrise.TotalMinutes / sunriseToSunsetDuration.TotalMinutes;
             sunLightRotation = Mathf.Lerp(0, 180, (float)percentage);
-            //RenderSettings.skybox = daySky;
         }
         else
         {
@@ -103,7 +88,6 @@ public class TimeController : MonoBehaviour
 
             double percentage = timeSinceSunset.TotalMinutes / sunsetToSunriseDuration.TotalMinutes;
             sunLightRotation = Mathf.Lerp(180, 360, (float)percentage);
-            //RenderSettings.skybox = nightSky;
         }
         sun.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right);
     }

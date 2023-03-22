@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
-
+using TMPro;
 public class MapEditor : MonoBehaviour
 {
     public XRRayInteractor rayInteractor;
@@ -57,6 +57,11 @@ public class MapEditor : MonoBehaviour
     private List<GameObject> tempMarkers = new List<GameObject>();
 
     private List<GameObject> followObjects = new List<GameObject>();
+
+    private GameObject chosenMarker;
+    public TextMeshPro loiterText;
+
+
     private void Start()
     {
         mapDistance = Vector3.Distance(centre.position, left.position);
@@ -73,8 +78,6 @@ public class MapEditor : MonoBehaviour
 
         notChosenMat = Resources.Load("notChosen_mat") as Material;
         chosenMat = Resources.Load("chosen_mat") as Material;
-
-        //_mapEditor = GameObject.Find("MapEditor");
 
         setUpMeshRenderers();
     }
@@ -298,6 +301,17 @@ public class MapEditor : MonoBehaviour
                                 ResetChoice();
                             }
                             break;
+                        case "LeaveMap":
+                            GameObject.Find("GameManager").GetComponent<GameManager>().EnterMap(false);
+                            break;
+                        case "LoiterLeft":
+                            chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() - 1);
+                            loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                            break;
+                        case "LoiterRight":
+                            chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() + 1);
+                            loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                            break;
                         case "Map":
                             spawnObject(pos);
                             break;
@@ -414,17 +428,22 @@ public class MapEditor : MonoBehaviour
                         }
                         followObjects.Add(hit);
                     }
+                    if(hitCollider.tag == "marker")
+                    {
+                        chosenMarker = hitCollider.gameObject;
+                        loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                    }
                 }
 
                 break;
             case 1:
-                Instantiate(tree, pos, Quaternion.identity);
+                Instantiate(tree, pos, Quaternion.identity, GameObject.Find("Trees").transform);
                 break;
             case 2:
-                Instantiate(tree2, pos, Quaternion.identity);
+                Instantiate(tree2, pos, Quaternion.identity, GameObject.Find("Trees").transform);
                 break;
             case 3:
-                Instantiate(house, pos, Quaternion.identity);
+                Instantiate(house, pos, Quaternion.identity, GameObject.Find("Houses").transform);
                 break;
             case 4:
                 GameObject newPath = Instantiate(pathNPC, pos, Quaternion.identity,GameObject.Find("NPCS").transform);

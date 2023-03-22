@@ -17,7 +17,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - House
   - Water
   - UI
   - Player
@@ -31,7 +31,7 @@ TagManager:
   - NPC
   - Ground
   - NPCCollision
-  - 
+  - HouseCamera
   - 
   - 
   - 
