@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 488418}
   - component: {fileID: 3347822}
   - component: {fileID: 2354604}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Wheel6-1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 429704}
   - component: {fileID: 3373930}
   - component: {fileID: 2393058}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Wheel6-3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 462650}
   - component: {fileID: 3319842}
   - component: {fileID: 2305242}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Wheel6-4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 438106}
   - component: {fileID: 3378630}
   - component: {fileID: 2380354}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Wheel6-2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,10 @@ GameObject:
   - component: {fileID: 425790}
   - component: {fileID: 3301594}
   - component: {fileID: 2376108}
-  m_Layer: 0
+  - component: {fileID: 8341361690235392481}
+  - component: {fileID: -7060322939895316970}
+  - component: {fileID: 8654452539113468595}
+  m_Layer: 18
   m_Name: Car_6_Yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -362,7 +365,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 193646}
   m_LocalRotation: {x: 0.000000021855698, y: -0.00000003774895, z: 8.250296e-16, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.91, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -425,3 +428,52 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8341361690235392481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4256fa2d4edcc2f4b956b84c35fb47d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: []
+  speed: 5
+  mass: 1
+  maxSteer: 150
+  pathRadius: 3
+  currentWaypointIndex: 0
+  id: -1
+--- !u!54 &-7060322939895316970
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193646}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 0
+--- !u!64 &8654452539113468595
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193646}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: c5f8cfdbf35eea042bfcea749a4e7bc2, type: 3}
