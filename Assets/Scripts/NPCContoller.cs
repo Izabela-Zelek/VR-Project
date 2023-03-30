@@ -13,6 +13,7 @@ public class NPCContoller : MonoBehaviour
     public float maxSpeed = 8;
     public float maxForce = 10;
     private float angle;
+    private bool _avoid = false;
     
     private void Start()
     {
@@ -23,11 +24,14 @@ public class NPCContoller : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.AddForce(Wander() * wanderWeight);
+        if (!_avoid)
+        {
+            rb.AddForce(Wander() * wanderWeight);
 
-        Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
-        transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+            Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
+            transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+        }
     }
 
     private Vector3 Wander()
@@ -56,9 +60,13 @@ public class NPCContoller : MonoBehaviour
         angle = angle + Random.Range(-180, 180) * Mathf.Deg2Rad;
     }
 
+    public void Avoid(bool shouldAvoid)
+    {
+        _avoid = shouldAvoid;
+    }
     public void Avoid(Vector3 force)
     {
-        if(rb == null)
+        if (rb == null)
         {
             rb = GetComponent<Rigidbody>();
         }
