@@ -130,8 +130,11 @@ public class PathMover : MonoBehaviour
                 }
 
                 rb.AddForce(steeringForce);
-                Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
+                if(Quaternion.LookRotation(rb.velocity, Vector3.up) != new Quaternion(0,0,0,1))
+                {
+                    Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
+                }
                 //rb.velocity += steeringForce;
                 transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
 

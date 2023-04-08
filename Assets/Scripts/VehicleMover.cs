@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class VehicleMover : MonoBehaviour
 {
-    public List<Vector3> path;
+    public List<GameObject> path;
     public float speed = 5.0f;
     public float mass = 5.0f;
     public float maxSteer = 15.0f;
@@ -20,6 +20,8 @@ public class VehicleMover : MonoBehaviour
     private bool pathForward = true;
     public int id = -1;
 
+    private GameObject traffic;
+
     private bool canMove = true;
     void Start()
     {
@@ -30,20 +32,14 @@ public class VehicleMover : MonoBehaviour
         }
         rb = GetComponent<Rigidbody>();
         yPos = transform.localPosition.y;
-
-    }
-
-    private void SetPoints(IEnumerable<Vector3> points)
-    {
-        path = (List<Vector3>)points;
-        targetWaypoint = GetClosestPointOnPath(transform.position);
+        traffic = GameObject.Find("Traffic").gameObject;
     }
 
     public void SetPointsByChildren(GameObject parent)
     {
         for (int i = 0; i < parent.transform.childCount; i++)
         {
-            path.Add(parent.transform.GetChild(i).transform.position);
+            path.Add(parent.transform.GetChild(i).gameObject);
         }
 
         targetWaypoint = GetClosestPointOnPath(transform.position);
@@ -57,15 +53,26 @@ public class VehicleMover : MonoBehaviour
 
             if (distance <= pathRadius)
             {
-                currentWaypointIndex++;
-
-                if (currentWaypointIndex >= path.Count && pathForward)
+                if (!path[currentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight ||
+                    (path[currentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight &&
+                    path[currentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == traffic.GetComponent<TrafficLightController>().ReturnGreen1()) ||
+                     (path[currentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight &&
+                    path[currentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == traffic.GetComponent<TrafficLightController>().ReturnGreen2()))
                 {
-                    Destroy(this.gameObject);
+                    currentWaypointIndex++;
+
+                    if (currentWaypointIndex >= path.Count && pathForward)
+                    {
+                        Destroy(this.gameObject);
+                    }
+                    else
+                    {
+                        targetWaypoint = path[currentWaypointIndex].transform.position;
+                    }
                 }
                 else
                 {
-                    targetWaypoint = path[currentWaypointIndex];
+                    rb.velocity = Vector3.zero;
                 }
             }
 
@@ -81,9 +88,17 @@ public class VehicleMover : MonoBehaviour
             rb.AddForce(steeringForce);
             Vector3 vel = new Vector3(rb.velocity.x, 0, rb.velocity.z); 
 
-            transform.rotation = Quaternion.LookRotation(vel);
-            transform.rotation *= Quaternion.Euler(0f, -90f, 0f);
+            if(Quaternion.LookRotation(vel) != new Quaternion(0,0,0,1))
+            {
+                transform.rotation = Quaternion.LookRotation(vel);
+                transform.rotation *= Quaternion.Euler(0f, -90f, 0f);
+            }
+
             transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+        }
+        else
+        {
+            rb.velocity = Vector3.zero;
         }
     }
 
@@ -94,7 +109,7 @@ public class VehicleMover : MonoBehaviour
 
         for (int i = 0; i < path.Count; i++)
         {
-            Vector3 pathPoint = path[i];
+            Vector3 pathPoint = path[i].transform.position;
             float distance = Vector3.Distance(position, pathPoint);
             if (distance < closestDistance)
             {

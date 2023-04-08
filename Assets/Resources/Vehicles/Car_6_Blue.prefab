@@ -490,6 +490,7 @@ GameObject:
   - component: {fileID: 2999545932559314909}
   - component: {fileID: 6519117840175918597}
   - component: {fileID: 2424733743089088618}
+  - component: {fileID: 7456144614647740524}
   m_Layer: 18
   m_Name: Collision
   m_TagString: Untagged
@@ -549,3 +550,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34be552fec6042442b2099d3e5f4f80b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!54 &7456144614647740524
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2614927725023722416}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
