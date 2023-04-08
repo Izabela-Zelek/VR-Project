@@ -15,7 +15,7 @@ public class VehicleController : MonoBehaviour
         _carTypes = Resources.LoadAll("Vehicles", typeof(GameObject));
         _nextSpawn = Random.Range(3, 11);
         _roadChoice = Random.Range(0, 6);
-        _chosenCar = (GameObject)_carTypes[Random.Range(0, _carTypes.Length)];
+        _chosenCar = (GameObject)_carTypes[Random.Range(5, _carTypes.Length)];
 
         StartCoroutine(WaitForSpawn());
     }
@@ -55,7 +55,7 @@ public class VehicleController : MonoBehaviour
             _newCar.GetComponent<VehicleMover>().SetPointsByChildren(transform.GetChild(2).GetChild(_roadChoice).gameObject);
             _nextSpawn = Random.Range(3, 11);
             _roadChoice = Random.Range(0, 6);
-            _chosenCar = (GameObject)_carTypes[Random.Range(0, _carTypes.Length)];
+            _chosenCar = (GameObject)_carTypes[Random.Range(5, _carTypes.Length)];
 
             yield return new WaitForSeconds(_nextSpawn);
         }

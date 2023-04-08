@@ -21,11 +21,16 @@ public class PathMover : MonoBehaviour
     private float yPos;
     private bool pathForward = true;
     public int id = -1;
+    private bool onGround = true;
 
     public bool hadLoiter = false;
+    public bool canChangeY = true;
+    private float startTime;
+    private float duration = 10.0f;
+    private float elapsedTime;
     void Start()
     {
-        if(id == -1)
+        if (id == -1)
         {
             id = Random.Range(10, 10000);
         }
@@ -34,7 +39,7 @@ public class PathMover : MonoBehaviour
         SetPointsByChildren();
         yPos = transform.localPosition.y;
         animator = GetComponent<Animator>();
-
+        startTime = Time.time;
     }
 
     public void SetDefaultPath(int newId)
@@ -48,7 +53,7 @@ public class PathMover : MonoBehaviour
         }
 
         targetWaypoint = GetClosestPointOnPath(transform.position);
-        transform.LookAt(new Vector3(targetWaypoint.x,0,targetWaypoint.z));
+        transform.LookAt(new Vector3(targetWaypoint.x, 0, targetWaypoint.z));
     }
 
     private void SetPointsByChildren()
@@ -67,6 +72,7 @@ public class PathMover : MonoBehaviour
 
     void Update()
     {
+        elapsedTime = Time.time - startTime;
         if (path.Count > 0)
         {
             float distance = Vector3.Distance(transform.position, targetWaypoint);
@@ -80,12 +86,12 @@ public class PathMover : MonoBehaviour
                     isStopped = true;
                     StartCoroutine(Loiter(path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
                 }
-
                 if (!isStopped)
                 {
                     if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                     {
                         animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                        hadLoiter = false;
                     }
                     if (pathForward)
                     {
@@ -158,5 +164,29 @@ public class PathMover : MonoBehaviour
         yield return new WaitForSeconds(time);
         isStopped = false;
         hadLoiter = true;
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (elapsedTime >= duration)
+        {
+            startTime = Time.time;
+            canChangeY = true;
+        }
+        if (other.gameObject.layer == LayerMask.NameToLayer("Curb") && canChangeY)
+        {
+            if(onGround)
+            {
+                yPos = transform.localPosition.y + 0.05f;
+                onGround = false;
+            }
+           else
+            {
+                yPos = transform.localPosition.y - 0.05f;
+                onGround = false;
+            }
+            canChangeY = false;
+        }
     }
 }

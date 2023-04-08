@@ -9,7 +9,7 @@ public class ObjectAvoidance : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag != "NPCCollision" && other.tag != "Ground" && other.tag != "Plane")
+        if (other.tag != "NPCCollision" && other.tag != "Ground" && other.tag != "Plane" && other.gameObject.layer != LayerMask.NameToLayer("Curb"))
         {
             if (transform.parent.GetComponent<Rigidbody>().velocity != Vector3.zero)
             {
@@ -26,8 +26,9 @@ public class ObjectAvoidance : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.tag != "NPCCollision" && collision.collider.tag != "Ground" && collision.collider.tag != "Plane")
+        if (collision.collider.tag != "NPCCollision" && collision.collider.tag != "Ground" && collision.collider.tag != "Plane" && collision.gameObject.layer != LayerMask.NameToLayer("Curb"))
         {
+            Debug.Log(collision.collider.name);
             if (transform.parent.GetComponent<Rigidbody>().velocity != Vector3.zero)
             {
                 //avoidance_force = this.transform.position - collision.transform.position;

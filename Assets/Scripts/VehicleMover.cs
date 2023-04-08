@@ -19,7 +19,8 @@ public class VehicleMover : MonoBehaviour
     private float yPos;
     private bool pathForward = true;
     public int id = -1;
-    private Vector3 previousPosition;
+
+    private bool canMove = true;
     void Start()
     {
 
@@ -29,7 +30,6 @@ public class VehicleMover : MonoBehaviour
         }
         rb = GetComponent<Rigidbody>();
         yPos = transform.localPosition.y;
-        previousPosition = new Vector3(0,0,0);
 
     }
 
@@ -51,7 +51,7 @@ public class VehicleMover : MonoBehaviour
 
     void Update()
     {
-        if (path.Count > 0)
+        if (path.Count > 0 && canMove)
         {
             float distance = Vector3.Distance(transform.position, targetWaypoint);
 
@@ -63,7 +63,10 @@ public class VehicleMover : MonoBehaviour
                 {
                     Destroy(this.gameObject);
                 }
-                targetWaypoint = path[currentWaypointIndex];
+                else
+                {
+                    targetWaypoint = path[currentWaypointIndex];
+                }
             }
 
             desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
@@ -77,9 +80,6 @@ public class VehicleMover : MonoBehaviour
 
             rb.AddForce(steeringForce);
             Vector3 vel = new Vector3(rb.velocity.x, 0, rb.velocity.z); 
-            Debug.Log(vel.x);
-            Debug.Log(vel.y);
-            Debug.Log(vel.z);
 
             transform.rotation = Quaternion.LookRotation(vel);
             transform.rotation *= Quaternion.Euler(0f, -90f, 0f);
@@ -105,5 +105,10 @@ public class VehicleMover : MonoBehaviour
         }
 
         return closestPoint;
+    }
+
+    public void setMove(bool move)
+    {
+        canMove = move;
     }
 }
