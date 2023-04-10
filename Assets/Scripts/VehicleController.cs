@@ -53,8 +53,7 @@ public class VehicleController : MonoBehaviour
             }
             _newCar = Instantiate(_chosenCar,new Vector3(startPos.x, startPos.y + _chosenCar.transform.position.y,startPos.z), rot, this.transform.GetChild(3).transform) as GameObject;
             _newCar.GetComponent<VehicleMover>().SetPointsByChildren(transform.GetChild(2).GetChild(_roadChoice).gameObject);
-            // _nextSpawn = Random.Range(3, 11);
-            _nextSpawn = 10;
+            _nextSpawn = Random.Range(3, 11);
             _roadChoice = Random.Range(0, 6);
             _chosenCar = (GameObject)_carTypes[Random.Range(6, _carTypes.Length)];
 

@@ -28,6 +28,7 @@ public class PathMover : MonoBehaviour
     private float startTime;
     private float duration = 10.0f;
     private float elapsedTime;
+    private bool startPath = false;
     void Start()
     {
         if (id == -1)
@@ -35,7 +36,6 @@ public class PathMover : MonoBehaviour
             id = Random.Range(10, 10000);
         }
         rb = GetComponent<Rigidbody>();
-        //FindAnyObjectByType<PathFollowing>().OnNewPathCreated += SetPoints;
         SetPointsByChildren();
         yPos = transform.localPosition.y;
         animator = GetComponent<Animator>();
@@ -75,69 +75,79 @@ public class PathMover : MonoBehaviour
         elapsedTime = Time.time - startTime;
         if (path.Count > 0)
         {
-            float distance = Vector3.Distance(transform.position, targetWaypoint);
-
-            if (distance <= pathRadius)
+            if (!startPath)
             {
-                if (path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime() > 0 && !hadLoiter)
+                if (path[0].GetComponent<PathCellController>().GetStartTime() == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
                 {
-                    rb.velocity = Vector3.zero;
-                    animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
-                    isStopped = true;
-                    StartCoroutine(Loiter(path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
+                    startPath = true;
                 }
+            }
+            if (startPath)
+            {
+                float distance = Vector3.Distance(transform.position, targetWaypoint);
+
+                if (distance <= pathRadius)
+                {
+                    if (path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime() > 0 && !hadLoiter)
+                    {
+                        rb.velocity = Vector3.zero;
+                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
+                        isStopped = true;
+                        StartCoroutine(Loiter(path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
+                    }
+                    if (!isStopped)
+                    {
+                        if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                        {
+                            animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                            hadLoiter = false;
+                        }
+                        if (pathForward)
+                        {
+                            currentWaypointIndex++;
+                            hadLoiter = false;
+                        }
+                        else if (!pathForward)
+                        {
+                            currentWaypointIndex--;
+                            hadLoiter = false;
+                        }
+                        if (currentWaypointIndex >= path.Count && pathForward)
+                        {
+                            pathForward = false;
+                            currentWaypointIndex = path.Count - 1;
+                        }
+                        else if (currentWaypointIndex < 0 && !pathForward)
+                        {
+                            pathForward = true;
+                            currentWaypointIndex = 0;
+                        }
+                        targetWaypoint = path[currentWaypointIndex].transform.position;
+                    }
+
+                }
+
                 if (!isStopped)
                 {
-                    if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                    desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
+                    steeringForce = desiredVelocity - rb.velocity;
+                    steeringForce /= mass;
+
+                    if (steeringForce.magnitude > maxSteer)
                     {
-                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
-                        hadLoiter = false;
+                        steeringForce = steeringForce.normalized * maxSteer;
                     }
-                    if (pathForward)
+
+                    rb.AddForce(steeringForce);
+                    if (rb.velocity != Vector3.zero)
                     {
-                        currentWaypointIndex++;
-                        hadLoiter = false;
+                        Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
                     }
-                    else if (!pathForward)
-                    {
-                        currentWaypointIndex--;
-                        hadLoiter = false;
-                    }
-                    if (currentWaypointIndex >= path.Count && pathForward)
-                    {
-                        pathForward = false;
-                        currentWaypointIndex = path.Count - 1;
-                    }
-                    else if (currentWaypointIndex < 0 && !pathForward)
-                    {
-                        pathForward = true;
-                        currentWaypointIndex = 0;
-                    }
-                    targetWaypoint = path[currentWaypointIndex].transform.position;
+                    //rb.velocity += steeringForce;
+                    transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+
                 }
-
-            }
-
-            if (!isStopped)
-            {
-                desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
-                steeringForce = desiredVelocity - rb.velocity;
-                steeringForce /= mass;
-
-                if (steeringForce.magnitude > maxSteer)
-                {
-                    steeringForce = steeringForce.normalized * maxSteer;
-                }
-
-                rb.AddForce(steeringForce);
-                if(Quaternion.LookRotation(rb.velocity, Vector3.up) != new Quaternion(0,0,0,1))
-                {
-                    Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
-                }
-                //rb.velocity += steeringForce;
-                transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
-
             }
         }
     }

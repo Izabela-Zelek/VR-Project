@@ -5,31 +5,42 @@ using UnityEngine;
 public class PathCellController : MonoBehaviour
 {
     [SerializeField]
-    private int loiterTime = 0;
-    private float startTime = 0;
-
+    private int _loiterTime = 0;
+    private float _startTime = 0;
+    [SerializeField]
+    private int _startWalkTime = 8;
+    [SerializeField]
+    private int _endWalkTime = -1;
     public int GetLoiterTime()
     {
-        return loiterTime;
+        return _loiterTime;
+    }
+    public float GetStartTime()
+    {
+        return _startWalkTime;
+    }
+    public float GetEndTime()
+    {
+        return _endWalkTime;
     }
 
     public void IncreaseLoiterTime(int newLoiter)
     {
-        loiterTime = newLoiter;
+        _loiterTime = newLoiter;
     }
     private void Update()
     {
-        if(loiterTime < 0)
+        if(_loiterTime < 0)
         {
-            loiterTime = 0;
+            _loiterTime = 0;
         }
-        if (startTime < 0)
+        if (_startTime < 0)
         {
-            startTime = 0;
+            _startTime = 0;
         }
-        if (loiterTime > 0 && startTime > 0)
+        if (_loiterTime > 0 && _startTime > 0)
         {
-            loiterTime = 0;
+            _loiterTime = 0;
         }
     }
 }

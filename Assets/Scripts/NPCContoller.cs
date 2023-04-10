@@ -14,7 +14,10 @@ public class NPCContoller : MonoBehaviour
     public float maxForce = 10;
     private float angle;
     private bool _avoid = false;
-    
+    [SerializeField]
+    private bool _startPath = false;
+    [SerializeField]
+    private int _startTime = 8;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -24,13 +27,27 @@ public class NPCContoller : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!_avoid)
+        if (!_startPath)
         {
-            rb.AddForce(Wander() * wanderWeight);
+            if (_startTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+            {
+                _startPath = true;
+            }
+        }
 
-            Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
-            transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+        if (_startPath)
+        {
+            if (!_avoid)
+            {
+                rb.AddForce(Wander() * wanderWeight);
+
+                if (rb.velocity != Vector3.zero)
+                {
+                    Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
+                    transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+                }
+            }
         }
     }
 

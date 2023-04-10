@@ -23,6 +23,7 @@ public class VehicleMover : MonoBehaviour
     private GameObject traffic;
 
     private bool canMove = true;
+    private bool stoppedAtLight = false;
     void Start()
     {
 
@@ -50,15 +51,33 @@ public class VehicleMover : MonoBehaviour
         if (path.Count > 0 && canMove)
         {
             float distance = Vector3.Distance(transform.position, targetWaypoint);
-
+            if (!stoppedAtLight)
+            {
+                rb.constraints = RigidbodyConstraints.None;
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            }
             if (distance <= pathRadius)
             {
-                if (!path[currentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight ||
-                    (path[currentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight &&
-                    path[currentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == traffic.GetComponent<TrafficLightController>().ReturnGreen1()) ||
-                     (path[currentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight &&
-                    path[currentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == traffic.GetComponent<TrafficLightController>().ReturnGreen2()))
+                if (path[currentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight)
                 {
+                    stoppedAtLight = true;
+                    int g2 = traffic.GetComponent<TrafficLightController>().ReturnGreen2();
+                    if (path[currentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == traffic.GetComponent<TrafficLightController>().ReturnGreen1())
+                    {
+                        stoppedAtLight = false;
+                    }
+                    else if(path[currentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == traffic.GetComponent<TrafficLightController>().ReturnGreen2())
+                    {
+                        stoppedAtLight = false;
+                    }
+                }
+                if (!stoppedAtLight)
+                {
+                    if (rb.constraints == RigidbodyConstraints.FreezePositionX || rb.constraints == RigidbodyConstraints.FreezePositionY || rb.constraints == RigidbodyConstraints.FreezePositionZ || rb.constraints == RigidbodyConstraints.FreezeRotationY)
+                    {
+                        rb.constraints = RigidbodyConstraints.None;
+                        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                    }
                     currentWaypointIndex++;
 
                     if (currentWaypointIndex >= path.Count && pathForward)
@@ -73,6 +92,7 @@ public class VehicleMover : MonoBehaviour
                 else
                 {
                     rb.velocity = Vector3.zero;
+                    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
                 }
             }
 
@@ -86,19 +106,19 @@ public class VehicleMover : MonoBehaviour
             }
 
             rb.AddForce(steeringForce);
-            Vector3 vel = new Vector3(rb.velocity.x, 0, rb.velocity.z); 
+            Vector3 vel = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
-            if(Quaternion.LookRotation(vel) != new Quaternion(0,0,0,1))
+            if(vel != Vector3.zero)
             {
                 transform.rotation = Quaternion.LookRotation(vel);
                 transform.rotation *= Quaternion.Euler(0f, -90f, 0f);
+                transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
             }
-
-            transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
         }
         else
         {
             rb.velocity = Vector3.zero;
+                    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         }
     }
 
