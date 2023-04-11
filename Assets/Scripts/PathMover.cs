@@ -29,6 +29,10 @@ public class PathMover : MonoBehaviour
     private float duration = 10.0f;
     private float elapsedTime;
     private bool startPath = false;
+    public int startWalkTime = 8;
+    public int endWalkTime = 17;
+    public bool first = false;
+    public bool inside = false;
     void Start()
     {
         if (id == -1)
@@ -36,9 +40,11 @@ public class PathMover : MonoBehaviour
             id = Random.Range(10, 10000);
         }
         rb = GetComponent<Rigidbody>();
-        SetPointsByChildren();
+        SetPointsByChildren(first);
         yPos = transform.localPosition.y;
         animator = GetComponent<Animator>();
+        startWalkTime = Random.Range(6, 11);
+        endWalkTime = Random.Range(16, 20);
         startTime = Time.time;
     }
 
@@ -56,14 +62,27 @@ public class PathMover : MonoBehaviour
         transform.LookAt(new Vector3(targetWaypoint.x, 0, targetWaypoint.z));
     }
 
-    private void SetPointsByChildren()
+    private void SetPointsByChildren(bool first)
     {
         if (id != -1 && path.Count == 0)
         {
-            GameObject pathObject = GameObject.Find("Path" + id);
-            for (int i = 0; i < pathObject.transform.childCount; i++)
+            if(first)
             {
-                path.Add(pathObject.transform.GetChild(i).gameObject);
+                GameObject pathObject = GameObject.Find("Path" + 0);
+                for (int i = 0; i < pathObject.transform.childCount; i++)
+                {
+                    path.Add(pathObject.transform.GetChild(i).gameObject);
+                }
+
+            }
+            else
+            {
+                GameObject pathObject = GameObject.Find("Path" + id);
+                for (int i = 0; i < pathObject.transform.childCount; i++)
+                {
+                    path.Add(pathObject.transform.GetChild(i).gameObject);
+                }
+
             }
 
             targetWaypoint = GetClosestPointOnPath(transform.position);
@@ -73,13 +92,17 @@ public class PathMover : MonoBehaviour
     void Update()
     {
         elapsedTime = Time.time - startTime;
-        if (path.Count > 0)
+        if (path.Count > 0 && !inside)
         {
             if (!startPath)
             {
-                if (path[0].GetComponent<PathCellController>().GetStartTime() == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+                if (startWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
                 {
                     startPath = true;
+                    if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                    {
+                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                    }
                 }
             }
             if (startPath)
@@ -95,7 +118,14 @@ public class PathMover : MonoBehaviour
                         isStopped = true;
                         StartCoroutine(Loiter(path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
                     }
-                    if (!isStopped)
+
+                    if(path[currentWaypointIndex].GetComponent<PathCellController>().GetAtShop())
+                    {
+                        Hide();
+                        int hideFor = Random.Range(9, 20);
+                        StartCoroutine(LoiterInside(hideFor));
+                    }
+                    if (!isStopped && !inside)
                     {
                         if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                         {
@@ -112,10 +142,19 @@ public class PathMover : MonoBehaviour
                             currentWaypointIndex--;
                             hadLoiter = false;
                         }
-                        if (currentWaypointIndex >= path.Count && pathForward)
+                        if (currentWaypointIndex >= path.Count - 1 && pathForward)
                         {
-                            pathForward = false;
-                            currentWaypointIndex = path.Count - 1;
+                            if(first)
+                            {
+                                first = false;
+                                path.Clear();
+                                SetPointsByChildren(first);
+                            }
+                            else
+                            {
+                                pathForward = false;
+                                currentWaypointIndex = path.Count - 1;
+                            }
                         }
                         else if (currentWaypointIndex < 0 && !pathForward)
                         {
@@ -201,5 +240,37 @@ public class PathMover : MonoBehaviour
             }
             canChangeY = false;
         }
+    }
+
+    public int GetStartTime()
+    {
+        return startWalkTime;
+    }
+
+    private void Hide()
+    {
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
+        rb.velocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+
+    }
+
+    private void Unhide()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(true);
+        }
+    }
+
+    private IEnumerator LoiterInside(int time)
+    {
+        yield return new WaitForSeconds(time);
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
+        inside = false;
+        Unhide();
     }
 }

@@ -9,7 +9,7 @@ public class ShopKeeperMover : MonoBehaviour
     public float speed = 5.0f;
     public float mass = 5.0f;
     public float maxSteer = 15.0f;
-    public float pathRadius = 1.0f;
+    public float pathRadius = 0.001f;
     public int currentWaypointIndex = 0;
     private Animator animator;
 
@@ -29,6 +29,12 @@ public class ShopKeeperMover : MonoBehaviour
     private float duration = 10.0f;
     private float elapsedTime;
     private bool startPath = false;
+    public int StartWalkTime = 4;
+    private int endWalkTime = 17;
+    private bool working = false;
+    public int ShopRotation = 0;
+    public int dayOff = 0;
+
     void Start()
     { 
         rb = GetComponent<Rigidbody>();
@@ -49,19 +55,25 @@ public class ShopKeeperMover : MonoBehaviour
             }
 
             targetWaypoint = GetClosestPointOnPath(transform.position);
+            currentWaypointIndex++;
+            targetWaypoint = path[currentWaypointIndex].transform.position;
         }
     }
 
     void Update()
     {
         elapsedTime = Time.time - startTime;
-        if (path.Count > 0)
+        if (path.Count > 0 && !working)
         {
             if(!startPath)
             {
-                if(path[0].GetComponent<PathCellController>().GetStartTime() == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+                if (StartWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour && WorkToday())
                 {
                     startPath = true;
+                    if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                    {
+                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                    }
                 }
             }
             if (startPath)
@@ -84,27 +96,34 @@ public class ShopKeeperMover : MonoBehaviour
                             animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
                             hadLoiter = false;
                         }
-                        if (pathForward)
+                        if (currentWaypointIndex >= path.Count - 1 && pathForward)
+                        {
+                            working = true;
+                            Debug.Log(currentWaypointIndex);
+                            pathForward = false;
+                            currentWaypointIndex = path.Count - 1;
+                        }
+                        if (pathForward && !working)
                         {
                             currentWaypointIndex++;
                             hadLoiter = false;
                         }
-                        else if (!pathForward)
+                        else if (!pathForward && !working)
                         {
                             currentWaypointIndex--;
                             hadLoiter = false;
                         }
-                        if (currentWaypointIndex >= path.Count && pathForward)
-                        {
-                            pathForward = false;
-                            currentWaypointIndex = path.Count - 1;
-                        }
-                        else if (currentWaypointIndex < 0 && !pathForward)
+                        
+                       if (currentWaypointIndex < 0 && !pathForward && !working)
                         {
                             pathForward = true;
-                            currentWaypointIndex = 0;
+                            currentWaypointIndex = 1;
+                            gameObject.SetActive(false);
                         }
-                        targetWaypoint = path[currentWaypointIndex].transform.position;
+                        if (!working)
+                        { 
+                            targetWaypoint = path[currentWaypointIndex].transform.position; 
+                        }
                     }
 
                 }
@@ -130,6 +149,24 @@ public class ShopKeeperMover : MonoBehaviour
 
                 }
             }
+        }
+        else if(working)
+        {
+            animator.runtimeAnimatorController = Resources.Load("BasicMotions@Idle") as RuntimeAnimatorController;
+            transform.rotation = Quaternion.Euler(0f, ShopRotation, 0f);
+            rb.velocity = Vector3.zero;
+            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        }
+
+        if (endWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+        {
+            working = false;
+            startPath = true;
+            if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+            {
+                animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+            }
+            rb.constraints = RigidbodyConstraints.FreezePositionY;
         }
     }
 
@@ -182,5 +219,15 @@ public class ShopKeeperMover : MonoBehaviour
             }
             canChangeY = false;
         }
+    }
+
+    public int GetStartTime()
+    {
+        return StartWalkTime;
+    }
+
+    public bool WorkToday()
+    {
+        return GameObject.Find("GameManager").GetComponent<TimeController>().GetDayOfWeek() != dayOff;
     }
 }

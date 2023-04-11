@@ -12,7 +12,7 @@ public class StreetLampController : MonoBehaviour
     }
     private void Update()
     {
-        if(timeManager.currentTime.Hour == 20 || timeManager.currentTime.Hour == 6)
+        if(timeManager.currentTime.Hour == 20 || timeManager.currentTime.Hour == 3)
         {
             for(int i = 0; i < transform.childCount;i++)
             {

@@ -6,6 +6,7 @@ public class NPCContoller : MonoBehaviour
 {
     public float circleRadius = 100;
     public float distance = 40;
+    private Animator animator;
 
     private Rigidbody rb;
     private float yPos;
@@ -23,6 +24,8 @@ public class NPCContoller : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         angle = Random.Range(0, 360) * Mathf.Deg2Rad;
         yPos = transform.localPosition.y;
+        animator = GetComponent<Animator>();
+        _startTime = Random.Range(6, 11);
     }
 
     private void FixedUpdate()
@@ -32,6 +35,10 @@ public class NPCContoller : MonoBehaviour
             if (_startTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
             {
                 _startPath = true;
+                if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                {
+                    animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                }
             }
         }
 
@@ -88,5 +95,10 @@ public class NPCContoller : MonoBehaviour
             rb = GetComponent<Rigidbody>();
         }
         rb.AddForce(force);
+    }
+
+    public int GetStartTime()
+    {
+        return _startTime;
     }
 }

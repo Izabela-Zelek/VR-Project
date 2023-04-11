@@ -8,20 +8,10 @@ public class PathCellController : MonoBehaviour
     private int _loiterTime = 0;
     private float _startTime = 0;
     [SerializeField]
-    private int _startWalkTime = 8;
-    [SerializeField]
-    private int _endWalkTime = -1;
+    private bool atShop = false;
     public int GetLoiterTime()
     {
         return _loiterTime;
-    }
-    public float GetStartTime()
-    {
-        return _startWalkTime;
-    }
-    public float GetEndTime()
-    {
-        return _endWalkTime;
     }
 
     public void IncreaseLoiterTime(int newLoiter)
@@ -42,5 +32,10 @@ public class PathCellController : MonoBehaviour
         {
             _loiterTime = 0;
         }
+    }
+
+    public bool GetAtShop()
+    {
+        return atShop;
     }
 }

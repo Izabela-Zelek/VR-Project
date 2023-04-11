@@ -14,7 +14,7 @@ public class ShopGateController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        animState = GateAnimStates.Open;
+        animState = GateAnimStates.Closed;
         _animator.SetInteger(State, (int)animState);
 
     }

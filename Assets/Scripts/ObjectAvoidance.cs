@@ -5,7 +5,7 @@ using UnityEngine;
 public class ObjectAvoidance : MonoBehaviour
 {
     private Vector3 avoidance_force;
-    private float max_avoidance = 90;
+    private float max_avoidance = 60;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -13,9 +13,6 @@ public class ObjectAvoidance : MonoBehaviour
         {
             if (transform.parent.GetComponent<Rigidbody>().velocity != Vector3.zero)
             {
-                //avoidance_force = this.transform.position - other.transform.position;
-                //avoidance_force = avoidance_force.normalized * max_avoidance;
-
                 avoidance_force = Vector3.Reflect(transform.forward, other.transform.position).normalized;
                 avoidance_force = avoidance_force.normalized * max_avoidance;
 
@@ -31,9 +28,6 @@ public class ObjectAvoidance : MonoBehaviour
             Debug.Log(collision.collider.name);
             if (transform.parent.GetComponent<Rigidbody>().velocity != Vector3.zero)
             {
-                //avoidance_force = this.transform.position - collision.transform.position;
-                //avoidance_force = avoidance_force.normalized * max_avoidance;
-
                 avoidance_force = Vector3.Reflect(transform.forward, collision.transform.position).normalized;
                 avoidance_force = avoidance_force.normalized * max_avoidance;
 

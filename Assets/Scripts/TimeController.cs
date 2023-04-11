@@ -32,6 +32,8 @@ public class TimeController : MonoBehaviour
     private TextMeshProUGUI dayText;
     [SerializeField]
     private TextMeshProUGUI timeText;
+    [SerializeField]
+    private TextMeshProUGUI wordDayText;
 
     public DateTime currentTime;
     private TimeSpan sunriseTime;
@@ -44,6 +46,7 @@ public class TimeController : MonoBehaviour
         sunriseTime = TimeSpan.FromHours(sunriseHour);
         sunsetTime = TimeSpan.FromHours(sunsetHour);
         dayText.text = "Day " + dayNr.ToString();
+        DecideOnDay();
     }
 
     // Update is called once per frame
@@ -105,5 +108,43 @@ public class TimeController : MonoBehaviour
         dayNr += 1;
         dayText.text = "Day " + dayNr.ToString();
         currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
+        DecideOnDay();
+    }
+
+    private void DecideOnDay()
+    {
+        string dayOfWeek = "";
+
+        switch(dayNr % 7)
+        {
+            case 0:
+                dayOfWeek = "SUNDay";
+                break;
+            case 1:
+                dayOfWeek = "MONDay";
+                break;
+            case 2:
+                dayOfWeek = "TUESDay";
+                break;
+            case 3:
+                dayOfWeek = "WEDNESDay";
+                break;
+            case 4:
+                dayOfWeek = "THURSDay";
+                break;
+            case 5:
+                dayOfWeek = "FRIDay";
+                break;
+            case 6:
+                dayOfWeek = "SaTURDay";
+                break;
+        }
+
+        wordDayText.text = dayOfWeek.ToString();
+    }
+
+    public int GetDayOfWeek()
+    {
+        return dayNr % 7;
     }
 }
