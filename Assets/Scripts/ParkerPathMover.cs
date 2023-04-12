@@ -34,7 +34,7 @@ public class ParkerPathMover : MonoBehaviour
     {
         if (id == -1)
         {
-            id = Random.Range(1, 7);
+            id = Random.Range(1, 8);
         }
         rb = GetComponent<Rigidbody>();
         SetPointsByChildren(first);

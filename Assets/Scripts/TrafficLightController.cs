@@ -110,7 +110,6 @@ public class TrafficLightController : MonoBehaviour
                     _trafficLight23.transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterials = materials;
                     break;
             }
-            Debug.Log(_currentGreen1);
         }
     }
 
@@ -141,7 +140,6 @@ public class TrafficLightController : MonoBehaviour
                 materials[6] = Green;
                 _trafficLight45.transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterials = materials;
             }
-            Debug.Log(_currentGreen2);
         }
     }
 

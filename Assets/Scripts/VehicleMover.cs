@@ -108,7 +108,7 @@ public class VehicleMover : MonoBehaviour
                             else
                             {
                                 parked = true;
-                                //parkingManObject = Instantiate(parkingMan, transform.GetChild(5).transform.position, Quaternion.identity, transform);
+                                parkingManObject = Instantiate(parkingMan, transform.GetChild(5).transform.position, Quaternion.identity, transform);
                             }
                         }
                         else

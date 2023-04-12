@@ -99,7 +99,6 @@ public class ShopKeeperMover : MonoBehaviour
                         if (currentWaypointIndex >= path.Count - 1 && pathForward)
                         {
                             working = true;
-                            Debug.Log(currentWaypointIndex);
                             pathForward = false;
                             currentWaypointIndex = path.Count - 1;
                         }

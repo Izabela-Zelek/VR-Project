@@ -16,6 +16,8 @@ TagManager:
   - Decor
   - NPCCollision
   - EntryPoints
+  - Road
+  - River
   layers:
   - Default
   - TransparentFX

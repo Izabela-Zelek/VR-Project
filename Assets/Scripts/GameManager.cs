@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public bool shopOpen = true;
     private bool inMap = false;
     public GameObject player;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,4 +76,6 @@ public class GameManager : MonoBehaviour
     {
         return inMap;
     }
+
+
 }

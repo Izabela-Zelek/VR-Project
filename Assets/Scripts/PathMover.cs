@@ -19,7 +19,6 @@ public class PathMover : MonoBehaviour
     private Vector3 steeringForce;
     private Rigidbody rb;
     private float yPos;
-    private bool pathForward = true;
     public int id = -1;
     private bool onGround = true;
 
@@ -132,17 +131,11 @@ public class PathMover : MonoBehaviour
                             animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
                             hadLoiter = false;
                         }
-                        if (pathForward)
-                        {
-                            currentWaypointIndex++;
-                            hadLoiter = false;
-                        }
-                        else if (!pathForward)
-                        {
-                            currentWaypointIndex--;
-                            hadLoiter = false;
-                        }
-                        if (currentWaypointIndex >= path.Count - 1 && pathForward)
+
+                        currentWaypointIndex++;
+                        hadLoiter = false;
+                      
+                        if (currentWaypointIndex >= path.Count - 1)
                         {
                             if(first)
                             {
@@ -152,14 +145,10 @@ public class PathMover : MonoBehaviour
                             }
                             else
                             {
-                                pathForward = false;
-                                currentWaypointIndex = path.Count - 1;
+                                path.Clear();
+                                id = Random.Range(1, 8);
+                                SetPointsByChildren(first);
                             }
-                        }
-                        else if (currentWaypointIndex < 0 && !pathForward)
-                        {
-                            pathForward = true;
-                            currentWaypointIndex = 0;
                         }
                         targetWaypoint = path[currentWaypointIndex].transform.position;
                     }
@@ -272,5 +261,20 @@ public class PathMover : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezePositionY;
         inside = false;
         Unhide();
+    }
+
+    public IEnumerator Talk(int time, Vector3 pos)
+    {
+        rb.velocity = Vector3.zero;
+        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
+        isStopped = true;
+        Quaternion rotation = Quaternion.LookRotation(pos);
+        transform.localRotation = new Quaternion(transform.localRotation.x, rotation.y, transform.localRotation.z,transform.localRotation.w);
+        rb.velocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        yield return new WaitForSeconds(time);
+        isStopped = false;
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
+        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
     }
 }

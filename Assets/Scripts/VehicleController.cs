@@ -14,23 +14,20 @@ public class VehicleController : MonoBehaviour
     {
         _carTypes = Resources.LoadAll("Vehicles", typeof(GameObject));
         _nextSpawn = Random.Range(3, 11);
-        //_roadChoice = Random.Range(0, 12);
-        _roadChoice = 11;
+        _roadChoice = Random.Range(0, 12);
 
         if(_roadChoice == 6 || _roadChoice == 7 || _roadChoice == 8)
         {
             while ((_roadChoice == 6 || _roadChoice == 7 || _roadChoice == 8) && transform.GetChild(2).GetChild(_roadChoice).transform.Find("Parking1").GetComponent<RoadCellController>().HasCar && transform.GetChild(2).GetChild(_roadChoice).transform.Find("Parking2").GetComponent<RoadCellController>().HasCar)
             {
-               // _roadChoice = Random.Range(0, 12);
-                _roadChoice = Random.Range(0, 9);
+                _roadChoice = Random.Range(0, 12);
             }
         }
         else if (_roadChoice == 9 || _roadChoice == 10 || _roadChoice == 11)
         {
             while ((_roadChoice == 9 || _roadChoice == 10 || _roadChoice == 11) && transform.GetChild(2).GetChild(_roadChoice).transform.Find("Parking1").GetComponent<RoadCellController>().HasCar && transform.GetChild(2).GetChild(_roadChoice).transform.Find("Parking2").GetComponent<RoadCellController>().HasCar)
             {
-                // _roadChoice = Random.Range(0, 12);
-                _roadChoice = Random.Range(0, 9);
+                 _roadChoice = Random.Range(0, 12);
             }
         }
         _chosenCar = (GameObject)_carTypes[Random.Range(6, _carTypes.Length)];
@@ -72,22 +69,20 @@ public class VehicleController : MonoBehaviour
             _newCar = Instantiate(_chosenCar,new Vector3(startPos.x, startPos.y + _chosenCar.transform.position.y,startPos.z), rot, this.transform.GetChild(3).transform) as GameObject;
             _newCar.GetComponent<VehicleMover>().SetPointsByChildren(transform.GetChild(2).GetChild(_roadChoice).gameObject);
             _nextSpawn = Random.Range(3, 11);
-            //_roadChoice = Random.Range(0, 12);
-            _roadChoice = 11;
+            _roadChoice = Random.Range(0, 12);
+
             if (_roadChoice == 6 || _roadChoice == 7 || _roadChoice == 8)
             {
                 while ((_roadChoice == 6 || _roadChoice == 7 || _roadChoice == 8) && transform.GetChild(2).GetChild(_roadChoice).transform.Find("Parking1").GetComponent<RoadCellController>().HasCar && transform.GetChild(2).GetChild(_roadChoice).transform.Find("Parking2").GetComponent<RoadCellController>().HasCar)
                 {
-                    // _roadChoice = Random.Range(0, 12);
-                    _roadChoice = Random.Range(0, 9);
+                     _roadChoice = Random.Range(0, 12);
                 }
             }
             else if (_roadChoice == 9 || _roadChoice == 10 || _roadChoice == 11)
             {
                 while ((_roadChoice == 9 || _roadChoice == 10 || _roadChoice == 11) && transform.GetChild(2).GetChild(_roadChoice).transform.Find("Parking1").GetComponent<RoadCellController>().HasCar && transform.GetChild(2).GetChild(_roadChoice).transform.Find("Parking2").GetComponent<RoadCellController>().HasCar)
                 {
-                    // _roadChoice = Random.Range(0, 12);
-                    _roadChoice = Random.Range(0, 9);
+                    _roadChoice = Random.Range(0, 12);
                 }
             }
             _chosenCar = (GameObject)_carTypes[Random.Range(6, _carTypes.Length)];

@@ -1662,8 +1662,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5430653108896683923}
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: -2.13, y: -6.12, z: 43.93}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: -2.13, y: -0.00473, z: 43.93}
+  m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4370334165060804023}
@@ -1743,8 +1743,6 @@ MonoBehaviour:
   id: -1
   hadLoiter: 0
   canChangeY: 1
-  startWalkTime: 8
-  endWalkTime: 17
   first: 1
   inside: 0
 --- !u!114 &8608515780449971505

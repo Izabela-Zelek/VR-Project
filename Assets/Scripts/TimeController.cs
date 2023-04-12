@@ -40,6 +40,10 @@ public class TimeController : MonoBehaviour
     private TimeSpan sunsetTime;
     public int dayNr = 1;
 
+    private GameObject _grass1;
+    private GameObject _grass2;
+    private Transform _grassParent;
+
     void Start()
     {
         currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
@@ -47,6 +51,9 @@ public class TimeController : MonoBehaviour
         sunsetTime = TimeSpan.FromHours(sunsetHour);
         dayText.text = "Day " + dayNr.ToString();
         DecideOnDay();
+        _grass1 = Resources.Load("Grass_1_1") as GameObject;
+        _grass2 = Resources.Load("Grass_1_2") as GameObject;
+        _grassParent = GameObject.Find("TownDecor").transform.GetChild(3).transform;
     }
 
     // Update is called once per frame
@@ -109,6 +116,7 @@ public class TimeController : MonoBehaviour
         dayText.text = "Day " + dayNr.ToString();
         currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
         DecideOnDay();
+        Spawn();
     }
 
     private void DecideOnDay()
@@ -146,5 +154,27 @@ public class TimeController : MonoBehaviour
     public int GetDayOfWeek()
     {
         return dayNr % 7;
+    }
+
+    private void Spawn()
+    {
+
+        int randNum = UnityEngine.Random.Range(5, 9);
+
+        for (int i = 0; i < randNum; i++)
+        {
+            int rand = UnityEngine.Random.Range(1, 3);
+            float xValue = UnityEngine.Random.Range(-40, 56);
+            float zValue = UnityEngine.Random.Range(-24, 101);
+            switch (rand)
+            {
+                case 1:
+                    Instantiate(_grass1, new Vector3(xValue, 0, zValue), Quaternion.identity, _grassParent);
+                    break;
+                case 2:
+                    Instantiate(_grass2, new Vector3(xValue, 0, zValue), Quaternion.identity, _grassParent);
+                    break;
+            }
+        }
     }
 }
