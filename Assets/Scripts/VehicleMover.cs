@@ -21,9 +21,11 @@ public class VehicleMover : MonoBehaviour
     public int id = -1;
 
     private GameObject traffic;
-
+    private GameObject parkingMan;
+    private GameObject parkingManObject;
     private bool canMove = true;
     private bool stoppedAtLight = false;
+    private bool parked = false;
     void Start()
     {
 
@@ -34,13 +36,29 @@ public class VehicleMover : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         yPos = transform.localPosition.y;
         traffic = GameObject.Find("Traffic").gameObject;
+        parkingMan = Resources.Load("DudeParking") as GameObject;
     }
 
     public void SetPointsByChildren(GameObject parent)
     {
         for (int i = 0; i < parent.transform.childCount; i++)
         {
-            path.Add(parent.transform.GetChild(i).gameObject);
+            if(!parent.transform.GetChild(i).GetComponent<RoadCellController>().HasCar)
+            {
+                path.Add(parent.transform.GetChild(i).gameObject);
+
+                if(parent.transform.GetChild(i).GetComponent<RoadCellController>().IsParking)
+                {
+                    parent.transform.GetChild(i).GetComponent<RoadCellController>().setParked(true);
+                    int neighbour1 = parent.transform.GetChild(i).GetComponent<RoadCellController>().GetNeighbour1();
+                    int neighbour2 = parent.transform.GetChild(i).GetComponent<RoadCellController>().GetNeighbour2();
+                    int parkingNr = parent.transform.GetChild(i).GetComponent<RoadCellController>().GetParkingNr();
+
+                    parent.transform.parent.transform.GetChild(neighbour1).Find("Parking" + parkingNr).GetComponent<RoadCellController>().setParked(true);
+                    parent.transform.parent.transform.GetChild(neighbour2).Find("Parking" + parkingNr).GetComponent<RoadCellController>().setParked(true);
+                    break;
+                }
+            }
         }
 
         targetWaypoint = GetClosestPointOnPath(transform.position);
@@ -48,7 +66,7 @@ public class VehicleMover : MonoBehaviour
 
     void Update()
     {
-        if (path.Count > 0 && canMove)
+        if (path.Count > 0 && canMove && !parked)
         {
             float distance = Vector3.Distance(transform.position, targetWaypoint);
             if (!stoppedAtLight)
@@ -78,15 +96,26 @@ public class VehicleMover : MonoBehaviour
                         rb.constraints = RigidbodyConstraints.None;
                         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
                     }
-                    currentWaypointIndex++;
 
-                    if (currentWaypointIndex >= path.Count && pathForward)
+                    if (!parked)
                     {
-                        Destroy(this.gameObject);
-                    }
-                    else
-                    {
-                        targetWaypoint = path[currentWaypointIndex].transform.position;
+                        if (currentWaypointIndex >= path.Count - 1 && pathForward)
+                        {
+                            if (!path[currentWaypointIndex].GetComponent<RoadCellController>().IsParking)
+                            {
+                                Destroy(this.gameObject);
+                            }
+                            else
+                            {
+                                parked = true;
+                                //parkingManObject = Instantiate(parkingMan, transform.GetChild(5).transform.position, Quaternion.identity, transform);
+                            }
+                        }
+                        else
+                        {
+                            currentWaypointIndex++;
+                            targetWaypoint = path[currentWaypointIndex].transform.position;
+                        }
                     }
                 }
                 else

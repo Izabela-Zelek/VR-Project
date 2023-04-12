@@ -43,8 +43,8 @@ public class PathMover : MonoBehaviour
         SetPointsByChildren(first);
         yPos = transform.localPosition.y;
         animator = GetComponent<Animator>();
-        startWalkTime = Random.Range(6, 11);
-        endWalkTime = Random.Range(16, 20);
+        startWalkTime = Random.Range(7, 13);
+        endWalkTime = Random.Range(17, 21);
         startTime = Time.time;
     }
 

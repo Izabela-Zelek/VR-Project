@@ -25,7 +25,7 @@ public class NPCContoller : MonoBehaviour
         angle = Random.Range(0, 360) * Mathf.Deg2Rad;
         yPos = transform.localPosition.y;
         animator = GetComponent<Animator>();
-        _startTime = Random.Range(6, 11);
+        _startTime = Random.Range(7, 13);
     }
 
     private void FixedUpdate()
