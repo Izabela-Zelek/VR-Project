@@ -23,7 +23,6 @@ public class ShopKeeperMover : MonoBehaviour
     public int id = -1;
     private bool onGround = true;
 
-    public bool hadLoiter = false;
     public bool canChangeY = true;
     private float startTime;
     private float duration = 10.0f;
@@ -82,19 +81,11 @@ public class ShopKeeperMover : MonoBehaviour
 
                 if (distance <= pathRadius)
                 {
-                    if (path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime() > 0 && !hadLoiter)
-                    {
-                        rb.velocity = Vector3.zero;
-                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
-                        isStopped = true;
-                        StartCoroutine(Loiter(path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
-                    }
                     if (!isStopped)
                     {
                         if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                         {
                             animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
-                            hadLoiter = false;
                         }
                         if (currentWaypointIndex >= path.Count - 1 && pathForward)
                         {
@@ -105,12 +96,10 @@ public class ShopKeeperMover : MonoBehaviour
                         if (pathForward && !working)
                         {
                             currentWaypointIndex++;
-                            hadLoiter = false;
                         }
                         else if (!pathForward && !working)
                         {
                             currentWaypointIndex--;
-                            hadLoiter = false;
                         }
                         
                        if (currentWaypointIndex < 0 && !pathForward && !working)
@@ -187,13 +176,6 @@ public class ShopKeeperMover : MonoBehaviour
         }
 
         return closestPoint;
-    }
-
-    private IEnumerator Loiter(int time)
-    {
-        yield return new WaitForSeconds(time);
-        isStopped = false;
-        hadLoiter = true;
     }
 
 

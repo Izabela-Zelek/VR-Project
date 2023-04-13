@@ -31,6 +31,7 @@ public class PathMover : MonoBehaviour
     public int startWalkTime = 8;
     public int endWalkTime = 17;
     public bool first = false;
+    public bool late = false;
     public bool inside = false;
     void Start()
     {
@@ -57,6 +58,14 @@ public class PathMover : MonoBehaviour
             path.Add(pathObject.transform.GetChild(i).gameObject);
         }
 
+        if (id == 1)
+        {
+            for (int i = pathObject.transform.childCount - 1; i > 0; i--)
+            {
+                path.Add(pathObject.transform.GetChild(i).gameObject);
+            }
+        }
+
         targetWaypoint = GetClosestPointOnPath(transform.position);
         transform.LookAt(new Vector3(targetWaypoint.x, 0, targetWaypoint.z));
     }
@@ -65,7 +74,56 @@ public class PathMover : MonoBehaviour
     {
         if (id != -1 && path.Count == 0)
         {
-            if(first)
+            if (late)
+            {
+                GameObject pathObject = GameObject.Find("Path" + 0.5);
+                if (transform.localPosition.z <= 12)
+                {
+                    string[] nameSplit = name.Split(new string[] { "Dude" }, System.StringSplitOptions.None);
+                    int npcNr = int.Parse(nameSplit[1]);
+                    for (int i = 0; i < pathObject.transform.childCount; i++)
+                    {
+                        if (!pathObject.transform.GetChild(i).name.Contains("Cell1"))
+                        {
+                            if (pathObject.transform.GetChild(i).name.Contains("Cell"))
+                            {
+                                path.Add(pathObject.transform.GetChild(i).gameObject);
+                            }
+                            else if (pathObject.transform.GetChild(i).name.Contains("MeetingPoint"))
+                            {
+                                path.Add(pathObject.transform.GetChild(i).gameObject);
+                            }
+                            else if (pathObject.transform.GetChild(i).name == npcNr.ToString())
+                            {
+                                path.Add(pathObject.transform.GetChild(i).gameObject);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    string[] nameSplit = name.Split(new string[] { "Dude" }, System.StringSplitOptions.None);
+                    int npcNr = int.Parse(nameSplit[1]);
+                    for (int i = 9; i < pathObject.transform.childCount; i++)
+                    {
+                        if (pathObject.transform.GetChild(i).name.Contains("Cell1"))
+                        {
+                            path.Add(pathObject.transform.GetChild(i).gameObject);
+                        }
+                        else if (pathObject.transform.GetChild(i).name.Contains("MeetingPoint"))
+                        {
+                            path.Add(pathObject.transform.GetChild(i).gameObject);
+                        }
+                        else if (pathObject.transform.GetChild(i).name == npcNr.ToString())
+                        {
+                            path.Add(pathObject.transform.GetChild(i).gameObject);
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (first)
             {
                 GameObject pathObject = GameObject.Find("Path" + 0);
                 for (int i = 0; i < pathObject.transform.childCount; i++)
@@ -82,6 +140,13 @@ public class PathMover : MonoBehaviour
                     path.Add(pathObject.transform.GetChild(i).gameObject);
                 }
 
+                if (id == 1)
+                {
+                    for (int i = pathObject.transform.childCount - 1; i > 0; i--)
+                    {
+                        path.Add(pathObject.transform.GetChild(i).gameObject);
+                    }
+                }
             }
 
             targetWaypoint = GetClosestPointOnPath(transform.position);
@@ -91,6 +156,15 @@ public class PathMover : MonoBehaviour
     void Update()
     {
         elapsedTime = Time.time - startTime;
+        if (endWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+        {
+            path.Clear();
+            late = true;
+            startPath = true;
+            isStopped = false;
+            Unhide();
+            SetPointsByChildren(false);
+        }
         if (path.Count > 0 && !inside)
         {
             if (!startPath)
@@ -135,9 +209,17 @@ public class PathMover : MonoBehaviour
                         currentWaypointIndex++;
                         hadLoiter = false;
                       
-                        if (currentWaypointIndex >= path.Count - 1)
+                        if (currentWaypointIndex >= path.Count)
                         {
-                            if(first)
+                            if(late)
+                            {
+                                first = true;
+                                path.Clear();
+                                id = Random.Range(1, 8);
+                                SetPointsByChildren(first);
+                                gameObject.SetActive(false);
+                            }
+                            else if(first)
                             {
                                 first = false;
                                 path.Clear();
@@ -253,6 +335,7 @@ public class PathMover : MonoBehaviour
         {
             transform.GetChild(i).gameObject.SetActive(true);
         }
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
     }
 
     private IEnumerator LoiterInside(int time)

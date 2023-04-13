@@ -492,8 +492,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.8444583, y: 1, z: 2.1897752}
-  m_Center: {x: 0.052932516, y: -5.1271404e-11, z: 0.59488493}
+  m_Size: {x: 1, y: 1, z: 0.63246036}
+  m_Center: {x: 0.0529325, y: 0, z: -0.18377271}
 --- !u!114 &4922998781114519344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1017,6 +1017,12 @@ MonoBehaviour:
   currentWaypointIndex: 6
   id: -1
   hadLoiter: 0
+  canChangeY: 1
+  startWalkTime: 8
+  endWalkTime: 17
+  first: 0
+  late: 0
+  inside: 0
 --- !u!114 &2295851602676062456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1034,6 +1040,8 @@ MonoBehaviour:
   wanderWeight: 1
   maxSpeed: 2
   maxForce: 100
+  _startPath: 0
+  _startTime: 8
 --- !u!1 &2615937707330804215
 GameObject:
   m_ObjectHideFlags: 0
