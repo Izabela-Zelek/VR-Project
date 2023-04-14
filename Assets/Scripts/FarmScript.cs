@@ -59,16 +59,6 @@ public class FarmScript : MonoBehaviour
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
                 Destroy(gameObject.transform.GetChild(1).gameObject);
                 Instantiate(growingPlant, pos, Quaternion.identity, gameObject.transform);
-
-                //USED FOR TESTING
-
-                //currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
-                //plantState++;
-                //Debug.Log(plantState);
-                //Vector3 pos = gameObject.transform.GetChild(1).transform.position;
-                //pos.y = checkFruitYPos(fruitType.name);
-                //Destroy(gameObject.transform.GetChild(1).gameObject);
-                //Instantiate(fruitType, pos, Quaternion.identity, gameObject.transform);
             }
             else if (plantState == PlantState.Growing && watered)
             {
@@ -124,5 +114,32 @@ public class FarmScript : MonoBehaviour
             value = 0.1f;
         }
         return value;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Grass")
+        {
+            Destroy(other.gameObject);
+        }
+        else if(other.tag == "Tree" || other.tag == "Building" || other.tag == "River" || other.gameObject.layer == LayerMask.NameToLayer("Decor"))
+        {
+            Debug.Log(other.name);
+
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Grass")
+        {
+            Destroy(collision.collider.gameObject);
+        }
+        else if(collision.collider.tag == "Tree" || collision.collider.tag == "Building" || collision.collider.tag == "River" || collision.collider.gameObject.layer == LayerMask.NameToLayer("Decor"))
+        {
+            Debug.Log(collision.collider.name);
+            Destroy(this.gameObject);
+        }
     }
 }

@@ -43,6 +43,12 @@ public class GameManager : MonoBehaviour
         addMoney = true;
     }
 
+    public void MinusMoney(int newMoney)
+    {
+        money = newMoney;
+        moneyText.text = "$" + money.ToString();
+    }
+
     public int GetMoney()
     {
         return money;

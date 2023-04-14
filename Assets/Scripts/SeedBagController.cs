@@ -49,7 +49,7 @@ public class SeedBagController : MonoBehaviour
 
                 if (Physics.Raycast(raydirection, out seen, 5))
                 {
-                    if (seen.collider.tag == "Ground")
+                    if (seen.collider.tag == "Ground" || seen.collider.tag == "Plane")
                     {
                         if (!pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().plantState == PlantState.Bare)
                         {
@@ -57,6 +57,7 @@ public class SeedBagController : MonoBehaviour
                             other.gameObject.transform.parent.name = other.gameObject.transform.parent.name + number.ToString();
                             plotName = other.gameObject.transform.parent.name;
                             pickedPlot = true;
+                            Debug.Log(plotName);
                         }
                         if (other.gameObject.transform.parent.name == plotName)
                         {

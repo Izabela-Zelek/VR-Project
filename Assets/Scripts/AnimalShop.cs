@@ -42,9 +42,9 @@ public class AnimalShop : MonoBehaviour
 
     public void SpawnObject()
     {
-        if (price < GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
+        if (price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
         {
-            GameObject.Find("GameManager").GetComponent<GameManager>().UpdateMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - price);
+            GameObject.Find("GameManager").GetComponent<GameManager>().MinusMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - price);
             GameObject boughtItem = Instantiate(boughtObject, pos.position, Quaternion.identity,GameObject.Find("Animals").transform);
         }
     }

@@ -34,7 +34,7 @@ public class ObjectAvoidance : MonoBehaviour
                 }
             }
         }
-        else if (other.tag != "NPCCollision" && other.tag != "Ground" && other.tag != "Plane" && other.gameObject.layer != LayerMask.NameToLayer("Curb") && other.tag != "Decor")
+        else if (other.tag != "NPCCollision" && other.tag != "Ground" && other.tag != "Plane" && other.gameObject.layer != LayerMask.NameToLayer("Curb") && other.tag != "Decor" && other.tag != "Grass")
         {
             if (transform.parent.GetComponent<Rigidbody>().velocity != Vector3.zero)
             {
@@ -71,7 +71,7 @@ public class ObjectAvoidance : MonoBehaviour
                 }
             }
         }
-        else if(collision.collider.tag != "NPCCollision" && collision.collider.tag != "Ground" && collision.collider.tag != "Plane" && collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.collider.tag != "Decor")
+        else if(collision.collider.tag != "NPCCollision" && collision.collider.tag != "Ground" && collision.collider.tag != "Plane" && collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.collider.tag != "Decor" && collision.collider.tag != "Grass")
         {
             Debug.Log(collision.collider.name);
             if (transform.parent.GetComponent<Rigidbody>().velocity != Vector3.zero)

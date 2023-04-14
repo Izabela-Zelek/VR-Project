@@ -18,6 +18,10 @@ TagManager:
   - EntryPoints
   - Road
   - River
+  - Plant
+  - Tree
+  - Grass
+  - Building
   layers:
   - Default
   - TransparentFX

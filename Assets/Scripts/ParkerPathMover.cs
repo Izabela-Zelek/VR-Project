@@ -38,7 +38,7 @@ public class ParkerPathMover : MonoBehaviour
         }
         rb = GetComponent<Rigidbody>();
         SetPointsByChildren(first);
-        yPos = transform.localPosition.y;
+        yPos = 0.1f;
         animator = GetComponent<Animator>();
     }
 
@@ -166,6 +166,7 @@ public class ParkerPathMover : MonoBehaviour
                 }
                 //rb.velocity += steeringForce;
                 transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+                transform.position = new Vector3(transform.position.x, yPos, transform.position.z);
 
             }
             

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 683727495402172168}
   - component: {fileID: 7447820481779623131}
   - component: {fileID: -6450047250121036480}
+  - component: {fileID: -7300702917887279734}
   m_Layer: 0
   m_Name: Mud_01
   m_TagString: Farm
@@ -115,11 +116,25 @@ MonoBehaviour:
   seeds: {fileID: 452665394145066917, guid: 483f53cdebc4f0049952af392d425bbf, type: 3}
   growingPlant: {fileID: 452665394145066917, guid: 13d84864dd0143c438887c653a03b194,
     type: 3}
-  turnipPlant: {fileID: 452665394145066917, guid: 13d3e08bc9e321e4fa71ccdf5aa2ba4c,
-    type: 3}
   dryMat: {fileID: 2100000, guid: 468cbc1dfddc9f049aa27eb085daed29, type: 2}
   wetMat: {fileID: 2100000, guid: e30dafe057b1599408aaf261c30456a9, type: 2}
   plantState: 0
+--- !u!54 &-7300702917887279734
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683727495404433864}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &4484163506449304775
 GameObject:
   m_ObjectHideFlags: 0

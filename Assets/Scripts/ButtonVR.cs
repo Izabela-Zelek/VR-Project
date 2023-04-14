@@ -43,9 +43,9 @@ public class ButtonVR : MonoBehaviour
 
     public void SpawnObject()
     {
-        if (price < GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
+        if (price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
         {
-            GameObject.Find("GameManager").GetComponent<GameManager>().UpdateMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - price);
+            GameObject.Find("GameManager").GetComponent<GameManager>().MinusMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - price);
             Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y - 0.1f, transform.position.z - 0.24f);
             GameObject boughtItem = Instantiate(boughtObject, spawnPos, Quaternion.identity);
         }

@@ -55,7 +55,7 @@ public class MapEditor : MonoBehaviour
     private List<Vector3> customPath = new List<Vector3>();
 
     private List<GameObject> tempMarkers = new List<GameObject>();
-
+    private int _tempMarkerCount = 0;
     private List<GameObject> followObjects = new List<GameObject>();
 
     private GameObject chosenMarker;
@@ -250,6 +250,7 @@ public class MapEditor : MonoBehaviour
                                     Destroy(marker);
                                 }
                                 tempMarkers.Clear();
+                                _tempMarkerCount = 0;
                                 clicked = true;
                             }
                             else
@@ -456,9 +457,10 @@ public class MapEditor : MonoBehaviour
                 Collider[] hitColliders2 = Physics.OverlapSphere(pos, 1.0f);
                 foreach (var hitCollider in hitColliders2)
                 {
-                    if ((hitCollider.tag == "Ground" || hitCollider.tag == "Plane") && makingPath)
+                    if ((hitCollider.tag == "Ground" || hitCollider.tag == "Plane") && makingPath && _tempMarkerCount < 14)
                     {
                         tempMarkers.Add(Instantiate(pathSphere, pos, Quaternion.identity));
+                        _tempMarkerCount++;
                     }
                 }
                 break;

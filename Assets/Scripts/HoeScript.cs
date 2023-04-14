@@ -34,6 +34,14 @@ public class HoeScript : MonoBehaviour
                             free = false;
                         }
                     }
+                    RaycastHit hit;
+                    if (Physics.Raycast(transform.position, transform.up, out hit))
+                    {
+                        if (hit.collider.name != "FarmLand")
+                        {
+                            free = false;
+                        }
+                    }
                     if (free)
                     {
                         Instantiate(dirtPatch, pos, Quaternion.identity, farm.transform);

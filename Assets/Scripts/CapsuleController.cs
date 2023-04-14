@@ -37,6 +37,7 @@ public class CapsuleController : MonoBehaviour
     }
     IEnumerator Wait(float time, GameObject other)
     {
+        animator.GetComponent<AnimController>().getTired();
         yield return new WaitForSeconds(time);
         other.transform.position = awakeSpawn.transform.position;
         animator.GetComponent<AnimController>().awaken();

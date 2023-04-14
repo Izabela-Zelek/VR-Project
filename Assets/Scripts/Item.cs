@@ -111,8 +111,14 @@ public class Item : MonoBehaviour
                 inSlot = false;
                 currentSlot = null;
                 gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                gameObject.GetComponent<BoxCollider>().isTrigger = false;
-
+                if (gameObject.GetComponent<BoxCollider>())
+                { 
+                    gameObject.GetComponent<BoxCollider>().isTrigger = false; 
+                }
+                else if (gameObject.GetComponent<MeshCollider>())
+                {
+                    gameObject.GetComponent<MeshCollider>().isTrigger = false;
+                }
             }
         }
     }
