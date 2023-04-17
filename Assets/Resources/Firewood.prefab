@@ -15,9 +15,10 @@ GameObject:
   - component: {fileID: 2628088392613928933}
   - component: {fileID: 5430141400242568848}
   - component: {fileID: 7767833574997536227}
+  - component: {fileID: 4252945344387510553}
   m_Layer: 7
   m_Name: Firewood
-  m_TagString: Untagged
+  m_TagString: ToSell
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -273,3 +274,16 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
+--- !u!114 &4252945344387510553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6015801904299255468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78ebf795a1fb44447a4cef46fb9bea68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Price: 5

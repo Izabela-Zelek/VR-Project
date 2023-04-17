@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class VehicleCollision : MonoBehaviour
 {
-
     private void Update()
     {
         transform.parent.GetComponent<VehicleMover>().setMove(true);

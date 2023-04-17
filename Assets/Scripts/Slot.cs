@@ -63,7 +63,15 @@ public class Slot : MonoBehaviour
             obj.GetComponent<Item>().currentSlot = this;
             itemInSlot = obj;
             slotImage.color = Color.gray;
-            obj.GetComponent<BoxCollider>().isTrigger = true;
+
+            if(obj.GetComponent<BoxCollider>())
+            {
+                obj.GetComponent<BoxCollider>().isTrigger = true;
+            }
+            else
+            {
+                obj.GetComponent<MeshCollider>().isTrigger = true;
+            }
 
         }
         else
@@ -81,7 +89,14 @@ public class Slot : MonoBehaviour
             obj.GetComponent<Item>().currentSlot = this;
             itemInSlot = obj;
             slotImage.color = Color.gray;
-            obj.GetComponent<MeshCollider>().isTrigger = true;
+            if (obj.GetComponent<BoxCollider>())
+            {
+                obj.GetComponent<BoxCollider>().isTrigger = true;
+            }
+            else
+            {
+                obj.GetComponent<MeshCollider>().isTrigger = true;
+            }
 
 
         }

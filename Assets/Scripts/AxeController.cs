@@ -23,7 +23,8 @@ public class AxeController : MonoBehaviour
                 {
                     tree = tree.transform.parent.gameObject;
                 }
-                tree.GetComponent<TreeController>().MinusLife();
+               
+                tree.GetComponent<TreeController>().MinusLife(hit.point);
                 _chop.Play();
                 colliding = true;
             }

@@ -18,23 +18,28 @@ public class GameManager : MonoBehaviour
     public bool shopOpen = true;
     private bool inMap = false;
     public GameObject player;
-
+    private int _birdDirection;
+    private int _randTime;
+    private GameObject _bird;
     // Start is called before the first frame update
     void Start()
     {
         moneyText.text = "$" + money.ToString();
+        _bird = Resources.Load("BirdForm") as GameObject;
+        _birdDirection = Random.Range(0, 4);
+        _randTime = Random.Range(2, 4);
+        StartCoroutine(birdTimer());
     }
 
     private void Update()
     {
-        
         if (addMoney && sleepArea.asleep)
         {
             money = money + addedMoney;
             moneyText.text = "$" + money.ToString();
             addedMoney = 0;
             addMoney = false;
-        }    
+        }
     }
 
     public void UpdateMoney(int newMoney)
@@ -83,5 +88,49 @@ public class GameManager : MonoBehaviour
         return inMap;
     }
 
+    private void SpawnBird()
+    {
+        Vector3 spawnPos = Vector3.zero;
+        Vector3 childOne = transform.GetChild(0).position;
+        Vector3 childTwo = transform.GetChild(1).position;
+        Vector3 headingPos = Vector3.zero;
+        float randX;
+        float randZ;
+        switch (_birdDirection)
+        {
+            case 0:
+                randX = Random.Range(childTwo.x, childOne.x);
+                spawnPos = new Vector3(randX, childOne.y, childOne.z);
+                headingPos = new Vector3(spawnPos.x, spawnPos.y, childTwo.z);
+                break;
+            case 1:
+                randX = Random.Range(childTwo.x, childOne.x);
+                spawnPos = new Vector3(randX, childTwo.y, childTwo.z);
+                headingPos = new Vector3(spawnPos.x, spawnPos.y, childOne.z);
+                break;
+            case 2:
+                randZ = Random.Range(childTwo.z, childOne.z);
+                spawnPos = new Vector3(childOne.x, childOne.y, randZ);
+                headingPos = new Vector3(childTwo.x, spawnPos.y, spawnPos.z);
+                break;
+            case 3:
+                randZ = Random.Range(childTwo.z, childOne.z);
+                spawnPos = new Vector3(childTwo.x, childTwo.y, randZ);
+                headingPos = new Vector3(childOne.x, spawnPos.y, spawnPos.z);
+                break;
+        }
+        GameObject newBird = Instantiate(_bird, spawnPos, Quaternion.identity, transform);
+        newBird.GetComponent<BirdFormController>().setDirection(headingPos);
+    }
 
+    IEnumerator birdTimer()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_randTime);
+            SpawnBird();
+            _birdDirection = Random.Range(0, 4);
+            _randTime = Random.Range(20, 40);
+        }
+    }
 }

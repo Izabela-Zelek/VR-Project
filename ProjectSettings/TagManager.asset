@@ -22,6 +22,9 @@ TagManager:
   - Tree
   - Grass
   - Building
+  - BirdBoundary
+  - Bullet
+  - ToSell
   layers:
   - Default
   - TransparentFX
