@@ -18,12 +18,13 @@ public class SeedBagController : MonoBehaviour
     public Transform SpawnPoint;
     float timer = 0.5f;
     private PlantController plantController;
-
+    private AudioSource _seedsFall;
     private void Start()
     {
         plantController = GameObject.Find("GameManager").GetComponent<PlantController>();
         rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
         leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
+        _seedsFall = GetComponent<AudioSource>();
     }
     private void Update()
     {
@@ -57,6 +58,10 @@ public class SeedBagController : MonoBehaviour
                     }
                     if (other.gameObject.transform.parent.name == plotName)
                     {
+                        if (!_seedsFall.isPlaying)
+                        {
+                            _seedsFall.Play();
+                        }
                         if (seed_count < max_seed)
                         {
                             Instantiate(seed, SpawnPoint.position, Quaternion.identity);

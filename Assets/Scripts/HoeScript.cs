@@ -12,10 +12,12 @@ public class HoeScript : MonoBehaviour
     private XRDirectInteractor rightInteractor;
     private XRDirectInteractor leftInteractor;
     private bool free = true;
+    private AudioSource _hoe;
     private void Start()
     {
         rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
         leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
+        _hoe = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -44,6 +46,7 @@ public class HoeScript : MonoBehaviour
                     }
                     if (free)
                     {
+                        _hoe.Play();
                         Instantiate(dirtPatch, pos, Quaternion.identity, farm.transform);
                         dirtPos.Add(pos);
                     }

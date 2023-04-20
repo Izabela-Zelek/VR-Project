@@ -43,7 +43,7 @@ public class TimeController : MonoBehaviour
     private GameObject _grass1;
     private GameObject _grass2;
     private Transform _grassParent;
-
+    private AudioSource _birdsAmb;
     void Start()
     {
         currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
@@ -54,6 +54,7 @@ public class TimeController : MonoBehaviour
         _grass1 = Resources.Load("Grass_1_1") as GameObject;
         _grass2 = Resources.Load("Grass_1_2") as GameObject;
         _grassParent = GameObject.Find("TownDecor").transform.GetChild(3).transform;
+        _birdsAmb = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -62,6 +63,21 @@ public class TimeController : MonoBehaviour
         UpdateTime();
         RotateSun();
         UpdateSettings();
+
+        if(currentTime.Hour > sunriseHour - 1 && currentTime.Hour < sunsetHour - 1)
+        {
+            if(!_birdsAmb.isPlaying)
+            {
+                _birdsAmb.Play();
+            }
+        }
+        else
+        {
+            if(_birdsAmb.isPlaying)
+            {
+                _birdsAmb.Stop();
+            }
+        }
     }
 
     private void UpdateTime()

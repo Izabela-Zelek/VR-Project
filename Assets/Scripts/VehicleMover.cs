@@ -26,9 +26,10 @@ public class VehicleMover : MonoBehaviour
     private bool canMove = true;
     private bool stoppedAtLight = false;
     private bool parked = false;
+    private AudioSource _drive;
     void Start()
     {
-
+        _drive = GetComponent<AudioSource>();
         if (id == -1)
         {
             id = Random.Range(0, 10000);
@@ -68,6 +69,11 @@ public class VehicleMover : MonoBehaviour
     {
         if (path.Count > 0 && canMove && !parked)
         {
+            if(!_drive.isPlaying)
+            {
+                _drive.Play();
+            }
+
             float distance = Vector3.Distance(transform.position, targetWaypoint);
             if (!stoppedAtLight)
             {
@@ -146,6 +152,10 @@ public class VehicleMover : MonoBehaviour
         }
         else
         {
+            if (_drive.isPlaying)
+            {
+                _drive.Stop();
+            }
             transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
             rb.velocity = Vector3.zero;
             rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
