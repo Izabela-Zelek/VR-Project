@@ -13,7 +13,7 @@ public class VehicleController : MonoBehaviour
     void Start()
     {
         _carTypes = Resources.LoadAll("Vehicles", typeof(GameObject));
-        _nextSpawn = Random.Range(3, 11);
+        _nextSpawn = Random.Range(7, 15);
         _roadChoice = Random.Range(0, 12);
 
         if(_roadChoice == 6 || _roadChoice == 7 || _roadChoice == 8)

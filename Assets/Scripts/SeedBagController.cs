@@ -44,33 +44,28 @@ public class SeedBagController : MonoBehaviour
         {
             if (other.tag == "SeedArea" && rightSelect.action.ReadValue<float>() >= 0.1f)
             {
-                RaycastHit seen;
-                Ray raydirection = new Ray(transform.position, transform.up);
 
-                if (Physics.Raycast(raydirection, out seen, 5))
+                if ((transform.rotation.eulerAngles.x >= 105 && transform.rotation.eulerAngles.x <= 255) || (transform.rotation.eulerAngles.x <= -105 && transform.rotation.eulerAngles.x >= -255) ||
+                    (transform.rotation.eulerAngles.z >= 105 && transform.rotation.eulerAngles.z <= 255) || (transform.rotation.eulerAngles.z <= -105 && transform.rotation.eulerAngles.z >= -255))
                 {
-                    if (seen.collider.tag == "Ground" || seen.collider.tag == "Plane")
+                    if (!pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().plantState == PlantState.Bare)
                     {
-                        if (!pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().plantState == PlantState.Bare)
+                        float number = Random.Range(0.0f, 5.0f);
+                        other.gameObject.transform.parent.name = other.gameObject.transform.parent.name + number.ToString();
+                        plotName = other.gameObject.transform.parent.name;
+                        pickedPlot = true;
+                    }
+                    if (other.gameObject.transform.parent.name == plotName)
+                    {
+                        if (seed_count < max_seed)
                         {
-                            float number = Random.Range(0.0f, 5.0f);
-                            other.gameObject.transform.parent.name = other.gameObject.transform.parent.name + number.ToString();
-                            plotName = other.gameObject.transform.parent.name;
-                            pickedPlot = true;
-                            Debug.Log(plotName);
+                            Instantiate(seed, SpawnPoint.position, Quaternion.identity);
+                            seed_count++;
                         }
-                        if (other.gameObject.transform.parent.name == plotName)
+                        else
                         {
-                            if (seed_count < max_seed)
-                            {
-                                Instantiate(seed, SpawnPoint.position, Quaternion.identity);
-                                seed_count++;
-                            }
-                            else
-                            {
-                                other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds(plantController.getPlant(plantType));
-                                other.gameObject.transform.parent.GetComponent<FarmScript>().setFruitType(plantController.getFruit(plantType));
-                            }
+                            other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds(plantController.getPlant(plantType));
+                            other.gameObject.transform.parent.GetComponent<FarmScript>().setFruitType(plantController.getFruit(plantType));
                         }
                     }
                 }

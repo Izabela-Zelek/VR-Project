@@ -10,7 +10,7 @@ public class Slot : MonoBehaviour
     public Image slotImage;
     public Transform attachPoint;
     Color originalColour;
-
+    bool _canPutIn = true;
     public InputActionProperty rightSelect;
 
 
@@ -22,6 +22,7 @@ public class Slot : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!_canPutIn) return;
         if (itemInSlot != null) return;
         GameObject obj = other.gameObject;
         if (!IsItem(obj)) return;
@@ -38,12 +39,21 @@ public class Slot : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (itemInSlot != null) return;
-        GameObject obj = other.gameObject;
-        if (!IsItem(obj)) return;
-        if (rightSelect.action.ReadValue<float>() >= 0.1f)
-        { 
-            slotImage.color = originalColour; 
+        if (itemInSlot != null)
+        {
+            if (itemInSlot == other.gameObject)
+            {
+                other.GetComponent<Item>().Remove();
+            }
+        }
+        else
+        {
+            GameObject obj = other.gameObject;
+            if (!IsItem(obj)) return;
+            if (rightSelect.action.ReadValue<float>() >= 0.1f)
+            {
+                slotImage.color = originalColour;
+            }
         }
     }
     bool IsItem(GameObject obj)
@@ -56,9 +66,9 @@ public class Slot : MonoBehaviour
         if (!obj.GetComponent<Item>().isLarge)
         {
             obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-            obj.transform.SetParent(gameObject.transform, true);
-            obj.transform.position = attachPoint.position;
-            obj.transform.eulerAngles = obj.GetComponent<Item>().slotRotation;
+            obj.gameObject.transform.SetParent(gameObject.transform, true);
+            obj.gameObject.transform.position = attachPoint.position;
+            obj.gameObject.transform.eulerAngles = obj.GetComponent<Item>().slotRotation;
             obj.GetComponent<Item>().inSlot = true;
             obj.GetComponent<Item>().currentSlot = this;
             itemInSlot = obj;
@@ -126,4 +136,8 @@ public class Slot : MonoBehaviour
         slotImage.color = originalColour;
     }
 
+    public void SetPutIn(bool put)
+    {
+        _canPutIn = put;
+    }
 }

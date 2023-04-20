@@ -25,6 +25,7 @@ TagManager:
   - BirdBoundary
   - Bullet
   - ToSell
+  - Path
   layers:
   - Default
   - TransparentFX

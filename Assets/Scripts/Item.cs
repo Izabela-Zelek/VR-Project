@@ -16,12 +16,14 @@ public class Item : MonoBehaviour
     public bool isLarge = false;
     private XRDirectInteractor rightInteractor;
     private XRDirectInteractor leftInteractor;
+    private Vector3 _originalScale;
 
     private void Start()
     {
         rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
         leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
         parent = GameObject.Find("SmallStuff");
+        _originalScale = transform.localScale;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -30,7 +32,7 @@ public class Item : MonoBehaviour
         {
             if (other.tag == "RightHand")
             {
-                if ( (rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) ||( leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+                if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
                 {
                     if (rightSelect.action.ReadValue<float>() > 0.1f)
                     {
@@ -56,37 +58,31 @@ public class Item : MonoBehaviour
         {
             if (other.tag == "RightHand")
             {
-                if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+                //if(rightSelect.action.ReadValue<float>() > 0.1f)
+                //{ if (rightInteractor.interactablesSelected.Count > 0)
+                //    {
+                //        Debug.Log("Yes");
+                //        if (rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) ;
+                //        {
+                //            Debug.Log("YUP");
+                //        }
+                //    } }
+               
+                if (rightSelect.action.ReadValue<float>() > 0.1f)
                 {
-                    if (rightSelect.action.ReadValue<float>() > 0.1f)
+                    if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
                     {
                         isHeld = true;
                         targetTime = 2.0f;
-                        if (currentSlot != null)
-                        {
-                            currentSlot.RemoveItem();
-                            gameObject.transform.SetParent(parent.transform);
-                            Vector3 scale = gameObject.transform.localScale;
-
-                            scale.Set(0.5f, 0.5f, 0.5f);
-
-                            gameObject.transform.localScale = scale;
-                            gameObject.transform.position = other.gameObject.transform.position;
-                            inSlot = false;
-                            currentSlot = null;
-                            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                            gameObject.GetComponent<MeshCollider>().isTrigger = false;
-
-
-                        }
-
+                        Remove();
                     }
                 }
-        
+
             }
         }
 
     }
+
 
     private void Update()
     {
@@ -100,26 +96,43 @@ public class Item : MonoBehaviour
             isHeld = false;
         }
 
-        if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+        if(!inSlot)
         {
-            isHeld = true;
-            targetTime = 2.0f;
-            if (currentSlot != null)
-            {
-                currentSlot.RemoveItem();
-                gameObject.transform.SetParent(parent.transform);
-                inSlot = false;
-                currentSlot = null;
-                gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                if (gameObject.GetComponent<BoxCollider>())
-                { 
-                    gameObject.GetComponent<BoxCollider>().isTrigger = false; 
-                }
-                else if (gameObject.GetComponent<MeshCollider>())
-                {
-                    gameObject.GetComponent<MeshCollider>().isTrigger = false;
-                }
-            }
+            gameObject.transform.localScale = _originalScale;
         }
+    }
+
+    public void Remove()
+    {
+        if (currentSlot != null)
+        {
+            currentSlot.RemoveItem();
+            currentSlot.SetPutIn(false);
+            gameObject.transform.SetParent(null);
+
+            gameObject.transform.localScale = _originalScale;
+            inSlot = false;
+            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+
+            if(GetComponent<MeshCollider>())
+            {
+                gameObject.GetComponent<MeshCollider>().isTrigger = false;
+
+            }
+            else
+            {
+                gameObject.GetComponent<BoxCollider>().isTrigger = false;
+
+            }
+            StartCoroutine(WaitForItem(currentSlot));
+            currentSlot = null;
+
+        }
+    }
+
+    IEnumerator WaitForItem(Slot _slot)
+    {
+        yield return new WaitForSeconds(2);
+        _slot.SetPutIn(true);
     }
 }

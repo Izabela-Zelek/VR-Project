@@ -12,7 +12,6 @@ public class ObjectAvoidance : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("NPC"))
         {
-            Debug.Log(other.name);
             if (other.gameObject.GetComponent<PathMover>() && transform.parent.gameObject.GetComponent<PathMover>())
             {
                 if (other.gameObject.GetComponent<PathMover>().isActiveAndEnabled && transform.parent.gameObject.GetComponent<PathMover>().isActiveAndEnabled)

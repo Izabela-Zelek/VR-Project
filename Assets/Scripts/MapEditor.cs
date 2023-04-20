@@ -413,12 +413,18 @@ public class MapEditor : MonoBehaviour
         switch (chosenOption)
         {
             case 0:
-                Collider[] hitColliders = Physics.OverlapSphere(pos, 1.0f);
+                Collider[] hitColliders = Physics.OverlapSphere(pos, 1.5f);
+                int count = 0;
                 foreach (var hitCollider in hitColliders)
                 {
-                    if (hitCollider.tag != "Ground" && hitCollider.tag != "Plane" && hitCollider.tag != "Boundary")
+                    if (hitColliders[count].tag == "marker")
                     {
-                        GameObject hit = hitCollider.gameObject;
+                        chosenMarker = hitColliders[count].gameObject;
+                        loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                    }
+                    if (hitColliders[count].tag != "Ground" && hitColliders[count].tag != "Plane" && hitColliders[count].tag != "Boundary" && hitColliders[count].tag != "Parent" && hitColliders[count].tag != "EntryPoints" && hitColliders[count].tag != "Path")
+                    {
+                        GameObject hit = hitColliders[count].gameObject;
                         while (hit.transform.parent != null)
                         {
                             if (hit.transform.parent.tag == "Parent")
@@ -428,12 +434,13 @@ public class MapEditor : MonoBehaviour
                             hit = hit.transform.parent.gameObject;
                         }
                         followObjects.Add(hit);
+                        break;
                     }
-                    if(hitCollider.tag == "marker")
+                    else
                     {
-                        chosenMarker = hitCollider.gameObject;
-                        loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                        count++;
                     }
+                   
                 }
 
                 break;
