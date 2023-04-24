@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Handles the functionality of the watering can
+/// </summary>
 public class CanController : MonoBehaviour
 {
     public InputActionProperty rightSelect;
@@ -13,6 +14,11 @@ public class CanController : MonoBehaviour
     //    Debug.DrawRay(transform.GetChild(1).transform.position, transform.up + transform.forward, Color.black, 1);
     //}
 
+    /// <summary>
+    /// Checks for collision with the boundary box of a planting field
+    /// Plays water particle system upon collision
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         //RaycastHit seen;
@@ -30,6 +36,11 @@ public class CanController : MonoBehaviour
         //}
     }
 
+    /// <summary>
+    /// Checks for end of collision with the boundary box of a planting field
+    /// Stops water particle system upon end
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "SeedArea")
@@ -39,6 +50,11 @@ public class CanController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Starts countdown while in collision with boundary box of planting field
+    /// Upon time over, changes state of field to watered
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "SeedArea" && rightSelect.action.ReadValue<float>() >= 0.1f)

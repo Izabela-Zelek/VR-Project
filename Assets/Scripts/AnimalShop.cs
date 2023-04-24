@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+/// <summary>
+/// Handles the purchase and spawning of farm animals
+/// </summary>
 public class AnimalShop : MonoBehaviour
 {
     public int price;
@@ -13,12 +13,20 @@ public class AnimalShop : MonoBehaviour
     public UnityEvent onPress;
     public UnityEvent onRelease;
     bool isPressed;
+
+    /// <summary>
+    /// Loads button press audio upon start
+    /// </summary>
     void Start()
     {
         sound = GetComponent<AudioSource>();
         isPressed = false;
     }
 
+    /// <summary>
+    /// Upon touch, simulates downward movement of button and plays audio
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         if(!isPressed && other.gameObject.layer == 11)
@@ -30,6 +38,10 @@ public class AnimalShop : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Upon exit of touch, return button to original position and invokes the SpawnObject function
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject)
@@ -40,6 +52,10 @@ public class AnimalShop : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Takes away price of bought animal from player money
+    /// Spawns animal in defined position
+    /// </summary>
     public void SpawnObject()
     {
         if (price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)

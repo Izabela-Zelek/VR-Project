@@ -1,20 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+/// <summary>
+/// Handles hand animations upon press of controller buttons to add immersion
+/// </summary>
 public class AnimateHand : MonoBehaviour
 {
     public InputActionProperty pinchAnimationAction;
     public InputActionProperty gripAnimationAction;
 
     public Animator handAnimator;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Changes animation state of hand model depending on input values
+    /// </summary>
     void Update()
     {
        float triggerValue = pinchAnimationAction.action.ReadValue<float>();

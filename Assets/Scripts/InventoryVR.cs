@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
-
+/// <summary>
+/// Handles enabling or disabling inventory upon button press
+/// </summary>
 public class InventoryVR : MonoBehaviour
 {
     public InputActionProperty leftActivate;
@@ -12,6 +11,9 @@ public class InventoryVR : MonoBehaviour
     public GameObject Anchor;
     bool UIActive;
 
+    /// <summary>
+    /// Sets initial state of inventory to inactive
+    /// </summary>
     private void Start()
     {
         Inventory.SetActive(false);
@@ -19,6 +21,11 @@ public class InventoryVR : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Upon button press, enables inventory
+    /// Sets position of inventory to in front of player
+    /// Upon button release, disables inventory
+    /// </summary>
     private void Update()
     {
        

@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Handles behaviour of fruit when harvested
+/// </summary>
 public class FruitController : MonoBehaviour
 {
     [SerializeField]
@@ -24,7 +25,11 @@ public class FruitController : MonoBehaviour
         parent = GameObject.Find("SmallStuff").transform;
 
     }
-    // Update is called once per frame
+   /// <summary>
+   /// if fruit grew on bundle and interacts with player hand, decrements number of children of parent stem
+   /// If stem is now at 0 children, destroys stem gameobject
+   /// Removes constraints of fruit which stopped its reaction to gravity
+   /// </summary>
     void Update()
     {
         if(stem != null && !pickedUp)

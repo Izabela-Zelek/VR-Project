@@ -1,8 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/// <summary>
+/// Handles the functionality of the hoe object
+/// </summary>
 public class HoeScript : MonoBehaviour
 {
     public GameObject dirtPatch;
@@ -20,6 +22,12 @@ public class HoeScript : MonoBehaviour
         _hoe = GetComponent<AudioSource>();
     }
 
+    /// <summary>
+    /// Spawns raycast at tip of hoe
+    /// If hoe collides with another planting fied, disallows spawning of another
+    /// If tip of hoe collides with gameobjects that aren't farm land, disallows spawning of planting field
+    /// If allowed, plays tilling audio, spawns planting field, adds position of new field to list of positions
+    /// </summary>
     private void Update()
     {
         if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))

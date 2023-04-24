@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Handles the functionality of the axe object
+/// </summary>
 public class AxeController : MonoBehaviour
 {
     private bool colliding = false;
@@ -11,6 +11,10 @@ public class AxeController : MonoBehaviour
     {
         _chop = GetComponent<AudioSource>();
     }
+    /// <summary>
+    /// Casts raycast to detect collisions with Tree objects
+    /// Upon collision, takes 1 life away from the tree and plays chopping audio
+    /// </summary>
     private void Update()
     {
         RaycastHit hit;

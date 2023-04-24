@@ -1,11 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Handles initial spawn collisions of grass
+/// </summary>
 public class GrassCollider : MonoBehaviour
 {
     private float _startUpTime = 10.0f;
     private bool _checked = false;
+
+    /// <summary>
+    /// Upon collision with collider gameobject 
+    /// If gameobject isn't the ground, destroys grass gameobject
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnCollisionStay(Collision collision)
     {
         if (!_checked)
@@ -16,7 +22,11 @@ public class GrassCollider : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// Upon collision with trigger gameobject 
+    /// If gameobject isn't the ground, destroys grass gameobject
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerStay(Collider other)
     {
         if (!_checked)

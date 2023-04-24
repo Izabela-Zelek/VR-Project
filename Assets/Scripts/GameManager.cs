@@ -1,10 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-
+/// <summary>
+/// Handles player money, entering and leaving the map editor, and bird flock spawning
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
@@ -21,7 +22,12 @@ public class GameManager : MonoBehaviour
     private int _birdDirection;
     private int _randTime;
     private GameObject _bird;
-    // Start is called before the first frame update
+    
+    /// <summary>
+    /// Sets initial money amount and watch text
+    /// Loads bird flock prefab
+    /// Randomises flock direction and spawn time
+    /// </summary>
     void Start()
     {
         moneyText.text = "$" + money.ToString();
@@ -31,6 +37,9 @@ public class GameManager : MonoBehaviour
         StartCoroutine(birdTimer());
     }
 
+    /// <summary>
+    /// Updates player money on player watch if player is asleep
+    /// </summary>
     private void Update()
     {
         if (addMoney && sleepArea.asleep)
@@ -42,23 +51,40 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Upon sale of item, increments new money amount by given value
+    /// </summary>
+    /// <param name="newMoney"></param>
     public void UpdateMoney(int newMoney)
     {
         addedMoney = addedMoney + newMoney;
         addMoney = true;
     }
 
+    /// <summary>
+    /// Immediately updates money when player purchases items
+    /// </summary>
+    /// <param name="newMoney"></param>
     public void MinusMoney(int newMoney)
     {
         money = newMoney;
         moneyText.text = "$" + money.ToString();
     }
 
+    /// <summary>
+    /// Returns current money amount
+    /// </summary>
+    /// <returns></returns>
     public int GetMoney()
     {
         return money;
     }
 
+    /// <summary>
+    /// Disables player movement and rotation upon entering level editor, disables teleportation ray, enables level editor ray
+    /// Enables player movement and rotation upon laeving level editor, enables teleportation ray, disables level editor ray
+    /// </summary>
+    /// <param name="enter"></param>
     public void EnterMap(bool enter)
     {
         inMap = enter;
@@ -83,11 +109,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns whether or not player is currently editing level
+    /// </summary>
+    /// <returns></returns>
     public bool IsInMap()
     {
         return inMap;
     }
 
+    /// <summary>
+    /// Sets spawn position of bird flock depending of randomised flock direction
+    /// Spawns flock
+    /// </summary>
     private void SpawnBird()
     {
         Vector3 spawnPos = Vector3.zero;
@@ -123,6 +157,12 @@ public class GameManager : MonoBehaviour
         newBird.GetComponent<BirdFormController>().setDirection(headingPos);
     }
 
+    /// <summary>
+    /// Waits randomised time to spawn bird flock
+    /// Calls SpawnBird function
+    /// Randomises direction and spawn time of future flock
+    /// </summary>
+    /// <returns></returns>
     IEnumerator birdTimer()
     {
         while (true)

@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+/// <summary>
+/// Handles the purchase and spawning of plant seeds
+/// </summary>
 public class ButtonVR : MonoBehaviour
 {
     public int price;
@@ -13,12 +13,20 @@ public class ButtonVR : MonoBehaviour
     private GameObject presser;
     private AudioSource sound;
     bool isPressed;
+
+    /// <summary>
+    /// Loads button press audio upon start
+    /// </summary>
     void Start()
     {
         sound = GetComponent<AudioSource>();
         isPressed = false;
     }
 
+    /// <summary>
+    ///  Upon touch, simulates downward movement of button and plays audio
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         if(!isPressed && other.gameObject.layer == 11)
@@ -31,6 +39,10 @@ public class ButtonVR : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Upon exit of touch, return button to original position and invokes the SpawnObject function
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject)
@@ -40,7 +52,10 @@ public class ButtonVR : MonoBehaviour
             isPressed = false;
         }
     }
-
+    /// <summary>
+    /// Takes away price of bought seeds from player money
+    /// Spawns seeds in defined position
+    /// </summary>
     public void SpawnObject()
     {
         if (price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
