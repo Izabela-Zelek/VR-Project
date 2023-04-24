@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
 using TMPro;
+
+/// <summary>
+/// Handles all interactions with the Map/Level Editor - including placing objects, rearranging objects and spawning NPCs
+/// </summary>
 public class MapEditor : MonoBehaviour
 {
     public XRRayInteractor rayInteractor;
@@ -61,7 +65,13 @@ public class MapEditor : MonoBehaviour
     private GameObject chosenMarker;
     public TextMeshPro loiterText;
 
-
+    /// <summary>
+    /// Calculates distance from centre of map to left side of map
+    /// Calculates distance from centre of world to left side of world
+    /// Calculates the multiplier - used for placing items in game world
+    /// Loads all object prefabs from Resources folder
+    /// Finds all Mesh Renderers for Map/Level Editor buttons
+    /// </summary>
     private void Start()
     {
         mapDistance = Vector3.Distance(centre.position, left.position);
@@ -81,8 +91,15 @@ public class MapEditor : MonoBehaviour
 
         setUpMeshRenderers();
     }
-    private
-    void Update()
+    /// <summary>
+    /// Calculates distance of the selected point of the map and applies multiplier to determine location in game world
+    /// Upon clicking with controller button, Calls ChooseOption function to determine whether a button was selected or the map
+    /// If map was selected, grabs list of items clicked on and changes position to follow player ray
+    /// Rotates selected items if joystick moved
+    /// Turns off rotation gizmo upon letting go of controller button
+    /// Positions hovering NPC to follow the player ray by the map
+    /// </summary>
+    private void Update()
     {
         if(hoverNPCCount == 1)
         {
@@ -123,200 +140,7 @@ public class MapEditor : MonoBehaviour
 
                 if (!clicked)
                 {
-                    switch (res.collider.name)
-                    {
-                        case "Tree1":
-                            if (chosenOption != 1)
-                            {
-                                SetChoice(1, _option1);
-                            }
-                            else
-                            {
-                                ResetChoice();
-                            }
-                            break;
-                        case "Tree2":
-                            if (chosenOption != 2)
-                            {
-                                SetChoice(2, _option2);
-                            }
-                            else
-                            {
-                                ResetChoice();
-                            }
-                            break;
-                        case "House":
-                            if (chosenOption != 3)
-                            {
-                                SetChoice(3, _option3);
-                            }
-                            else
-                            {
-                                ResetChoice();
-                            }
-                            break;
-                        case "PathNPC":
-                            if (chosenOption != 4)
-                            {
-                                SetChoice(4, _option4);
-                                if(hoverNPCCount == 0)
-                                {
-                                    hoverNPCCount++;
-                                    hoverNPCRes = Resources.Load("HoverDude") as GameObject;
-                                    hoverNPC = Instantiate(hoverNPCRes, hitPoint, Quaternion.Euler(0, 270, 0));
-                                }
-                            }
-                            else
-                            {
-                                Destroy(hoverNPC);
-                                hoverNPCCount = 0;
-                                ResetChoice();
-                            }
-                            break;
-                        case "WanderNPC":
-                            if (chosenOption != 5)
-                            {
-                                SetChoice(5, _option5);
-                                if (hoverNPCCount == 0)
-                                {
-                                    hoverNPCCount++;
-                                    hoverNPCRes = Resources.Load("HoverDude") as GameObject;
-                                    hoverNPC = Instantiate(hoverNPCRes, hitPoint, Quaternion.Euler(0, 270, 0));
-                                }
-                            }
-                            else
-                            {
-                                Destroy(hoverNPC);
-                                hoverNPCCount = 0;
-                                ResetChoice();
-                            }
-                            break;
-                        case "Path1Select":
-                            if (chosenOption != 6)
-                            {
-                                GetComponent<NPCCreator>().setPath(1);
-                                SetChoice(6, _option6);
-                            }
-                            else
-                            {
-                                ResetChoice();
-                            }
-                            break;
-                        case "Path2Select":
-                            if (chosenOption != 7)
-                            {
-                                GetComponent<NPCCreator>().setPath(2);
-                                SetChoice(7, _option7);
-                            }
-                            else
-                            {
-                                ResetChoice();
-                            }
-                            break;
-                        case "Path3Select":
-                            if (chosenOption != 8)
-                            {
-                                GetComponent<NPCCreator>().setPath(3);
-                                SetChoice(8, _option8);
-                            }
-                            else
-                            {
-                                ResetChoice();
-                            }
-                            break;
-                        case "CreateCustom":
-                            if (chosenOption != 9)
-                            {
-                                SetChoice(9, _option9);
-                                makingPath = true;
-                                customPath.Clear();
-                            }
-                            else
-                            {
-                                ResetChoice();
-                                makingPath = false;
-                            }
-                            break;
-                        case "Save":
-                            if (chosenOption != 10)
-                            {
-                                UpdatePathPos();
-                                GetComponent<CSVWriter>().addFile();
-                                CreateNewPath(GetComponent<CSVWriter>().WriteCSV(customPath));
-                                makingPath = false;
-                                customPath.Clear();
-                                foreach(GameObject marker in tempMarkers)
-                                {
-                                    Destroy(marker);
-                                }
-                                tempMarkers.Clear();
-                                _tempMarkerCount = 0;
-                                clicked = true;
-                            }
-                            else
-                            {
-                                ResetChoice();
-                            }
-                            break;
-                        case "BinPath1":
-                            GetComponent<CSVWriter>().DeleteFile(5);
-                            Destroy(GameObject.Find("Path5"));
-                            break;
-                        case "BinPath2":
-                            GetComponent<CSVWriter>().DeleteFile(6);
-                            Destroy(GameObject.Find("Path6"));
-                            break;
-                        case "EditPath":
-                            if (chosenOption != 11)
-                            {
-                                SetChoice(11, _option11);
-                                editPath = true;
-                            }
-                            else
-                            {
-                                ResetChoice();
-                                editPath = false;
-                            }
-                            break;
-                        case "CustomPath1":
-                            if (chosenOption != 12 && unlockCustom5)
-                            {
-                                GetComponent<NPCCreator>().setPath(5);
-                                SetChoice(12, _option12);
-                            }
-                            else
-                            {
-                                GetComponent<NPCCreator>().hidePath(5);
-                                ResetChoice();
-                            }
-                            break;
-                        case "CustomPath2":
-                            if (chosenOption != 13 && unlockCustom6)
-                            {
-                                GetComponent<NPCCreator>().setPath(6);
-                                SetChoice(13, _option13);
-                            }
-                            else
-                            {
-                                GetComponent<NPCCreator>().hidePath(6);
-                                ResetChoice();
-                            }
-                            break;
-                        case "LeaveMap":
-                            GameObject.Find("GameManager").GetComponent<GameManager>().EnterMap(false);
-                            break;
-                        case "LoiterLeft":
-                            chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() - 1);
-                            loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
-                            break;
-                        case "LoiterRight":
-                            chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() + 1);
-                            loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
-                            break;
-                        case "Map":
-                            spawnObject(pos);
-                            break;
-                    }
+                    ChooseOption(res, hitPoint, pos);
                 }
 
                 foreach (GameObject item in followObjects)
@@ -405,6 +229,11 @@ public class MapEditor : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Depending on chosen option, either adds selected object to a list so that it follows player ray (if clicked on map/level editor)
+    /// or spawns selected object on the hit position (if clicked on an object button beforehand)
+    /// </summary>
+    /// <param name="pos"></param>
     private void spawnObject(Vector3 pos)
     {
 
@@ -485,6 +314,9 @@ public class MapEditor : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Grabs and stores mesh renderers of each button on map/level editor
+    /// </summary>
     private void setUpMeshRenderers()
     {
         _option1 = GameObject.Find("Tree1").GetComponent<MeshRenderer>();
@@ -499,6 +331,10 @@ public class MapEditor : MonoBehaviour
         _option11 = GameObject.Find("EditPath").GetComponent<MeshRenderer>();
     }
 
+    /// <summary>
+    /// Upon selecting option to save custom path, instantiates a path cell instance for each 'click' on the map editor which determines the new path directions
+    /// </summary>
+    /// <param name="pathID"></param>
     private void CreateNewPath(int pathID)
     {
         if(pathID != -1)
@@ -526,6 +362,9 @@ public class MapEditor : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets all choices once selecting button is let go
+    /// </summary>
     private void ResetChoice()
     {
         resetColours();
@@ -533,6 +372,11 @@ public class MapEditor : MonoBehaviour
         clicked = true;
     }
 
+    /// <summary>
+    /// Sets choice based on selected button
+    /// </summary>
+    /// <param name="option"></param>
+    /// <param name="rend"></param>
     private void SetChoice(int option, MeshRenderer rend)
     {
         resetColours();
@@ -546,6 +390,9 @@ public class MapEditor : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Upon creating custom path, adds the location of the new cell to a list
+    /// </summary>
     private void UpdatePathPos()
     {
         foreach(GameObject marker in tempMarkers)
@@ -554,6 +401,10 @@ public class MapEditor : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// If created a new path, displays a new button which allows the player to reuse the custom path
+    /// </summary>
+    /// <param name="customID"></param>
     public void Unlock(int customID)
     {
         if(customID == 5)
@@ -571,7 +422,10 @@ public class MapEditor : MonoBehaviour
             _option13 = GameObject.Find("CustomPath2").GetComponent<MeshRenderer>();
         }
     }
-
+    /// <summary>
+    /// If deleted a custom path, hides the button to stop player from trying to access a deleted oatg
+    /// </summary>
+    /// <param name="customID"></param>
     public void Lock(int customID)
     {
         if (customID == 5)
@@ -585,6 +439,211 @@ public class MapEditor : MonoBehaviour
             unlockCustom6 = false;
             GameObject.Find("CustomPath2").gameObject.SetActive(false);
             GameObject.Find("BinPath2").gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Based on whether player selecting a button on the map/level editor or the map editor itself, runs appropriate functions for each option
+    /// eg. Upon selecting option to create custom path, stores all 'clicks' on map and spawns markers to display the path on the map
+    /// </summary>
+    /// <param name="res"></param>
+    /// <param name="hitPoint"></param>
+    /// <param name="pos"></param>
+    public void ChooseOption(RaycastHit res, Vector3 hitPoint, Vector3 pos)
+    {
+        switch (res.collider.name)
+        {
+            case "Tree1":
+                if (chosenOption != 1)
+                {
+                    SetChoice(1, _option1);
+                }
+                else
+                {
+                    ResetChoice();
+                }
+                break;
+            case "Tree2":
+                if (chosenOption != 2)
+                {
+                    SetChoice(2, _option2);
+                }
+                else
+                {
+                    ResetChoice();
+                }
+                break;
+            case "House":
+                if (chosenOption != 3)
+                {
+                    SetChoice(3, _option3);
+                }
+                else
+                {
+                    ResetChoice();
+                }
+                break;
+            case "PathNPC":
+                if (chosenOption != 4)
+                {
+                    SetChoice(4, _option4);
+                    if (hoverNPCCount == 0)
+                    {
+                        hoverNPCCount++;
+                        hoverNPCRes = Resources.Load("HoverDude") as GameObject;
+                        hoverNPC = Instantiate(hoverNPCRes, hitPoint, Quaternion.Euler(0, 270, 0));
+                    }
+                }
+                else
+                {
+                    Destroy(hoverNPC);
+                    hoverNPCCount = 0;
+                    ResetChoice();
+                }
+                break;
+            case "WanderNPC":
+                if (chosenOption != 5)
+                {
+                    SetChoice(5, _option5);
+                    if (hoverNPCCount == 0)
+                    {
+                        hoverNPCCount++;
+                        hoverNPCRes = Resources.Load("HoverDude") as GameObject;
+                        hoverNPC = Instantiate(hoverNPCRes, hitPoint, Quaternion.Euler(0, 270, 0));
+                    }
+                }
+                else
+                {
+                    Destroy(hoverNPC);
+                    hoverNPCCount = 0;
+                    ResetChoice();
+                }
+                break;
+            case "Path1Select":
+                if (chosenOption != 6)
+                {
+                    GetComponent<NPCCreator>().setPath(1);
+                    SetChoice(6, _option6);
+                }
+                else
+                {
+                    ResetChoice();
+                }
+                break;
+            case "Path2Select":
+                if (chosenOption != 7)
+                {
+                    GetComponent<NPCCreator>().setPath(2);
+                    SetChoice(7, _option7);
+                }
+                else
+                {
+                    ResetChoice();
+                }
+                break;
+            case "Path3Select":
+                if (chosenOption != 8)
+                {
+                    GetComponent<NPCCreator>().setPath(3);
+                    SetChoice(8, _option8);
+                }
+                else
+                {
+                    ResetChoice();
+                }
+                break;
+            case "CreateCustom":
+                if (chosenOption != 9)
+                {
+                    SetChoice(9, _option9);
+                    makingPath = true;
+                    customPath.Clear();
+                }
+                else
+                {
+                    ResetChoice();
+                    makingPath = false;
+                }
+                break;
+            case "Save":
+                if (chosenOption != 10)
+                {
+                    UpdatePathPos();
+                    GetComponent<CSVWriter>().addFile();
+                    CreateNewPath(GetComponent<CSVWriter>().WriteCSV(customPath));
+                    makingPath = false;
+                    customPath.Clear();
+                    foreach (GameObject marker in tempMarkers)
+                    {
+                        Destroy(marker);
+                    }
+                    tempMarkers.Clear();
+                    _tempMarkerCount = 0;
+                    clicked = true;
+                }
+                else
+                {
+                    ResetChoice();
+                }
+                break;
+            case "BinPath1":
+                GetComponent<CSVWriter>().DeleteFile(5);
+                Destroy(GameObject.Find("Path5"));
+                break;
+            case "BinPath2":
+                GetComponent<CSVWriter>().DeleteFile(6);
+                Destroy(GameObject.Find("Path6"));
+                break;
+            case "EditPath":
+                if (chosenOption != 11)
+                {
+                    SetChoice(11, _option11);
+                    editPath = true;
+                }
+                else
+                {
+                    ResetChoice();
+                    editPath = false;
+                }
+                break;
+            case "CustomPath1":
+                if (chosenOption != 12 && unlockCustom5)
+                {
+                    GetComponent<NPCCreator>().setPath(5);
+                    SetChoice(12, _option12);
+                }
+                else
+                {
+                    GetComponent<NPCCreator>().hidePath(5);
+                    ResetChoice();
+                }
+                break;
+            case "CustomPath2":
+                if (chosenOption != 13 && unlockCustom6)
+                {
+                    GetComponent<NPCCreator>().setPath(6);
+                    SetChoice(13, _option13);
+                }
+                else
+                {
+                    GetComponent<NPCCreator>().hidePath(6);
+                    ResetChoice();
+                }
+                break;
+            case "LeaveMap":
+                GameObject.Find("GameManager").GetComponent<GameManager>().EnterMap(false);
+                break;
+            case "LoiterLeft":
+                chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() - 1);
+                loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                break;
+            case "LoiterRight":
+                chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() + 1);
+                loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                break;
+            case "Map":
+                spawnObject(pos);
+                break;
         }
     }
 }

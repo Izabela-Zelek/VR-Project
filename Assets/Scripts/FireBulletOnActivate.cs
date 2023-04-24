@@ -1,3 +1,5 @@
+//Script taken from Unity XR tutorial by Valem Tutorials
+//https://www.youtube.com/watch?v=0xt6dACM_1I&list=PLpEoiloH-4eP-OKItF8XNJ8y8e1asOJud&index=6&t=426s&ab_channel=ValemTutorials
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

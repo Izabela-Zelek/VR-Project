@@ -16,8 +16,6 @@ public class ObjectAvoidance : MonoBehaviour
             {
                 if (other.gameObject.GetComponent<PathMover>().isActiveAndEnabled && transform.parent.gameObject.GetComponent<PathMover>().isActiveAndEnabled)
                 {
-                    Debug.Log(other.name);
-
                     int chanceTalk = Random.Range(1, 3);
 
                     if (chanceTalk == 1 && !_metNPC.Contains(other.name))

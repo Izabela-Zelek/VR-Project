@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
-
+/// <summary>
+/// Handles determining whether current object is being held or in inventory slot
+/// </summary>
 public class Item : MonoBehaviour
 {
     public bool inSlot = false;
@@ -18,6 +20,10 @@ public class Item : MonoBehaviour
     private XRDirectInteractor leftInteractor;
     private Vector3 _originalScale;
 
+    /// <summary>
+    /// Finds required gameobjects in scene
+    /// Saves the local scale
+    /// </summary>
     private void Start()
     {
         rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
@@ -26,6 +32,10 @@ public class Item : MonoBehaviour
         _originalScale = transform.localScale;
     }
 
+    /// <summary>
+    /// Upon colliding with player hand, removes object from inventory slot
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         if (!isLarge)
@@ -38,17 +48,7 @@ public class Item : MonoBehaviour
                     {
                         isHeld = true;
                         targetTime = 2.0f;
-                        if (currentSlot != null)
-                        {
-                            currentSlot.RemoveItem();
-                            gameObject.transform.SetParent(parent.transform);
-                            transform.position = other.gameObject.transform.position;
-                            inSlot = false;
-                            currentSlot = null;
-                            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                            gameObject.GetComponent<BoxCollider>().isTrigger = false;
-
-                        }
+                        RemoveSmall();
 
                     }
                 }
@@ -58,16 +58,6 @@ public class Item : MonoBehaviour
         {
             if (other.tag == "RightHand")
             {
-                //if(rightSelect.action.ReadValue<float>() > 0.1f)
-                //{ if (rightInteractor.interactablesSelected.Count > 0)
-                //    {
-                //        Debug.Log("Yes");
-                //        if (rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) ;
-                //        {
-                //            Debug.Log("YUP");
-                //        }
-                //    } }
-               
                 if (rightSelect.action.ReadValue<float>() > 0.1f)
                 {
                     if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
@@ -83,7 +73,9 @@ public class Item : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// Changes scale of object to original scale in not in slot
+    /// </summary>
     private void Update()
     {
         if (targetTime > 0 && isHeld)
@@ -96,12 +88,16 @@ public class Item : MonoBehaviour
             isHeld = false;
         }
 
-        if(!inSlot)
+        if(!inSlot && gameObject.transform.localScale != _originalScale)
         {
             gameObject.transform.localScale = _originalScale;
         }
     }
 
+    /// <summary>
+    /// In called to remove object from inventory, sets parent to null, removes constraints, changes trigger to false
+    /// Starts coroutine to temporarily disable the slot from being used
+    /// </summary>
     public void Remove()
     {
         if (currentSlot != null)
@@ -129,7 +125,42 @@ public class Item : MonoBehaviour
 
         }
     }
+    /// <summary>
+    /// In called to remove small object from inventory, sets parent to null, removes constraints, changes trigger to false
+    /// Starts coroutine to temporarily disable the slot from being used
+    /// </summary>
+    public void RemoveSmall()
+    {
+        if (currentSlot != null)
+        {
+            currentSlot.RemoveItem();
+            currentSlot.SetPutIn(false);
+            gameObject.transform.SetParent(null);
 
+            gameObject.transform.localScale = _originalScale;
+            inSlot = false;
+            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+
+            if (GetComponent<MeshCollider>())
+            {
+                gameObject.GetComponent<MeshCollider>().isTrigger = false;
+
+            }
+            else
+            {
+                gameObject.GetComponent<BoxCollider>().isTrigger = false;
+
+            }
+            StartCoroutine(WaitForItem(currentSlot));
+            currentSlot = null;
+        }
+    }
+
+    /// <summary>
+    /// Allows the previously used slot to be used again in 2 seconds
+    /// </summary>
+    /// <param name="_slot"></param>
+    /// <returns></returns>
     IEnumerator WaitForItem(Slot _slot)
     {
         yield return new WaitForSeconds(2);

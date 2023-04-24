@@ -13,7 +13,7 @@ public class PathDecor : MonoBehaviour
     [SerializeField]
     private bool drawNumbers;
     public Color debugColour = Color.white;
-
+#if UNITY_EDITOR
     public void OnDrawGizmos()
     {
         if (alwaysDrawPath)
@@ -21,6 +21,7 @@ public class PathDecor : MonoBehaviour
             DrawPath();
         }
     }
+
     public void DrawPath()
     {
         for (int i = 0; i < waypoints.Count; i++)
@@ -42,6 +43,8 @@ public class PathDecor : MonoBehaviour
             }
         }
     }
+
+
     public void OnDrawGizmosSelected()
     {
         if (alwaysDrawPath)
@@ -49,4 +52,5 @@ public class PathDecor : MonoBehaviour
         else
             DrawPath();
     }
+#endif
 }
