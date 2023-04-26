@@ -41,7 +41,7 @@ public class FruitController : MonoBehaviour
                 if (_rightSelect.action.ReadValue<float>() >= 0.1f)
                 {
                     _stem.GetComponent<MultiFruitStemController>().MinusChild();
-                    if (_stem.GetComponent<MultiFruitStemController>().childCount == 0)
+                    if (_stem.GetComponent<MultiFruitStemController>().ChildCount == 0)
                     { 
                         Destroy(_stem.gameObject); 
                     }

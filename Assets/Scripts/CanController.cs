@@ -50,7 +50,7 @@ public class CanController : MonoBehaviour
             Debug.Log(waterTime);
             if (waterTime <= 0)
             { 
-                other.transform.parent.GetComponent<FarmScript>().makeWatered(); 
+                other.transform.parent.GetComponent<FarmScript>().MakeWatered(); 
             }
         }
         else if(other.tag == "SeedArea" && RightSelect.action.ReadValue<float>() < 0.1f)

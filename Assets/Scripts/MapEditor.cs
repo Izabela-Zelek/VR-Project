@@ -271,7 +271,7 @@ public class MapEditor : MonoBehaviour
                 break;
             case 4:
                 GameObject newPath = Instantiate(_pathNPC, pos, Quaternion.identity,GameObject.Find("NPCS").transform);
-                GetComponent<NPCCreator>().setNPC(newPath);
+                GetComponent<NPCCreator>().SetNPC(newPath);
                 break;
             case 5:
                 Instantiate(_wanderNPC, pos, Quaternion.identity, GameObject.Find("NPCS").transform);
@@ -366,7 +366,7 @@ public class MapEditor : MonoBehaviour
     /// <param name="rend"></param>
     private void SetChoice(int option, MeshRenderer rend)
     {
-        GetComponent<NPCCreator>().hideAllPath();
+        GetComponent<NPCCreator>().HideAllPath();
         ResetColours();
         _chosenOption = option;
         rend.material = _chosenMat;
@@ -510,7 +510,7 @@ public class MapEditor : MonoBehaviour
             case "Path1Select":
                 if (_chosenOption != 6)
                 {
-                    GetComponent<NPCCreator>().setPath(1);
+                    GetComponent<NPCCreator>().SetPath(1);
                     SetChoice(6, _option6);
                 }
                 else
@@ -521,7 +521,7 @@ public class MapEditor : MonoBehaviour
             case "Path2Select":
                 if (_chosenOption != 7)
                 {
-                    GetComponent<NPCCreator>().setPath(2);
+                    GetComponent<NPCCreator>().SetPath(2);
                     SetChoice(7, _option7);
                 }
                 else
@@ -532,7 +532,7 @@ public class MapEditor : MonoBehaviour
             case "Path3Select":
                 if (_chosenOption != 8)
                 {
-                    GetComponent<NPCCreator>().setPath(3);
+                    GetComponent<NPCCreator>().SetPath(3);
                     SetChoice(8, _option8);
                 }
                 else
@@ -597,24 +597,24 @@ public class MapEditor : MonoBehaviour
             case "CustomPath1":
                 if (_chosenOption != 12 && _unlockCustom5)
                 {
-                    GetComponent<NPCCreator>().setPath(5);
+                    GetComponent<NPCCreator>().SetPath(5);
                     SetChoice(12, _option12);
                 }
                 else
                 {
-                    GetComponent<NPCCreator>().hidePath(5);
+                    GetComponent<NPCCreator>().HidePath(5);
                     ResetChoice();
                 }
                 break;
             case "CustomPath2":
                 if (_chosenOption != 13 && _unlockCustom6)
                 {
-                    GetComponent<NPCCreator>().setPath(6);
+                    GetComponent<NPCCreator>().SetPath(6);
                     SetChoice(13, _option13);
                 }
                 else
                 {
-                    GetComponent<NPCCreator>().hidePath(6);
+                    GetComponent<NPCCreator>().HidePath(6);
                     ResetChoice();
                 }
                 break;

@@ -59,7 +59,7 @@ public class ButtonVR : MonoBehaviour
     /// </summary>
     public void SpawnObject()
     {
-        if (Price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
+        if (Price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().ShopOpen)
         {
             GameObject.Find("GameManager").GetComponent<GameManager>().MinusMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - Price);
             Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y - 0.1f, transform.position.z - 0.24f);

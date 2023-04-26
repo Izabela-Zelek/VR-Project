@@ -48,7 +48,7 @@ public class NPCContoller : MonoBehaviour
     {
         if (!_startPath)
         {
-            if (_startTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+            if (_startTime == GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour)
             {
                 _startPath = true;
                 if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")

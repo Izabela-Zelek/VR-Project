@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (_addMoney && _sleepArea.asleep)
+        if (_addMoney && _sleepArea.Asleep)
         {
             _money = _money + _addedMoney;
             _moneyText.text = "$" + _money.ToString();

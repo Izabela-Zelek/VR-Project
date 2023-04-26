@@ -54,13 +54,13 @@ public class VehicleMover : MonoBehaviour
 
                 if(parent.transform.GetChild(i).GetComponent<RoadCellController>().IsParking)
                 {
-                    parent.transform.GetChild(i).GetComponent<RoadCellController>().setParked(true);
+                    parent.transform.GetChild(i).GetComponent<RoadCellController>().SetParked(true);
                     int neighbour1 = parent.transform.GetChild(i).GetComponent<RoadCellController>().GetNeighbour1();
                     int neighbour2 = parent.transform.GetChild(i).GetComponent<RoadCellController>().GetNeighbour2();
                     int parkingNr = parent.transform.GetChild(i).GetComponent<RoadCellController>().GetParkingNr();
 
-                    parent.transform.parent.transform.GetChild(neighbour1).Find("Parking" + parkingNr).GetComponent<RoadCellController>().setParked(true);
-                    parent.transform.parent.transform.GetChild(neighbour2).Find("Parking" + parkingNr).GetComponent<RoadCellController>().setParked(true);
+                    parent.transform.parent.transform.GetChild(neighbour1).Find("Parking" + parkingNr).GetComponent<RoadCellController>().SetParked(true);
+                    parent.transform.parent.transform.GetChild(neighbour2).Find("Parking" + parkingNr).GetComponent<RoadCellController>().SetParked(true);
                     break;
                 }
             }

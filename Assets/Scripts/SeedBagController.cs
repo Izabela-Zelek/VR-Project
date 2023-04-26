@@ -58,7 +58,7 @@ public class SeedBagController : MonoBehaviour
                 if ((transform.rotation.eulerAngles.x >= 105 && transform.rotation.eulerAngles.x <= 255) || (transform.rotation.eulerAngles.x <= -105 && transform.rotation.eulerAngles.x >= -255) ||
                     (transform.rotation.eulerAngles.z >= 105 && transform.rotation.eulerAngles.z <= 255) || (transform.rotation.eulerAngles.z <= -105 && transform.rotation.eulerAngles.z >= -255))
                 {
-                    if (!_pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().plantState == PlantState.Bare)
+                    if (!_pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().PlantState == PlantState.Bare)
                     {
                         float number = Random.Range(0.0f, 5.0f);
                         other.gameObject.transform.parent.name = other.gameObject.transform.parent.name + number.ToString();
@@ -78,8 +78,8 @@ public class SeedBagController : MonoBehaviour
                         }
                         else
                         {
-                            other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds(_plantController.getPlant(PlantType));
-                            other.gameObject.transform.parent.GetComponent<FarmScript>().setFruitType(_plantController.getFruit(PlantType));
+                            other.gameObject.transform.parent.GetComponent<FarmScript>().PlantSeeds(_plantController.GetPlant(PlantType));
+                            other.gameObject.transform.parent.GetComponent<FarmScript>().SetFruitType(_plantController.GetFruit(PlantType));
                         }
                     }
                 }

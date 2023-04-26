@@ -15,7 +15,7 @@ public class CapsuleController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "00:00" && !_called)
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.ToString("HH:mm") == "00:00" && !_called)
         {
             if (!GameObject.Find("GameManager").GetComponent<GameManager>().IsInMap())
             {
@@ -25,7 +25,7 @@ public class CapsuleController : MonoBehaviour
                 _called = true;
             }
         }
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "07:00" && _called)
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.ToString("HH:mm") == "07:00" && _called)
         {
             _called = false;
         }
@@ -59,7 +59,7 @@ public class CapsuleController : MonoBehaviour
         other.transform.position = AwakeSpawn.transform.position;
         Animator.GetComponent<AnimController>().awaken();
         Asleep = false;
-        GameObject.Find("GameManager").GetComponent<TimeController>().newDay();    
+        GameObject.Find("GameManager").GetComponent<TimeController>().NewDay();    
     }
 
 }

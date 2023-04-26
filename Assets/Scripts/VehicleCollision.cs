@@ -14,7 +14,7 @@ public class VehicleCollision : MonoBehaviour
     }
     private void Update()
     {
-        transform.parent.GetComponent<VehicleMover>().setMove(true);
+        transform.parent.GetComponent<VehicleMover>().SetMove(true);
     }
     /// <summary>
     /// If constantly colliding with collider object, stops movement and plays honking sound if its an NPC or Player
@@ -24,7 +24,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.gameObject.layer != LayerMask.NameToLayer("Ground") && collision.gameObject.layer != LayerMask.NameToLayer("Boundary") && collision.gameObject.layer != LayerMask.NameToLayer("Lights") && collision.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().setMove(false);
+            transform.parent.GetComponent<VehicleMover>().SetMove(false);
 
             if (collision.gameObject.layer == LayerMask.NameToLayer("NPC") || collision.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
@@ -40,7 +40,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.gameObject.layer != LayerMask.NameToLayer("Ground") && collision.gameObject.layer != LayerMask.NameToLayer("Boundary") && collision.gameObject.layer != LayerMask.NameToLayer("Lights") && collision.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().setMove(false);
+            transform.parent.GetComponent<VehicleMover>().SetMove(false);
 
             if (collision.gameObject.layer == LayerMask.NameToLayer("NPC") || collision.gameObject.layer == LayerMask.NameToLayer("NPC"))
              {
@@ -57,7 +57,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.gameObject.layer != LayerMask.NameToLayer("Ground") && collision.gameObject.layer != LayerMask.NameToLayer("Boundary") && collision.gameObject.layer != LayerMask.NameToLayer("Lights") && collision.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().setMove(true);
+            transform.parent.GetComponent<VehicleMover>().SetMove(true);
         }
     }
     /// <summary>
@@ -68,7 +68,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Curb") && other.gameObject.layer != LayerMask.NameToLayer("Ground") && other.gameObject.layer != LayerMask.NameToLayer("Boundary") && other.gameObject.layer != LayerMask.NameToLayer("Lights") && other.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().setMove(false);
+            transform.parent.GetComponent<VehicleMover>().SetMove(false);
 
             if (other.gameObject.layer == LayerMask.NameToLayer("NPC")|| other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
@@ -85,7 +85,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Curb") && other.gameObject.layer != LayerMask.NameToLayer("Ground") && other.gameObject.layer != LayerMask.NameToLayer("Boundary") && other.gameObject.layer != LayerMask.NameToLayer("Lights") && other.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().setMove(false);
+            transform.parent.GetComponent<VehicleMover>().SetMove(false);
 
             if (other.gameObject.layer == LayerMask.NameToLayer("NPC") || other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
@@ -101,7 +101,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.gameObject.layer != LayerMask.NameToLayer("Ground") && collision.gameObject.layer != LayerMask.NameToLayer("Boundary") && collision.gameObject.layer != LayerMask.NameToLayer("Lights") && collision.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().setMove(true);
+            transform.parent.GetComponent<VehicleMover>().SetMove(true);
         }
     }
 }

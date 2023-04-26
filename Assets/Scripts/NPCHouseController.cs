@@ -53,7 +53,7 @@ public class NPCHouseController : MonoBehaviour
                 _npcObject.SetActive(false);
                 _doOnce = true;
             }
-            if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour == _startMoveTime - 1 && GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Minute == 55)
+            if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour == _startMoveTime - 1 && GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Minute == 55)
             {
                 if (_shopKeeper)
                 {

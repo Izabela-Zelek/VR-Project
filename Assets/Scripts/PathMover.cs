@@ -184,7 +184,7 @@ public class PathMover : MonoBehaviour
     private void Update()
     {
         _elapsedTime = Time.time - _startTime;
-        if (EndWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+        if (EndWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour)
         {
             Path.Clear();
             Late = true;
@@ -197,7 +197,7 @@ public class PathMover : MonoBehaviour
         {
             if (!_startPath)
             {
-                if (StartWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+                if (StartWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour)
                 {
                     _startPath = true;
                     if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")

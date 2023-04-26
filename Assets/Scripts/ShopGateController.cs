@@ -32,15 +32,15 @@ public class ShopGateController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "17:00")
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.ToString("HH:mm") == "17:00")
         {
             CloseShop();
-            GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen = false;
+            GameObject.Find("GameManager").GetComponent<GameManager>().ShopOpen = false;
         }
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "07:00")
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.ToString("HH:mm") == "07:00")
         {
             OpenShop();
-            GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen = true;
+            GameObject.Find("GameManager").GetComponent<GameManager>().ShopOpen = true;
         }
     }
     public void CloseShop()

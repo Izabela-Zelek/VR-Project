@@ -35,12 +35,12 @@ public class Slot : MonoBehaviour
         if (ItemInSlot != null) return;
         GameObject obj = other.gameObject;
         if (!IsItem(obj)) return;
-        if (RightSelect.action.ReadValue<float>() >= 0.1f && obj.GetComponent<Item>().isHeld && other.gameObject.GetComponent<Item>().inSlot == false)
+        if (RightSelect.action.ReadValue<float>() >= 0.1f && obj.GetComponent<Item>().IsHeld && other.gameObject.GetComponent<Item>().InSlot == false)
         { 
             SlotImage.color = new Color(0.6156863f, 0.4156863f, 0.5215687f); 
         }
 
-        if (RightSelect.action.ReadValue<float>() == 0 && obj.GetComponent<Item>().isHeld && other.gameObject.GetComponent<Item>().inSlot == false)
+        if (RightSelect.action.ReadValue<float>() == 0 && obj.GetComponent<Item>().IsHeld && other.gameObject.GetComponent<Item>().InSlot == false)
         {
             InsertItem(obj);
         }
@@ -90,14 +90,14 @@ public class Slot : MonoBehaviour
     /// <param name="obj"></param>
     private void InsertItem(GameObject obj)
     {
-        if (!obj.GetComponent<Item>().isLarge)
+        if (!obj.GetComponent<Item>().IsLarge)
         {
             obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
             obj.gameObject.transform.SetParent(gameObject.transform, true);
             obj.gameObject.transform.position = AttachPoint.position;
-            obj.gameObject.transform.eulerAngles = obj.GetComponent<Item>().slotRotation;
-            obj.GetComponent<Item>().inSlot = true;
-            obj.GetComponent<Item>().currentSlot = this;
+            obj.gameObject.transform.eulerAngles = obj.GetComponent<Item>().SlotRotation;
+            obj.GetComponent<Item>().InSlot = true;
+            obj.GetComponent<Item>().CurrentSlot = this;
             ItemInSlot = obj;
             SlotImage.color = Color.gray;
 
@@ -121,9 +121,9 @@ public class Slot : MonoBehaviour
 
             obj.gameObject.transform.localScale = scale;
             obj.gameObject.transform.position = AttachPoint.position;
-            obj.gameObject.transform.rotation = Quaternion.Euler(obj.GetComponent<Item>().slotRotation);
-            obj.GetComponent<Item>().inSlot = true;
-            obj.GetComponent<Item>().currentSlot = this;
+            obj.gameObject.transform.rotation = Quaternion.Euler(obj.GetComponent<Item>().SlotRotation);
+            obj.GetComponent<Item>().InSlot = true;
+            obj.GetComponent<Item>().CurrentSlot = this;
             ItemInSlot = obj;
             SlotImage.color = Color.gray;
             if (obj.GetComponent<BoxCollider>())

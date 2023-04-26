@@ -80,7 +80,7 @@ public class ShopKeeperMover : MonoBehaviour
         {
             if(!_startPath)
             {
-                if (StartWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour && WorkToday())
+                if (StartWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour && WorkToday())
                 {
                     _startPath = true;
                     if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")
@@ -160,7 +160,7 @@ public class ShopKeeperMover : MonoBehaviour
             _rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         }
 
-        if (_endWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+        if (_endWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour)
         {
             _working = false;
             _startPath = true;
