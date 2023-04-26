@@ -1,0 +1,5 @@
+@startuml
+class BirdController {
+}
+MonoBehaviour <|-- BirdController
+@enduml

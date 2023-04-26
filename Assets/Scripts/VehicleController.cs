@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Handles the spawning of new vehicles and assigning road paths
+/// </summary>
 public class VehicleController : MonoBehaviour
 {
     private int _roadChoice;
@@ -9,8 +11,12 @@ public class VehicleController : MonoBehaviour
     private Object[] _carTypes;
     private GameObject _chosenCar;
     private GameObject _newCar;
-    // Start is called before the first frame update
-    void Start()
+    
+    /// <summary>
+    /// Generates a random time interval before next vehicle spawn, generates a random id of a roadpath to assign
+    /// Generates a random car model from a list of all car models
+    /// </summary>
+    private void Start()
     {
         _carTypes = Resources.LoadAll("Vehicles", typeof(GameObject));
         _nextSpawn = Random.Range(7, 15);
@@ -35,16 +41,12 @@ public class VehicleController : MonoBehaviour
         StartCoroutine(WaitForSpawn());
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        Debug.Log(other.name);
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(collision.collider.name);
-
-    }
+    /// <summary>
+    /// Spawns a vehicle each time the wait interval is over and assigns them their roadpath
+    /// Generates a random time interval before next vehicle spawn for next car, generates a random id of a roadpath to assign for next car
+    /// Generates a random car model from a list of all car models for next car
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator WaitForSpawn()
     {
         while (true)

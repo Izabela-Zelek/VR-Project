@@ -1,0 +1,476 @@
+@startuml
+class MapCapsule {
+}
+MonoBehaviour <|-- MapCapsule
+class CapsuleController {
+    + asleep : bool = false
+    Wait(time:float, other:GameObject) : IEnumerator
+}
+MonoBehaviour <|-- CapsuleController
+CapsuleController --> "animator" AnimController
+CapsuleController --> "awakeSpawn" GameObject
+enum PlantState {
+    Bare= 0,
+    Seed= 1,
+    Growing= 2,
+    Grown= 3,
+    Fruit= 4,
+}
+class FarmScript {
+    + plantSeeds(t_plant:GameObject) : void
+    + setFruitType(t_plant:GameObject) : void
+    + makeWatered() : void
+}
+MonoBehaviour <|-- FarmScript
+FarmScript --> "seeds" GameObject
+FarmScript --> "growingPlant" GameObject
+FarmScript --> "dryMat" Material
+FarmScript --> "wetMat" Material
+FarmScript --> "plantState" PlantState
+class ParkerPathMover {
+    + speed : float = 5.0f
+    + mass : float = 5.0f
+    + maxSteer : float = 15.0f
+    + pathRadius : float = 1.0f
+    + currentWaypointIndex : int = 0
+    + id : int
+    + hadLoiter : bool = false
+    + canChangeY : bool = true
+    + first : bool = false
+    + inside : bool = false
+    Start() : void
+    + SetDefaultPath(newId:int) : void
+    Update() : void
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- ParkerPathMover
+ParkerPathMover --> "path<GameObject>" "List`1"
+class TreeController {
+    + woodCount : int
+    + MinusLife(hitPoint:Vector3) : void
+}
+MonoBehaviour <|-- TreeController
+class FruitController {
+    + price : int
+    Update() : void
+}
+MonoBehaviour <|-- FruitController
+class RainController {
+    Update() : void
+    + turnOnWater() : void
+    + turnOffWater() : void
+}
+MonoBehaviour <|-- RainController
+class ActivateTeleportationRay {
+    Update() : void
+}
+MonoBehaviour <|-- ActivateTeleportationRay
+ActivateTeleportationRay --> "rightTeleportation" GameObject
+ActivateTeleportationRay --> "rightActivate" InputActionProperty
+ActivateTeleportationRay --> "rightCancel" InputActionProperty
+class NPCCreator {
+    closestDistance : float
+    + setNPC(npc:GameObject) : void
+    + setPath(npcPath:int) : void
+    + hidePath(npcPath:int) : void
+    + ClearMap() : void
+}
+MonoBehaviour <|-- NPCCreator
+class CSVReader {
+    + ReadCSV() : void
+}
+MonoBehaviour <|-- CSVReader
+class DatabaseController {
+    + Start() : void
+    + sendData(t_cells:List<Vector3>) : void
+    + postAfterGame() : void
+    + PostMethod(jsonData:string) : IEnumerator
+    GetIP() : string
+}
+class GameState {
+    + ip : string
+    + pathNr : int
+    + cell1 : string
+    + cell2 : string
+    + cell3 : string
+    + cell4 : string
+    + cell5 : string
+    + cell6 : string
+    + cell7 : string
+    + cell8 : string
+    + cell9 : string
+    + cell10 : string
+}
+MonoBehaviour <|-- DatabaseController
+DatabaseController o-> "data" GameState
+DatabaseController +-- GameState
+class PathMover {
+    + speed : float = 5.0f
+    + mass : float = 5.0f
+    + maxSteer : float = 15.0f
+    + pathRadius : float = 1.0f
+    + currentWaypointIndex : int = 0
+    + id : int
+    + hadLoiter : bool = false
+    + canChangeY : bool = true
+    + startWalkTime : int = 8
+    + endWalkTime : int = 17
+    + first : bool = false
+    + late : bool = false
+    + inside : bool = false
+    Start() : void
+    + SetDefaultPath(newId:int) : void
+    Update() : void
+    + GetStartTime() : int
+    + Talk(time:int, pos:Vector3) : IEnumerator
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- PathMover
+PathMover --> "path<GameObject>" "List`1"
+class ObjectAvoid {
+    Update() : void
+}
+MonoBehaviour <|-- ObjectAvoid
+class VehicleController {
+    Start() : void
+    OnTriggerEnter(other:Collider) : void
+    OnCollisionEnter(collision:Collision) : void
+}
+MonoBehaviour <|-- VehicleController
+class AnimateHand {
+    Update() : void
+}
+MonoBehaviour <|-- AnimateHand
+AnimateHand --> "pinchAnimationAction" InputActionProperty
+AnimateHand --> "gripAnimationAction" InputActionProperty
+AnimateHand --> "handAnimator" Animator
+class MapEditor {
+    resetColours() : void
+    + Unlock(customID:int) : void
+    + Lock(customID:int) : void
+    + ChooseOption(res:RaycastHit, hitPoint:Vector3, pos:Vector3) : void
+}
+MonoBehaviour <|-- MapEditor
+MapEditor --> "rayInteractor" XRRayInteractor
+MapEditor --> "centre" Transform
+MapEditor --> "left" Transform
+MapEditor --> "camCentre" Transform
+MapEditor --> "camLeft" Transform
+MapEditor --> "rightSelect" InputActionProperty
+MapEditor --> "rotate" InputActionProperty
+MapEditor --> "CustomPath1" GameObject
+MapEditor --> "BinPath1" GameObject
+MapEditor --> "CustomPath2" GameObject
+MapEditor --> "BinPath2" GameObject
+MapEditor --> "loiterText" TextMeshPro
+class SeedBagController {
+    + plantType : string
+    + plotName : string
+    timer : float = 0.5f
+}
+MonoBehaviour <|-- SeedBagController
+SeedBagController --> "seed" GameObject
+SeedBagController --> "rightSelect" InputActionProperty
+SeedBagController --> "SpawnPoint" Transform
+class BirdController {
+}
+MonoBehaviour <|-- BirdController
+class PathDecor {
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- PathDecor
+PathDecor --> "waypoints<Transform>" "List`1"
+PathDecor o-> "debugColour" Color
+class AnimalShop {
+    + price : int
+    isPressed : bool
+    Start() : void
+    + SpawnObject() : void
+}
+MonoBehaviour <|-- AnimalShop
+AnimalShop --> "button" GameObject
+AnimalShop --> "boughtObject" GameObject
+AnimalShop --> "pos" Transform
+AnimalShop --> "onPress" UnityEvent
+AnimalShop --> "onRelease" UnityEvent
+class BirdFormController {
+    + setDirection(pos:Vector3) : void
+}
+MonoBehaviour <|-- BirdFormController
+BirdFormController --> "endPos" Vector3
+class Item {
+    + inSlot : bool = false
+    + isHeld : bool = false
+    + targetTime : float = 1.0f
+    + isLarge : bool = false
+    + Remove() : void
+    + RemoveSmall() : void
+    WaitForItem(_slot:Slot) : IEnumerator
+}
+MonoBehaviour <|-- Item
+Item o-> "slotRotation" Vector3
+Item o-> "currentSlot" Slot
+Item --> "rightSelect" InputActionProperty
+class GrassCollider {
+}
+MonoBehaviour <|-- GrassCollider
+class ObjectAvoidance {
+    OnCollisionEnter(collision:Collision) : void
+    + AddNPC(name:string) : void
+}
+MonoBehaviour <|-- ObjectAvoidance
+class TimeController {
+    + dayNr : int = 1
+    Start() : void
+    Update() : void
+    UpdateSettings() : void
+    + newDay() : void
+    + GetDayOfWeek() : int
+}
+MonoBehaviour <|-- TimeController
+TimeController --> "currentTime" DateTime
+class StreetLampController {
+}
+MonoBehaviour <|-- StreetLampController
+class PathCellController {
+    + GetLoiterTime() : int
+    + IncreaseLoiterTime(newLoiter:int) : void
+    + GetAtShop() : bool
+}
+MonoBehaviour <|-- PathCellController
+class VehicleCollision {
+}
+MonoBehaviour <|-- VehicleCollision
+class Slot {
+    _canPutIn : bool = true
+    IsItem(obj:GameObject) : bool
+    InsertItem(obj:GameObject) : void
+    + RemoveItem() : void
+    + SetPutIn(put:bool) : void
+}
+MonoBehaviour <|-- Slot
+Slot --> "itemInSlot" GameObject
+Slot --> "slotImage" Image
+Slot --> "attachPoint" Transform
+Slot --> "originalColour" Color
+Slot --> "rightSelect" InputActionProperty
+class VehicleMover {
+    + speed : float = 5.0f
+    + mass : float = 5.0f
+    + maxSteer : float = 15.0f
+    + pathRadius : float = 1.0f
+    + currentWaypointIndex : int = 0
+    + id : int
+    Start() : void
+    + SetPointsByChildren(parent:GameObject) : void
+    Update() : void
+    + setMove(move:bool) : void
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- VehicleMover
+VehicleMover --> "path<GameObject>" "List`1"
+class WalkController {
+    Start() : void
+    Update() : void
+}
+MonoBehaviour <|-- WalkController
+class FallController {
+}
+MonoBehaviour <|-- FallController
+class PlantController {
+    + getPlant(name:string) : GameObject
+    + getFruit(name:string) : GameObject
+}
+MonoBehaviour <|-- PlantController
+PlantController --> "turnip" GameObject
+PlantController --> "carrot" GameObject
+PlantController --> "tomato" GameObject
+PlantController --> "FruitTurnip" GameObject
+PlantController --> "FruitCarrot" GameObject
+PlantController --> "FruitTomato" GameObject
+class SellItemController {
+    + GetPrice() : int
+}
+MonoBehaviour <|-- SellItemController
+enum GateAnimStates {
+    Open= 0,
+    Closed= 1,
+}
+class ShopGateController {
+    + {static} <<readonly>> State : int
+    Start() : void
+    + CloseShop() : void
+    + OpenShop() : void
+}
+MonoBehaviour <|-- ShopGateController
+ShopGateController --> "_animator" Animator
+ShopGateController --> "animState" GateAnimStates
+class CanController {
+}
+MonoBehaviour <|-- CanController
+CanController --> "rightSelect" InputActionProperty
+class SellController {
+}
+MonoBehaviour <|-- SellController
+class NPCHouseController {
+    Start() : void
+    Update() : void
+}
+MonoBehaviour <|-- NPCHouseController
+class TrafficLightController {
+    + ReturnGreen1() : int
+    + ReturnGreen2() : int
+}
+MonoBehaviour <|-- TrafficLightController
+TrafficLightController --> "Red" Material
+TrafficLightController --> "LitRed" Material
+TrafficLightController --> "Green" Material
+TrafficLightController --> "LitGreen" Material
+class SeedScript {
+}
+MonoBehaviour <|-- SeedScript
+class LargeItem {
+    + inSlot : bool = false
+    + isHeld : bool = false
+    + targetTime : float = 1.0f
+}
+MonoBehaviour <|-- LargeItem
+LargeItem --> "slotRotation" Vector3
+LargeItem o-> "currentSlot" Slot
+LargeItem --> "rightSelect" InputActionProperty
+LargeItem --> "parent" GameObject
+class FruitBundleController {
+    Update() : void
+}
+MonoBehaviour <|-- FruitBundleController
+enum TiredAnimStates {
+    Woke= 0,
+    Slep= 1,
+}
+class AnimController {
+    + {static} <<readonly>> State : int
+    Start() : void
+    + getTired() : void
+    + awaken() : void
+}
+MonoBehaviour <|-- AnimController
+AnimController --> "_animator" Animator
+AnimController --> "animState" TiredAnimStates
+class RoadCellController {
+    + InFrontOfLight : bool
+    + IsParking : bool
+    + HasCar : bool
+    + TrafficLightInFront : int
+    + setParked(parked:bool) : void
+    + GetNeighbour1() : int
+    + GetNeighbour2() : int
+    + GetParkingNr() : int
+}
+MonoBehaviour <|-- RoadCellController
+class HouseController {
+    + EnterHouse : bool
+}
+MonoBehaviour <|-- HouseController
+class NPCContoller {
+    + circleRadius : float = 100
+    + distance : float = 40
+    + wanderWeight : float = 10.0f
+    + maxSpeed : float = 8
+    + maxForce : float = 10
+    + Avoid(shouldAvoid:bool) : void
+    + Avoid(force:Vector3) : void
+    + GetStartTime() : int
+}
+MonoBehaviour <|-- NPCContoller
+class GameManager {
+    + asleep : bool = false
+    + shopOpen : bool = true
+    Start() : void
+    + UpdateMoney(newMoney:int) : void
+    + MinusMoney(newMoney:int) : void
+    + GetMoney() : int
+    + EnterMap(enter:bool) : void
+    + IsInMap() : bool
+    birdTimer() : IEnumerator
+}
+MonoBehaviour <|-- GameManager
+GameManager --> "player" GameObject
+class MultiFruitStemController {
+    + childCount : int
+    + MinusChild() : void
+}
+MonoBehaviour <|-- MultiFruitStemController
+class AxeController {
+}
+MonoBehaviour <|-- AxeController
+class HoeScript {
+}
+MonoBehaviour <|-- HoeScript
+HoeScript --> "dirtPatch" GameObject
+HoeScript --> "tip" Transform
+HoeScript --> "farm" GameObject
+class ButtonVR {
+    + price : int
+    isPressed : bool
+    Start() : void
+    + SpawnObject() : void
+}
+MonoBehaviour <|-- ButtonVR
+ButtonVR --> "button" GameObject
+ButtonVR --> "boughtObject" GameObject
+ButtonVR --> "onPress" UnityEvent
+ButtonVR --> "onRelease" UnityEvent
+class InventoryVR {
+    UIActive : bool
+}
+MonoBehaviour <|-- InventoryVR
+InventoryVR --> "leftActivate" InputActionProperty
+InventoryVR --> "Inventory" GameObject
+InventoryVR --> "Anchor" GameObject
+class FireBulletOnActivate {
+    + fireSpeed : float = 20
+    Start() : void
+    Update() : void
+    + FireBullet(arg:ActivateEventArgs) : void
+}
+MonoBehaviour <|-- FireBulletOnActivate
+FireBulletOnActivate --> "bullet" GameObject
+FireBulletOnActivate --> "spawnPoint" Transform
+class PathFollowing {
+}
+class "Action`1"<T> {
+}
+MonoBehaviour <|-- PathFollowing
+PathFollowing o-> "OnNewPathCreated<IEnumerable<Vector3>>" "Action`1"
+class CSVWriter {
+    + addFile() : void
+    + WriteCSV(path:List<Vector3>) : int
+    + DeleteFile(pathID:int) : void
+    RefreshEditorProjectWindow() : void
+}
+MonoBehaviour <|-- CSVWriter
+class ShopKeeperMover {
+    + speed : float = 5.0f
+    + mass : float = 5.0f
+    + maxSteer : float = 15.0f
+    + pathRadius : float = 0.001f
+    + currentWaypointIndex : int = 0
+    + id : int
+    + canChangeY : bool = true
+    + StartWalkTime : int = 4
+    + ShopRotation : int = 0
+    + dayOff : int = 0
+    Start() : void
+    Update() : void
+    + GetStartTime() : int
+    + WorkToday() : bool
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- ShopKeeperMover
+ShopKeeperMover --> "path<GameObject>" "List`1"
+@enduml

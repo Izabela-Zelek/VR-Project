@@ -1,0 +1,15 @@
+@startuml
+class Item {
+    + inSlot : bool = false
+    + isHeld : bool = false
+    + targetTime : float = 1.0f
+    + isLarge : bool = false
+    + Remove() : void
+    + RemoveSmall() : void
+    WaitForItem(_slot:Slot) : IEnumerator
+}
+MonoBehaviour <|-- Item
+Item o-> "slotRotation" Vector3
+Item o-> "currentSlot" Slot
+Item --> "rightSelect" InputActionProperty
+@enduml

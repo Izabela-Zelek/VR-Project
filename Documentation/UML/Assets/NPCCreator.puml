@@ -1,0 +1,10 @@
+@startuml
+class NPCCreator {
+    closestDistance : float
+    + setNPC(npc:GameObject) : void
+    + setPath(npcPath:int) : void
+    + hidePath(npcPath:int) : void
+    + ClearMap() : void
+}
+MonoBehaviour <|-- NPCCreator
+@enduml

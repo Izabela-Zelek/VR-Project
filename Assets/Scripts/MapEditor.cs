@@ -10,60 +10,47 @@ using TMPro;
 /// </summary>
 public class MapEditor : MonoBehaviour
 {
-    public XRRayInteractor rayInteractor;
-    public Transform centre;
-    public Transform left;
-    public Transform camCentre;
-    public Transform camLeft;
-
-    public InputActionProperty rightSelect;
-    public InputActionProperty rotate;
-
-
-    private MeshRenderer _option1, _option2, _option3, _option4, _option5, _option6, _option7, _option8, _option9, _option11, _option12, _option13;
-
-    private float mapDistance;
-    private float camDistance;
-    private float multiplier;
-
-    private int chosenOption = 0;
-
-    private bool clicked = false;
-    private bool rotating = false;
-    private bool editPath = false;
-
-    private bool unlockCustom5 = false;
-    private bool unlockCustom6 = false;
-
-    private int hoverNPCCount = 0;
-
-    private GameObject hoverNPCRes;
-    private GameObject hoverNPC;
-
-    private GameObject tree;
-    private GameObject tree2;
-    private GameObject house;
-    private GameObject pathNPC;
-    private GameObject wanderNPC;
-    private GameObject pathSphere;
-
+    public XRRayInteractor RayInteractor;
+    public Transform Centre;
+    public Transform Left;
+    public Transform CamCentre;
+    public Transform CamLeft;
+    public InputActionProperty RightSelect;
+    public InputActionProperty Rotate;
     public GameObject CustomPath1;
     public GameObject BinPath1;
     public GameObject CustomPath2;
     public GameObject BinPath2;
+    public TextMeshPro LoiterText;
+    public bool EditPath { get => _editPath; set => _editPath = value; }
 
-    private Material notChosenMat;
-    private Material chosenMat;
-
-    private bool makingPath = false;
-    private List<Vector3> customPath = new List<Vector3>();
-
-    private List<GameObject> tempMarkers = new List<GameObject>();
+    private MeshRenderer _option1, _option2, _option3, _option4, _option5, _option6, _option7, _option8, _option9, _option11, _option12, _option13;
+    private float _mapDistance;
+    private float _camDistance;
+    private float _multiplier;
+    private int _chosenOption = 0;
+    private bool _clicked = false;
+    private bool _rotating = false;
+    private bool _editPath = false;
+    private bool _unlockCustom5 = false;
+    private bool _unlockCustom6 = false;
+    private int _hoverNPCCount = 0;
+    private GameObject _hoverNPCRes;
+    private GameObject _hoverNPC;
+    private GameObject _tree;
+    private GameObject _tree2;
+    private GameObject _house;
+    private GameObject _pathNPC;
+    private GameObject _wanderNPC;
+    private GameObject _pathSphere;
+    private Material _notChosenMat;
+    private Material _chosenMat;
+    private bool _makingPath = false;
+    private List<Vector3> _customPath = new List<Vector3>();
+    private List<GameObject> _tempMarkers = new List<GameObject>();
     private int _tempMarkerCount = 0;
-    private List<GameObject> followObjects = new List<GameObject>();
-
-    private GameObject chosenMarker;
-    public TextMeshPro loiterText;
+    private List<GameObject> _followObjects = new List<GameObject>();
+    private GameObject _chosenMarker;
 
     /// <summary>
     /// Calculates distance from centre of map to left side of map
@@ -74,22 +61,22 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        mapDistance = Vector3.Distance(centre.position, left.position);
-        camDistance = Vector3.Distance(camCentre.position, camLeft.position);
+        _mapDistance = Vector3.Distance(Centre.position, Left.position);
+        _camDistance = Vector3.Distance(CamCentre.position, CamLeft.position);
 
-        multiplier = camDistance / mapDistance;
+        _multiplier = _camDistance / _mapDistance;
 
-        tree = Resources.Load("Tree_1_1") as GameObject;
-        tree2 = Resources.Load("Tree_1_2") as GameObject;
-        house = Resources.Load("ShopGuyHouse") as GameObject;
-        pathNPC = Resources.Load("PathNPC") as GameObject;
-        wanderNPC = Resources.Load("WanderNPC") as GameObject;
-        pathSphere = Resources.Load("Path_Sphere") as GameObject;
+        _tree = Resources.Load("Tree_1_1") as GameObject;
+        _tree2 = Resources.Load("Tree_1_2") as GameObject;
+        _house = Resources.Load("ShopGuyHouse") as GameObject;
+        _pathNPC = Resources.Load("PathNPC") as GameObject;
+        _wanderNPC = Resources.Load("WanderNPC") as GameObject;
+        _pathSphere = Resources.Load("Path_Sphere") as GameObject;
 
-        notChosenMat = Resources.Load("notChosen_mat") as Material;
-        chosenMat = Resources.Load("chosen_mat") as Material;
+        _notChosenMat = Resources.Load("notChosen_mat") as Material;
+        _chosenMat = Resources.Load("chosen_mat") as Material;
 
-        setUpMeshRenderers();
+        SetUpMeshRenderers();
     }
     /// <summary>
     /// Calculates distance of the selected point of the map and applies multiplier to determine location in game world
@@ -101,57 +88,57 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if(hoverNPCCount == 1)
+        if(_hoverNPCCount == 1)
         {
             RaycastHit res;
-            if (rayInteractor.TryGetCurrent3DRaycastHit(out res))
+            if (RayInteractor.TryGetCurrent3DRaycastHit(out res))
             {
                 if (res.collider.name == "Map")
                 {
                     Vector3 hitPoint = res.point; // the coordinate that the ray hits
 
-                    hoverNPC.transform.position = new Vector3(hitPoint.x - 0.01f, hitPoint.y / 20 * 19, hitPoint.z);
+                    _hoverNPC.transform.position = new Vector3(hitPoint.x - 0.01f, hitPoint.y / 20 * 19, hitPoint.z);
                 }
             }
         }
-        if (rightSelect.action.ReadValue<float>() >= 0.1f)
+        if (RightSelect.action.ReadValue<float>() >= 0.1f)
         {
             RaycastHit res;
-            if (rayInteractor.TryGetCurrent3DRaycastHit(out res))
+            if (RayInteractor.TryGetCurrent3DRaycastHit(out res))
             {
                 Vector3 hitPoint = res.point; // the coordinate that the ray hits
 
-                float yDistance = Mathf.Sqrt((hitPoint.y - centre.position.y) * (hitPoint.y - centre.position.y));
-                float zDistance = Mathf.Sqrt((hitPoint.z - centre.position.z) * (hitPoint.z - centre.position.z));
+                float yDistance = Mathf.Sqrt((hitPoint.y - Centre.position.y) * (hitPoint.y - Centre.position.y));
+                float zDistance = Mathf.Sqrt((hitPoint.z - Centre.position.z) * (hitPoint.z - Centre.position.z));
 
-                if (hitPoint.z > centre.position.z)
+                if (hitPoint.z > Centre.position.z)
                 {
                     zDistance = -zDistance;
                 }
-                zDistance = zDistance * multiplier;
+                zDistance = zDistance * _multiplier;
 
-                if (hitPoint.y > centre.position.y)
+                if (hitPoint.y > Centre.position.y)
                 {
                     yDistance = -yDistance;
                 }
-                yDistance = yDistance * multiplier;
+                yDistance = yDistance * _multiplier;
 
-                Vector3 pos = new Vector3(camCentre.position.x + yDistance, 0.0f, camCentre.position.z + zDistance);
+                Vector3 pos = new Vector3(CamCentre.position.x + yDistance, 0.0f, CamCentre.position.z + zDistance);
 
-                if (!clicked)
+                if (!_clicked)
                 {
                     ChooseOption(res, hitPoint, pos);
                 }
 
-                foreach (GameObject item in followObjects)
+                foreach (GameObject item in _followObjects)
                 {
                     item.transform.position = new Vector3(pos.x, item.transform.position.y, pos.z);
                 }
 
-                if (rotate.action.ReadValue<Vector2>().x > 0)
+                if (Rotate.action.ReadValue<Vector2>().x > 0)
                 {
-                    rotating = true;
-                    foreach (GameObject item in followObjects)
+                    _rotating = true;
+                    foreach (GameObject item in _followObjects)
                     {
                         for (int i = 0; i < item.transform.childCount; i++)
                         {
@@ -164,10 +151,10 @@ public class MapEditor : MonoBehaviour
                         item.transform.eulerAngles = new Vector3(item.transform.eulerAngles.x, item.transform.eulerAngles.y + 1, item.transform.eulerAngles.z);
                     }
                 }
-                else if (rotate.action.ReadValue<Vector2>().x < 0)
+                else if (Rotate.action.ReadValue<Vector2>().x < 0)
                 {
-                    rotating = true;
-                    foreach (GameObject item in followObjects)
+                    _rotating = true;
+                    foreach (GameObject item in _followObjects)
                     {
                         for(int i =0; i < item.transform.childCount;i++)
                         {
@@ -184,9 +171,9 @@ public class MapEditor : MonoBehaviour
             }
            
         }
-        else if (rightSelect.action.ReadValue<float>() <= 0.0f)
+        else if (RightSelect.action.ReadValue<float>() <= 0.0f)
         {
-            foreach (GameObject item in followObjects)
+            foreach (GameObject item in _followObjects)
             {
                 for (int i = 0; i < item.transform.childCount; i++)
                 {
@@ -197,9 +184,9 @@ public class MapEditor : MonoBehaviour
                 }
 
             }
-            clicked = false;
-            followObjects.Clear();
-            rotating = false;
+            _clicked = false;
+            _followObjects.Clear();
+            _rotating = false;
         }
 
 
@@ -207,25 +194,25 @@ public class MapEditor : MonoBehaviour
     /// <summary>
     /// Sets all buttons to grey 'unselected' colour
     /// </summary>
-    void resetColours()
+    private void ResetColours()
     {
-        _option1.material = notChosenMat;
-        _option2.material = notChosenMat;
-        _option3.material = notChosenMat;
-        _option4.material = notChosenMat;
-        _option5.material = notChosenMat;
-        _option6.material = notChosenMat;
-        _option7.material = notChosenMat;
-        _option8.material = notChosenMat;
-        _option9.material = notChosenMat;
-        _option11.material = notChosenMat;
-        if(unlockCustom5)
+        _option1.material = _notChosenMat;
+        _option2.material = _notChosenMat;
+        _option3.material = _notChosenMat;
+        _option4.material = _notChosenMat;
+        _option5.material = _notChosenMat;
+        _option6.material = _notChosenMat;
+        _option7.material = _notChosenMat;
+        _option8.material = _notChosenMat;
+        _option9.material = _notChosenMat;
+        _option11.material = _notChosenMat;
+        if(_unlockCustom5)
         {
-            _option12.material = notChosenMat;
+            _option12.material = _notChosenMat;
         }
-        if(unlockCustom6)
+        if(_unlockCustom6)
         {
-            _option13.material = notChosenMat;
+            _option13.material = _notChosenMat;
         }
     }
 
@@ -234,12 +221,12 @@ public class MapEditor : MonoBehaviour
     /// or spawns selected object on the hit position (if clicked on an object button beforehand)
     /// </summary>
     /// <param name="pos"></param>
-    private void spawnObject(Vector3 pos)
+    private void SpawnObject(Vector3 pos)
     {
 
-        clicked = true;
+        _clicked = true;
 
-        switch (chosenOption)
+        switch (_chosenOption)
         {
             case 0:
                 Collider[] hitColliders = Physics.OverlapSphere(pos, 1.5f);
@@ -248,8 +235,8 @@ public class MapEditor : MonoBehaviour
                 {
                     if (hitColliders[count].tag == "marker")
                     {
-                        chosenMarker = hitColliders[count].gameObject;
-                        loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                        _chosenMarker = hitColliders[count].gameObject;
+                        LoiterText.text = _chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
                     }
                     if (hitColliders[count].tag != "Ground" && hitColliders[count].tag != "Plane" && hitColliders[count].tag != "Boundary" && hitColliders[count].tag != "Parent" && hitColliders[count].tag != "EntryPoints" && hitColliders[count].tag != "Path")
                     {
@@ -262,7 +249,7 @@ public class MapEditor : MonoBehaviour
                             }
                             hit = hit.transform.parent.gameObject;
                         }
-                        followObjects.Add(hit);
+                        _followObjects.Add(hit);
                         break;
                     }
                     else
@@ -274,28 +261,28 @@ public class MapEditor : MonoBehaviour
 
                 break;
             case 1:
-                Instantiate(tree, pos, Quaternion.identity, GameObject.Find("Trees").transform);
+                Instantiate(_tree, pos, Quaternion.identity, GameObject.Find("Trees").transform);
                 break;
             case 2:
-                Instantiate(tree2, pos, Quaternion.identity, GameObject.Find("Trees").transform);
+                Instantiate(_tree2, pos, Quaternion.identity, GameObject.Find("Trees").transform);
                 break;
             case 3:
-                Instantiate(house, pos, Quaternion.identity, GameObject.Find("Houses").transform);
+                Instantiate(_house, pos, Quaternion.identity, GameObject.Find("Houses").transform);
                 break;
             case 4:
-                GameObject newPath = Instantiate(pathNPC, pos, Quaternion.identity,GameObject.Find("NPCS").transform);
+                GameObject newPath = Instantiate(_pathNPC, pos, Quaternion.identity,GameObject.Find("NPCS").transform);
                 GetComponent<NPCCreator>().setNPC(newPath);
                 break;
             case 5:
-                Instantiate(wanderNPC, pos, Quaternion.identity, GameObject.Find("NPCS").transform);
+                Instantiate(_wanderNPC, pos, Quaternion.identity, GameObject.Find("NPCS").transform);
                 break;
             case 9:
                 Collider[] hitColliders2 = Physics.OverlapSphere(pos, 1.0f);
                 foreach (var hitCollider in hitColliders2)
                 {
-                    if ((hitCollider.tag == "Ground" || hitCollider.tag == "Plane") && makingPath && _tempMarkerCount < 14)
+                    if ((hitCollider.tag == "Ground" || hitCollider.tag == "Plane") && _makingPath && _tempMarkerCount < 14)
                     {
-                        tempMarkers.Add(Instantiate(pathSphere, pos, Quaternion.identity));
+                        _tempMarkers.Add(Instantiate(_pathSphere, pos, Quaternion.identity));
                         _tempMarkerCount++;
                     }
                 }
@@ -306,7 +293,7 @@ public class MapEditor : MonoBehaviour
                 {
                     if (hitCollider.tag == "marker" )
                     {
-                        followObjects.Add(hitCollider.gameObject);
+                        _followObjects.Add(hitCollider.gameObject);
                     }
                 }
                 break;
@@ -317,7 +304,7 @@ public class MapEditor : MonoBehaviour
     /// <summary>
     /// Grabs and stores mesh renderers of each button on map/level editor
     /// </summary>
-    private void setUpMeshRenderers()
+    private void SetUpMeshRenderers()
     {
         _option1 = GameObject.Find("Tree1").GetComponent<MeshRenderer>();
         _option2 = GameObject.Find("Tree2").GetComponent<MeshRenderer>();
@@ -343,7 +330,7 @@ public class MapEditor : MonoBehaviour
             newPath.transform.parent = GameObject.Find("Paths").transform;
 
             GameObject newCell;
-            for(int i = 0; i < customPath.Count;i++)
+            for(int i = 0; i < _customPath.Count;i++)
             {
                 if(i == 0)
                 {
@@ -354,9 +341,9 @@ public class MapEditor : MonoBehaviour
                     newCell = new GameObject("Cell" + i);
                 }
                 newCell.transform.parent = newPath.transform;
-                newCell.transform.localPosition = customPath[i];
+                newCell.transform.localPosition = _customPath[i];
                 newCell.AddComponent<PathCellController>();
-                GameObject temp = Instantiate(pathSphere, newCell.transform.position, Quaternion.identity,newCell.transform);
+                GameObject temp = Instantiate(_pathSphere, newCell.transform.position, Quaternion.identity,newCell.transform);
                 temp.SetActive(false);
             }
         }
@@ -367,9 +354,9 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     private void ResetChoice()
     {
-        resetColours();
-        chosenOption = 0;
-        clicked = true;
+        ResetColours();
+        _chosenOption = 0;
+        _clicked = true;
     }
 
     /// <summary>
@@ -379,14 +366,15 @@ public class MapEditor : MonoBehaviour
     /// <param name="rend"></param>
     private void SetChoice(int option, MeshRenderer rend)
     {
-        resetColours();
-        chosenOption = option;
-        rend.material = chosenMat;
-        clicked = true;
-        if(hoverNPCCount != 0)
+        GetComponent<NPCCreator>().hideAllPath();
+        ResetColours();
+        _chosenOption = option;
+        rend.material = _chosenMat;
+        _clicked = true;
+        if(_hoverNPCCount != 0)
         {
-            Destroy(hoverNPC);
-            hoverNPCCount = 0;
+            Destroy(_hoverNPC);
+            _hoverNPCCount = 0;
         }
     }
 
@@ -395,9 +383,9 @@ public class MapEditor : MonoBehaviour
     /// </summary>
     private void UpdatePathPos()
     {
-        foreach(GameObject marker in tempMarkers)
+        foreach(GameObject marker in _tempMarkers)
         {
-            customPath.Add(marker.transform.localPosition);
+            _customPath.Add(marker.transform.localPosition);
         }
     }
 
@@ -409,14 +397,14 @@ public class MapEditor : MonoBehaviour
     {
         if(customID == 5)
         {
-            unlockCustom5 = true;
+            _unlockCustom5 = true;
             CustomPath1.SetActive(true);
             BinPath1.SetActive(true);
             _option12 = GameObject.Find("CustomPath1").GetComponent<MeshRenderer>();
         }
         else if (customID == 6)
         {
-            unlockCustom6 = true;
+            _unlockCustom6 = true;
             CustomPath2.SetActive(true);
             BinPath2.SetActive(true);
             _option13 = GameObject.Find("CustomPath2").GetComponent<MeshRenderer>();
@@ -430,13 +418,13 @@ public class MapEditor : MonoBehaviour
     {
         if (customID == 5)
         {
-            unlockCustom5 = false;
+            _unlockCustom5 = false;
             GameObject.Find("CustomPath1").gameObject.SetActive(false);
             GameObject.Find("BinPath1").gameObject.SetActive(false);
         }
         else if (customID == 6)
         {
-            unlockCustom6 = false;
+            _unlockCustom6 = false;
             GameObject.Find("CustomPath2").gameObject.SetActive(false);
             GameObject.Find("BinPath2").gameObject.SetActive(false);
         }
@@ -454,7 +442,7 @@ public class MapEditor : MonoBehaviour
         switch (res.collider.name)
         {
             case "Tree1":
-                if (chosenOption != 1)
+                if (_chosenOption != 1)
                 {
                     SetChoice(1, _option1);
                 }
@@ -464,7 +452,7 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "Tree2":
-                if (chosenOption != 2)
+                if (_chosenOption != 2)
                 {
                     SetChoice(2, _option2);
                 }
@@ -474,7 +462,7 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "House":
-                if (chosenOption != 3)
+                if (_chosenOption != 3)
                 {
                     SetChoice(3, _option3);
                 }
@@ -484,43 +472,43 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "PathNPC":
-                if (chosenOption != 4)
+                if (_chosenOption != 4)
                 {
                     SetChoice(4, _option4);
-                    if (hoverNPCCount == 0)
+                    if (_hoverNPCCount == 0)
                     {
-                        hoverNPCCount++;
-                        hoverNPCRes = Resources.Load("HoverDude") as GameObject;
-                        hoverNPC = Instantiate(hoverNPCRes, hitPoint, Quaternion.Euler(0, 270, 0));
+                        _hoverNPCCount++;
+                        _hoverNPCRes = Resources.Load("HoverDude") as GameObject;
+                        _hoverNPC = Instantiate(_hoverNPCRes, hitPoint, Quaternion.Euler(0, 270, 0));
                     }
                 }
                 else
                 {
-                    Destroy(hoverNPC);
-                    hoverNPCCount = 0;
+                    Destroy(_hoverNPC);
+                    _hoverNPCCount = 0;
                     ResetChoice();
                 }
                 break;
             case "WanderNPC":
-                if (chosenOption != 5)
+                if (_chosenOption != 5)
                 {
                     SetChoice(5, _option5);
-                    if (hoverNPCCount == 0)
+                    if (_hoverNPCCount == 0)
                     {
-                        hoverNPCCount++;
-                        hoverNPCRes = Resources.Load("HoverDude") as GameObject;
-                        hoverNPC = Instantiate(hoverNPCRes, hitPoint, Quaternion.Euler(0, 270, 0));
+                        _hoverNPCCount++;
+                        _hoverNPCRes = Resources.Load("HoverDude") as GameObject;
+                        _hoverNPC = Instantiate(_hoverNPCRes, hitPoint, Quaternion.Euler(0, 270, 0));
                     }
                 }
                 else
                 {
-                    Destroy(hoverNPC);
-                    hoverNPCCount = 0;
+                    Destroy(_hoverNPC);
+                    _hoverNPCCount = 0;
                     ResetChoice();
                 }
                 break;
             case "Path1Select":
-                if (chosenOption != 6)
+                if (_chosenOption != 6)
                 {
                     GetComponent<NPCCreator>().setPath(1);
                     SetChoice(6, _option6);
@@ -531,7 +519,7 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "Path2Select":
-                if (chosenOption != 7)
+                if (_chosenOption != 7)
                 {
                     GetComponent<NPCCreator>().setPath(2);
                     SetChoice(7, _option7);
@@ -542,7 +530,7 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "Path3Select":
-                if (chosenOption != 8)
+                if (_chosenOption != 8)
                 {
                     GetComponent<NPCCreator>().setPath(3);
                     SetChoice(8, _option8);
@@ -553,33 +541,33 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "CreateCustom":
-                if (chosenOption != 9)
+                if (_chosenOption != 9)
                 {
                     SetChoice(9, _option9);
-                    makingPath = true;
-                    customPath.Clear();
+                    _makingPath = true;
+                    _customPath.Clear();
                 }
                 else
                 {
                     ResetChoice();
-                    makingPath = false;
+                    _makingPath = false;
                 }
                 break;
             case "Save":
-                if (chosenOption != 10)
+                if (_chosenOption != 10)
                 {
                     UpdatePathPos();
                     GetComponent<CSVWriter>().addFile();
-                    CreateNewPath(GetComponent<CSVWriter>().WriteCSV(customPath));
-                    makingPath = false;
-                    customPath.Clear();
-                    foreach (GameObject marker in tempMarkers)
+                    CreateNewPath(GetComponent<CSVWriter>().WriteCSV(_customPath));
+                    _makingPath = false;
+                    _customPath.Clear();
+                    foreach (GameObject marker in _tempMarkers)
                     {
                         Destroy(marker);
                     }
-                    tempMarkers.Clear();
+                    _tempMarkers.Clear();
                     _tempMarkerCount = 0;
-                    clicked = true;
+                    _clicked = true;
                 }
                 else
                 {
@@ -595,19 +583,19 @@ public class MapEditor : MonoBehaviour
                 Destroy(GameObject.Find("Path6"));
                 break;
             case "EditPath":
-                if (chosenOption != 11)
+                if (_chosenOption != 11)
                 {
                     SetChoice(11, _option11);
-                    editPath = true;
+                    EditPath = true;
                 }
                 else
                 {
                     ResetChoice();
-                    editPath = false;
+                    EditPath = false;
                 }
                 break;
             case "CustomPath1":
-                if (chosenOption != 12 && unlockCustom5)
+                if (_chosenOption != 12 && _unlockCustom5)
                 {
                     GetComponent<NPCCreator>().setPath(5);
                     SetChoice(12, _option12);
@@ -619,7 +607,7 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "CustomPath2":
-                if (chosenOption != 13 && unlockCustom6)
+                if (_chosenOption != 13 && _unlockCustom6)
                 {
                     GetComponent<NPCCreator>().setPath(6);
                     SetChoice(13, _option13);
@@ -634,15 +622,15 @@ public class MapEditor : MonoBehaviour
                 GameObject.Find("GameManager").GetComponent<GameManager>().EnterMap(false);
                 break;
             case "LoiterLeft":
-                chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() - 1);
-                loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                _chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(_chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() - 1);
+                LoiterText.text = _chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
                 break;
             case "LoiterRight":
-                chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() + 1);
-                loiterText.text = chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
+                _chosenMarker.transform.parent.GetComponent<PathCellController>().IncreaseLoiterTime(_chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime() + 1);
+                LoiterText.text = _chosenMarker.transform.parent.GetComponent<PathCellController>().GetLoiterTime().ToString();
                 break;
             case "Map":
-                spawnObject(pos);
+                SpawnObject(pos);
                 break;
         }
     }

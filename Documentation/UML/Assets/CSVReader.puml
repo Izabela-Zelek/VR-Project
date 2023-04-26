@@ -1,0 +1,6 @@
+@startuml
+class CSVReader {
+    + ReadCSV() : void
+}
+MonoBehaviour <|-- CSVReader
+@enduml

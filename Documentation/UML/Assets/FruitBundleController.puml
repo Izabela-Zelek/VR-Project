@@ -1,0 +1,6 @@
+@startuml
+class FruitBundleController {
+    Update() : void
+}
+MonoBehaviour <|-- FruitBundleController
+@enduml

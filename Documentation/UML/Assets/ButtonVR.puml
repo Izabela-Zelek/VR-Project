@@ -1,0 +1,13 @@
+@startuml
+class ButtonVR {
+    + price : int
+    isPressed : bool
+    Start() : void
+    + SpawnObject() : void
+}
+MonoBehaviour <|-- ButtonVR
+ButtonVR --> "button" GameObject
+ButtonVR --> "boughtObject" GameObject
+ButtonVR --> "onPress" UnityEvent
+ButtonVR --> "onRelease" UnityEvent
+@enduml

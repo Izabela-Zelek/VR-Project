@@ -1,0 +1,12 @@
+@startuml
+class LargeItem {
+    + inSlot : bool = false
+    + isHeld : bool = false
+    + targetTime : float = 1.0f
+}
+MonoBehaviour <|-- LargeItem
+LargeItem --> "slotRotation" Vector3
+LargeItem o-> "currentSlot" Slot
+LargeItem --> "rightSelect" InputActionProperty
+LargeItem --> "parent" GameObject
+@enduml

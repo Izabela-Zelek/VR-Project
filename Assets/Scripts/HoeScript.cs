@@ -7,18 +7,20 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// </summary>
 public class HoeScript : MonoBehaviour
 {
-    public GameObject dirtPatch;
-    public Transform tip;
-    public GameObject farm;
-    private List<Vector3> dirtPos = new List<Vector3>();
-    private XRDirectInteractor rightInteractor;
-    private XRDirectInteractor leftInteractor;
-    private bool free = true;
+    public GameObject DirtPatch;
+    public Transform Tip;
+    public GameObject Farm;
+
+    private List<Vector3> _dirtPos = new List<Vector3>();
+    private XRDirectInteractor _rightInteractor;
+    private XRDirectInteractor _leftInteractor;
+    private bool _free = true;
     private AudioSource _hoe;
+
     private void Start()
     {
-        rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
-        leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
+        _rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
+        _leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
         _hoe = GetComponent<AudioSource>();
     }
 
@@ -30,18 +32,18 @@ public class HoeScript : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+        if ((_rightInteractor.interactablesSelected.Count > 0 && _rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (_leftInteractor.interactablesSelected.Count > 0 && _leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
         { 
             if (gameObject.activeSelf)
             {
-                if (tip.transform.position.y <= 0.17f)
+                if (Tip.transform.position.y <= 0.17f)
                 {
-                    Vector3 pos = new Vector3(Mathf.Round(tip.position.x), 0, Mathf.Round(tip.position.z));
-                    for (int i = 0; i < dirtPos.Count; i++)
+                    Vector3 pos = new Vector3(Mathf.Round(Tip.position.x), 0, Mathf.Round(Tip.position.z));
+                    for (int i = 0; i < _dirtPos.Count; i++)
                     {
-                        if (pos == dirtPos[i])
+                        if (pos == _dirtPos[i])
                         {
-                            free = false;
+                            _free = false;
                         }
                     }
                     RaycastHit hit;
@@ -49,16 +51,16 @@ public class HoeScript : MonoBehaviour
                     {
                         if (hit.collider.name != "FarmLand")
                         {
-                            free = false;
+                            _free = false;
                         }
                     }
-                    if (free)
+                    if (_free)
                     {
                         _hoe.Play();
-                        Instantiate(dirtPatch, pos, Quaternion.identity, farm.transform);
-                        dirtPos.Add(pos);
+                        Instantiate(DirtPatch, pos, Quaternion.identity, Farm.transform);
+                        _dirtPos.Add(pos);
                     }
-                    free = true;
+                    _free = true;
                 }
             }
         }

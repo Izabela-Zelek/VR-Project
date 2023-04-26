@@ -1,13 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Handles the avoidance of objects for the NPCs
+/// </summary>
 public class ObjectAvoidance : MonoBehaviour
 {
-    private Vector3 avoidance_force;
-    private float max_avoidance = 60;
+    private Vector3 _avoidanceForce;
+    private float _maxWAvoidance = 60;
     private List<string> _metNPC = new List<string>();
 
+    /// <summary>
+    /// Upon colliding with a trigger object
+    /// If object is an NPC, generates a random chance the NPC will stop for a chat. Adds the met NPC into a list so as to not be stuck in a loop
+    /// If other object, calculates an avoidance force by reflecting the direction the NPC is coming from
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("NPC"))
@@ -35,15 +43,20 @@ public class ObjectAvoidance : MonoBehaviour
         {
             if (transform.parent.GetComponent<Rigidbody>().velocity != Vector3.zero)
             {
-                avoidance_force = Vector3.Reflect(transform.forward, other.transform.position).normalized;
-                avoidance_force = avoidance_force.normalized * max_avoidance;
+                _avoidanceForce = Vector3.Reflect(transform.forward, other.transform.position).normalized;
+                _avoidanceForce = _avoidanceForce.normalized * _maxWAvoidance;
 
-                transform.parent.GetComponent<NPCContoller>().Avoid(avoidance_force);
+                transform.parent.GetComponent<NPCContoller>().Avoid(_avoidanceForce);
             }
         }
     }
-
-    void OnCollisionEnter(Collision collision)
+    /// <summary>
+    /// Upon colliding with a collider object
+    /// If object is an NPC, generates a random chance the NPC will stop for a chat. Adds the met NPC into a list so as to not be stuck in a loop
+    /// If other object, calculates an avoidance force by reflecting the direction the NPC is coming from
+    /// </summary>
+    /// <param name="other"></param>
+    private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("NPC"))
         {
@@ -73,14 +86,18 @@ public class ObjectAvoidance : MonoBehaviour
             Debug.Log(collision.collider.name);
             if (transform.parent.GetComponent<Rigidbody>().velocity != Vector3.zero)
             {
-                avoidance_force = Vector3.Reflect(transform.forward, collision.transform.position).normalized;
-                avoidance_force = avoidance_force.normalized * max_avoidance;
+                _avoidanceForce = Vector3.Reflect(transform.forward, collision.transform.position).normalized;
+                _avoidanceForce = _avoidanceForce.normalized * _maxWAvoidance;
 
-                transform.parent.GetComponent<NPCContoller>().Avoid(avoidance_force);
+                transform.parent.GetComponent<NPCContoller>().Avoid(_avoidanceForce);
             }
         }
     }
 
+    /// <summary>
+    /// Adds passed in npc name into a list of met NPCs
+    /// </summary>
+    /// <param name="name"></param>
     public void AddNPC(string name)
     {
         _metNPC.Add(name);

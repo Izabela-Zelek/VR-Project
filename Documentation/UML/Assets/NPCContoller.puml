@@ -1,0 +1,13 @@
+@startuml
+class NPCContoller {
+    + circleRadius : float = 100
+    + distance : float = 40
+    + wanderWeight : float = 10.0f
+    + maxSpeed : float = 8
+    + maxForce : float = 10
+    + Avoid(shouldAvoid:bool) : void
+    + Avoid(force:Vector3) : void
+    + GetStartTime() : int
+}
+MonoBehaviour <|-- NPCContoller
+@enduml

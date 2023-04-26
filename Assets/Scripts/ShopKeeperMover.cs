@@ -2,203 +2,224 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+/// <summary>
+/// Handles the path following steering behaviour of shopkeeper NPCs
+/// </summary>
 public class ShopKeeperMover : MonoBehaviour
 {
-    public List<GameObject> path;
-    public float speed = 5.0f;
-    public float mass = 5.0f;
-    public float maxSteer = 15.0f;
-    public float pathRadius = 0.001f;
-    public int currentWaypointIndex = 0;
-    private Animator animator;
-
-    private bool isStopped = false;
-    private Vector3 targetWaypoint;
-    private Vector3 desiredVelocity;
-    private Vector3 steeringForce;
-    private Rigidbody rb;
-    private float yPos;
-    private bool pathForward = true;
-    public int id = -1;
-    private bool onGround = true;
-
-    public bool canChangeY = true;
-    private float startTime;
-    private float duration = 10.0f;
-    private float elapsedTime;
-    private bool startPath = false;
+    public List<GameObject> Path;
+    public float Speed = 5.0f;
+    public float Mass = 5.0f;
+    public float MaxSteer = 15.0f;
+    public float PathRadius = 0.001f;
+    public int CurrentWaypointIndex = 0;
+    public int Id = -1;
+    public bool CanChangeY = true;
     public int StartWalkTime = 4;
-    private int endWalkTime = 17;
-    private bool working = false;
     public int ShopRotation = 0;
-    public int dayOff = 0;
+    public int DayOff = 0;
 
-    void Start()
+    private Animator _animator;
+    private bool _isStopped = false;
+    private Vector3 _targetWaypoint;
+    private Vector3 _desiredVelocity;
+    private Vector3 _steeringForce;
+    private Rigidbody _rb;
+    private float _yPos;
+    private bool _pathForward = true;
+    private bool _onGround = true;
+    private float _startTime;
+    private float _duration = 10.0f;
+    private float _elapsedTime;
+    private bool _startPath = false;
+    private int _endWalkTime = 17;
+    private bool _working = false;
+    
+    /// <summary>
+    /// Calls for function to set up initial path
+    /// </summary>
+    private void Start()
     { 
-        rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
         SetPointsByChildren();
-        yPos = transform.localPosition.y;
-        animator = GetComponent<Animator>();
-        startTime = Time.time;
+        _yPos = transform.localPosition.y;
+        _animator = GetComponent<Animator>();
+        _startTime = Time.time;
     }
-
+    /// <summary>
+    /// Finds the path gameobject with the assigned path id and adds all children positions to a list
+    /// Calls for function to find the closest position in that list
+    /// Increments path by one as the first cell is the house doorstep
+    /// </summary>
     private void SetPointsByChildren()
     {
-        if (id != -1 && path.Count == 0)
+        if (Id != -1 && Path.Count == 0)
         {
-            GameObject pathObject = GameObject.Find("Path" + id);
+            GameObject pathObject = GameObject.Find("Path" + Id);
             for (int i = 0; i < pathObject.transform.childCount; i++)
             {
-                path.Add(pathObject.transform.GetChild(i).gameObject);
+                Path.Add(pathObject.transform.GetChild(i).gameObject);
             }
 
-            targetWaypoint = GetClosestPointOnPath(transform.position);
-            currentWaypointIndex++;
-            targetWaypoint = path[currentWaypointIndex].transform.position;
+            _targetWaypoint = GetClosestPointOnPath(transform.position);
+            CurrentWaypointIndex++;
+            _targetWaypoint = Path[CurrentWaypointIndex].transform.position;
         }
     }
-
-    void Update()
+    /// <summary>
+    /// If the NPC is outside and they have a path, they will start walking that path
+    /// Starting from the previously calculated closest position, once the NPC position is within bounds of the next position in the list, they current waypoint gets incremented
+    /// Changes animation based on whether they are walking or attending their shop
+    /// Iterates backwards through path once the current world time is equal to their sleep time
+    /// Adds force to gameobject to move in the direction of the next point - with smoothing
+    /// </summary>
+    private void Update()
     {
-        elapsedTime = Time.time - startTime;
-        if (path.Count > 0 && !working)
+        _elapsedTime = Time.time - _startTime;
+        if (Path.Count > 0 && !_working)
         {
-            if(!startPath)
+            if(!_startPath)
             {
                 if (StartWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour && WorkToday())
                 {
-                    startPath = true;
-                    if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                    _startPath = true;
+                    if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                     {
-                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                        _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
                     }
                 }
             }
-            if (startPath)
+            if (_startPath)
             {
-                float distance = Vector3.Distance(transform.position, targetWaypoint);
+                float distance = Vector3.Distance(transform.position, _targetWaypoint);
 
-                if (distance <= pathRadius)
+                if (distance <= PathRadius)
                 {
-                    if (!isStopped)
+                    if (!_isStopped)
                     {
-                        if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                        if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                         {
-                            animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                            _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
                         }
-                        if (currentWaypointIndex >= path.Count - 1 && pathForward)
+                        if (CurrentWaypointIndex >= Path.Count - 1 && _pathForward)
                         {
-                            working = true;
-                            pathForward = false;
-                            currentWaypointIndex = path.Count - 1;
+                            _working = true;
+                            _pathForward = false;
+                            CurrentWaypointIndex = Path.Count - 1;
                         }
-                        if (pathForward && !working)
+                        if (_pathForward && !_working)
                         {
-                            currentWaypointIndex++;
+                            CurrentWaypointIndex++;
                         }
-                        else if (!pathForward && !working)
+                        else if (!_pathForward && !_working)
                         {
-                            currentWaypointIndex--;
+                            CurrentWaypointIndex--;
                         }
                         
-                       if (currentWaypointIndex < 0 && !pathForward && !working)
+                       if (CurrentWaypointIndex < 0 && !_pathForward && !_working)
                         {
-                            pathForward = true;
-                            currentWaypointIndex = 1;
+                            _pathForward = true;
+                            CurrentWaypointIndex = 1;
                             gameObject.SetActive(false);
                         }
-                        if (!working)
+                        if (!_working)
                         { 
-                            targetWaypoint = path[currentWaypointIndex].transform.position; 
+                            _targetWaypoint = Path[CurrentWaypointIndex].transform.position; 
                         }
                     }
 
                 }
 
-                if (!isStopped)
+                if (!_isStopped)
                 {
-                    desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
-                    steeringForce = desiredVelocity - rb.velocity;
-                    steeringForce /= mass;
+                    _desiredVelocity = (_targetWaypoint - transform.position).normalized * Speed;
+                    _steeringForce = _desiredVelocity - _rb.velocity;
+                    _steeringForce /= Mass;
 
-                    if (steeringForce.magnitude > maxSteer)
+                    if (_steeringForce.magnitude > MaxSteer)
                     {
-                        steeringForce = steeringForce.normalized * maxSteer;
+                        _steeringForce = _steeringForce.normalized * MaxSteer;
                     }
 
-                    rb.AddForce(steeringForce);
-                    if (rb.velocity != Vector3.zero)
+                    _rb.AddForce(_steeringForce);
+                    if (_rb.velocity != Vector3.zero)
                     {
-                        Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
+                        Quaternion lookRotation = Quaternion.LookRotation(_rb.velocity, Vector3.up);
                         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
                     }
-                    transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+                    transform.localPosition = new Vector3(transform.localPosition.x, _yPos, transform.localPosition.z);
 
                 }
             }
         }
-        else if(working)
+        else if(_working)
         {
-            animator.runtimeAnimatorController = Resources.Load("BasicMotions@Idle") as RuntimeAnimatorController;
+            _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Idle") as RuntimeAnimatorController;
             transform.rotation = Quaternion.Euler(0f, ShopRotation, 0f);
-            rb.velocity = Vector3.zero;
-            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+            _rb.velocity = Vector3.zero;
+            _rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         }
 
-        if (endWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
+        if (_endWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
         {
-            working = false;
-            startPath = true;
-            if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+            _working = false;
+            _startPath = true;
+            if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")
             {
-                animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
             }
-            rb.constraints = RigidbodyConstraints.FreezePositionY;
+            _rb.constraints = RigidbodyConstraints.FreezePositionY;
         }
     }
-
+    /// <summary>
+    /// Iterates through list of positions and finds the position closest to the NPC
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     private Vector3 GetClosestPointOnPath(Vector3 position)
     {
         Vector3 closestPoint = Vector3.zero;
         float closestDistance = Mathf.Infinity;
 
-        for (int i = 0; i < path.Count; i++)
+        for (int i = 0; i < Path.Count; i++)
         {
-            Vector3 pathPoint = path[i].transform.position;
+            Vector3 pathPoint = Path[i].transform.position;
             float distance = Vector3.Distance(position, pathPoint);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
                 closestPoint = pathPoint;
-                currentWaypointIndex = i;
+                CurrentWaypointIndex = i;
             }
         }
 
         return closestPoint;
     }
 
-
+    /// <summary>
+    /// Checks for collisions with curb objects to boost the NPC up or down curbs
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (elapsedTime >= duration)
+        if (_elapsedTime >= _duration)
         {
-            startTime = Time.time;
-            canChangeY = true;
+            _startTime = Time.time;
+            CanChangeY = true;
         }
-        if (other.gameObject.layer == LayerMask.NameToLayer("Curb") && canChangeY)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Curb") && CanChangeY)
         {
-            if(onGround)
+            if(_onGround)
             {
-                yPos = transform.localPosition.y + 0.05f;
-                onGround = false;
+                _yPos = transform.localPosition.y + 0.05f;
+                _onGround = false;
             }
            else
             {
-                yPos = transform.localPosition.y - 0.05f;
-                onGround = false;
+                _yPos = transform.localPosition.y - 0.05f;
+                _onGround = false;
             }
-            canChangeY = false;
+            CanChangeY = false;
         }
     }
 
@@ -207,8 +228,12 @@ public class ShopKeeperMover : MonoBehaviour
         return StartWalkTime;
     }
 
+    /// <summary>
+    /// Returns whether or not the NPC is supposed to be working on the current day
+    /// </summary>
+    /// <returns></returns>
     public bool WorkToday()
     {
-        return GameObject.Find("GameManager").GetComponent<TimeController>().GetDayOfWeek() != dayOff;
+        return GameObject.Find("GameManager").GetComponent<TimeController>().GetDayOfWeek() != DayOff;
     }
 }

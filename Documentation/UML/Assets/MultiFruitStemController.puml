@@ -1,0 +1,7 @@
+@startuml
+class MultiFruitStemController {
+    + childCount : int
+    + MinusChild() : void
+}
+MonoBehaviour <|-- MultiFruitStemController
+@enduml

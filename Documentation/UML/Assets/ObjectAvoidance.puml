@@ -1,0 +1,7 @@
+@startuml
+class ObjectAvoidance {
+    OnCollisionEnter(collision:Collision) : void
+    + AddNPC(name:string) : void
+}
+MonoBehaviour <|-- ObjectAvoidance
+@enduml

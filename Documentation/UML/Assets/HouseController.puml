@@ -1,0 +1,6 @@
+@startuml
+class HouseController {
+    + EnterHouse : bool
+}
+MonoBehaviour <|-- HouseController
+@enduml

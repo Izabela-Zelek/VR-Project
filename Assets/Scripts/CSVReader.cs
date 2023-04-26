@@ -9,11 +9,11 @@ public class CSVReader : MonoBehaviour
     private List<Vector3> _customPath = new List<Vector3>();
     private string _filename1 = "";
     private string _filename2 = "";
-    private GameObject pathSphere;
+    private GameObject _pathSphere;
 
     private void Start()
     {
-        pathSphere = Resources.Load("Path_Sphere") as GameObject;
+        _pathSphere = Resources.Load("Path_Sphere") as GameObject;
 
         _filename1 = Application.dataPath + "/Resources/path5.csv";
         _filename2 = Application.dataPath + "/Resources/path6.csv";
@@ -71,7 +71,7 @@ public class CSVReader : MonoBehaviour
                 newCell.transform.parent = newPath.transform;
                 newCell.transform.localPosition = _customPath[i];
                 newCell.AddComponent<PathCellController>();
-                GameObject temp = Instantiate(pathSphere, newCell.transform.position, Quaternion.identity, newCell.transform);
+                GameObject temp = Instantiate(_pathSphere, newCell.transform.position, Quaternion.identity, newCell.transform);
                 temp.SetActive(false);
             }
         }

@@ -2,51 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+/// <summary>
+/// Handles the path following steering behaviour of vehicles
+/// </summary>
 public class VehicleMover : MonoBehaviour
 {
-    public List<GameObject> path;
-    public float speed = 5.0f;
-    public float mass = 5.0f;
-    public float maxSteer = 15.0f;
-    public float pathRadius = 1.0f;
+    public List<GameObject> Path;
+    public float Speed = 5.0f;
+    public float Mass = 5.0f;
+    public float MaxSteer = 15.0f;
+    public float PathRadius = 1.0f;
+    public int CurrentWaypointIndex = 0;
+    public int Id = -1;
 
-    public int currentWaypointIndex = 0;
-    private Vector3 targetWaypoint;
-    private Vector3 desiredVelocity;
-    private Vector3 steeringForce;
-    private Rigidbody rb;
-    private float yPos;
-    private bool pathForward = true;
-    public int id = -1;
-
-    private GameObject traffic;
-    private GameObject parkingMan;
-    private GameObject parkingManObject;
-    private bool canMove = true;
-    private bool stoppedAtLight = false;
-    private bool parked = false;
+    private Vector3 _targetWaypoint;
+    private Vector3 _desiredVelocity;
+    private Vector3 _steeringForce;
+    private Rigidbody _rb;
+    private float _yPos;
+    private bool _pathForward = true;
+    private GameObject _traffic;
+    private GameObject _parkingMan;
+    private GameObject _parkingManObject;
+    private bool _canMove = true;
+    private bool _stoppedAtLight = false;
+    private bool _parked = false;
     private AudioSource _drive;
-    void Start()
+
+    private void Start()
     {
         _drive = GetComponent<AudioSource>();
-        if (id == -1)
-        {
-            id = Random.Range(0, 10000);
-        }
-        rb = GetComponent<Rigidbody>();
-        yPos = transform.localPosition.y;
-        traffic = GameObject.Find("Traffic").gameObject;
-        parkingMan = Resources.Load("DudeParking") as GameObject;
+        _rb = GetComponent<Rigidbody>();
+        _yPos = transform.localPosition.y;
+        _traffic = GameObject.Find("Traffic").gameObject;
+        _parkingMan = Resources.Load("DudeParking") as GameObject;
     }
 
+    /// <summary>
+    /// Iterates through each child of the passed in gameobject and adds their positions to a list
+    /// Checks whether a position cell is a parking space, ends iteration if it is true
+    /// Calls for function to find closest position in the list
+    /// </summary>
+    /// <param name="parent"></param>
     public void SetPointsByChildren(GameObject parent)
     {
         for (int i = 0; i < parent.transform.childCount; i++)
         {
             if(!parent.transform.GetChild(i).GetComponent<RoadCellController>().HasCar)
             {
-                path.Add(parent.transform.GetChild(i).gameObject);
+                Path.Add(parent.transform.GetChild(i).gameObject);
 
                 if(parent.transform.GetChild(i).GetComponent<RoadCellController>().IsParking)
                 {
@@ -62,92 +66,98 @@ public class VehicleMover : MonoBehaviour
             }
         }
 
-        targetWaypoint = GetClosestPointOnPath(transform.position);
+        _targetWaypoint = GetClosestPointOnPath(transform.position);
     }
-
-    void Update()
+    /// <summary>
+    /// Starting from the previously calculated closest position, once the vehicle position is within bounds of the next position in the list, they current waypoint gets incremented
+    /// Destroys gameobject once it reaches the end and isn't parked
+    /// Checks the current position cell for whether it is at a traffic light
+    /// If so, checks if that traffic light is red, if it is, vehicle stops
+    /// Adds force to gameobject to move in the direction of the next point - with smoothing
+    /// </summary>
+    private void Update()
     {
-        if (path.Count > 0 && canMove && !parked)
+        if (Path.Count > 0 && _canMove && !_parked)
         {
             if(!_drive.isPlaying)
             {
                 _drive.Play();
             }
 
-            float distance = Vector3.Distance(transform.position, targetWaypoint);
-            if (!stoppedAtLight)
+            float distance = Vector3.Distance(transform.position, _targetWaypoint);
+            if (!_stoppedAtLight)
             {
-                rb.constraints = RigidbodyConstraints.None;
-                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                _rb.constraints = RigidbodyConstraints.None;
+                _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             }
-            if (distance <= pathRadius)
+            if (distance <= PathRadius)
             {
-                if (path[currentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight)
+                if (Path[CurrentWaypointIndex].GetComponent<RoadCellController>().InFrontOfLight)
                 {
-                    stoppedAtLight = true;
-                    int g2 = traffic.GetComponent<TrafficLightController>().ReturnGreen2();
-                    if (path[currentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == traffic.GetComponent<TrafficLightController>().ReturnGreen1())
+                    _stoppedAtLight = true;
+                    int g2 = _traffic.GetComponent<TrafficLightController>().ReturnGreen2();
+                    if (Path[CurrentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == _traffic.GetComponent<TrafficLightController>().ReturnGreen1())
                     {
-                        stoppedAtLight = false;
+                        _stoppedAtLight = false;
                     }
-                    else if(path[currentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == traffic.GetComponent<TrafficLightController>().ReturnGreen2())
+                    else if(Path[CurrentWaypointIndex].GetComponent<RoadCellController>().TrafficLightInFront == _traffic.GetComponent<TrafficLightController>().ReturnGreen2())
                     {
-                        stoppedAtLight = false;
+                        _stoppedAtLight = false;
                     }
                 }
-                if (!stoppedAtLight)
+                if (!_stoppedAtLight)
                 {
-                    if (rb.constraints == RigidbodyConstraints.FreezePositionX || rb.constraints == RigidbodyConstraints.FreezePositionY || rb.constraints == RigidbodyConstraints.FreezePositionZ || rb.constraints == RigidbodyConstraints.FreezeRotationY)
+                    if (_rb.constraints == RigidbodyConstraints.FreezePositionX || _rb.constraints == RigidbodyConstraints.FreezePositionY || _rb.constraints == RigidbodyConstraints.FreezePositionZ || _rb.constraints == RigidbodyConstraints.FreezeRotationY)
                     {
-                        rb.constraints = RigidbodyConstraints.None;
-                        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+                        _rb.constraints = RigidbodyConstraints.None;
+                        _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
                     }
 
-                    if (!parked)
+                    if (!_parked)
                     {
-                        if (currentWaypointIndex >= path.Count - 1 && pathForward)
+                        if (CurrentWaypointIndex >= Path.Count - 1 && _pathForward)
                         {
-                            if (!path[currentWaypointIndex].GetComponent<RoadCellController>().IsParking)
+                            if (!Path[CurrentWaypointIndex].GetComponent<RoadCellController>().IsParking)
                             {
                                 Destroy(this.gameObject);
                             }
                             else
                             {
-                                parked = true;
-                                parkingManObject = Instantiate(parkingMan, transform.GetChild(5).transform.position, Quaternion.identity, transform);
+                                _parked = true;
+                                _parkingManObject = Instantiate(_parkingMan, transform.GetChild(5).transform.position, Quaternion.identity, transform);
                             }
                         }
                         else
                         {
-                            currentWaypointIndex++;
-                            targetWaypoint = path[currentWaypointIndex].transform.position;
+                            CurrentWaypointIndex++;
+                            _targetWaypoint = Path[CurrentWaypointIndex].transform.position;
                         }
                     }
                 }
                 else
                 {
-                    rb.velocity = Vector3.zero;
-                    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+                    _rb.velocity = Vector3.zero;
+                    _rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
                 }
             }
 
-            desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
-            steeringForce = desiredVelocity - rb.velocity;
-            steeringForce /= mass;
+            _desiredVelocity = (_targetWaypoint - transform.position).normalized * Speed;
+            _steeringForce = _desiredVelocity - _rb.velocity;
+            _steeringForce /= Mass;
 
-            if (steeringForce.magnitude > maxSteer)
+            if (_steeringForce.magnitude > MaxSteer)
             {
-                steeringForce = steeringForce.normalized * maxSteer;
+                _steeringForce = _steeringForce.normalized * MaxSteer;
             }
 
-            rb.AddForce(steeringForce);
-            Vector3 vel = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            _rb.AddForce(_steeringForce);
+            Vector3 vel = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
 
             if(vel != Vector3.zero)
             {
                 transform.rotation = Quaternion.LookRotation(vel);
                 transform.rotation *= Quaternion.Euler(0f, -90f, 0f);
-                transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+                transform.localPosition = new Vector3(transform.localPosition.x, _yPos, transform.localPosition.z);
             }
         }
         else
@@ -156,34 +166,38 @@ public class VehicleMover : MonoBehaviour
             {
                 _drive.Stop();
             }
-            transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
-            rb.velocity = Vector3.zero;
-            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+            transform.localPosition = new Vector3(transform.localPosition.x, _yPos, transform.localPosition.z);
+            _rb.velocity = Vector3.zero;
+            _rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         }
     }
-
+    /// <summary>
+    /// Iterates through list of positions and finds the position closest to the NPC
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     private Vector3 GetClosestPointOnPath(Vector3 position)
     {
         Vector3 closestPoint = Vector3.zero;
         float closestDistance = Mathf.Infinity;
 
-        for (int i = 0; i < path.Count; i++)
+        for (int i = 0; i < Path.Count; i++)
         {
-            Vector3 pathPoint = path[i].transform.position;
+            Vector3 pathPoint = Path[i].transform.position;
             float distance = Vector3.Distance(position, pathPoint);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
                 closestPoint = pathPoint;
-                currentWaypointIndex = i;
+                CurrentWaypointIndex = i;
             }
         }
 
         return closestPoint;
     }
 
-    public void setMove(bool move)
+    public void SetMove(bool move)
     {
-        canMove = move;
+        _canMove = move;
     }
 }

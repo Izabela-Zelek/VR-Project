@@ -7,7 +7,7 @@ public class FruitBundleController : MonoBehaviour
     /// <summary>
     /// If all fruit have been collected from bundle, destroys bundle gameobject
     /// </summary>
-    void Update()
+    private void Update()
     {
         if(gameObject.transform.childCount == 0)
         {

@@ -8,13 +8,13 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class ActivateTeleportationRay : MonoBehaviour
 {
-    public GameObject rightTeleportation;
+    public GameObject RightTeleportation;
 
-    public InputActionProperty rightActivate;
+    public InputActionProperty RightActivate;
 
-    public InputActionProperty rightCancel;
+    public InputActionProperty RightCancel;
     void Update()
     {
-        rightTeleportation.SetActive(rightCancel.action.ReadValue<float>() == 0 && rightActivate.action.ReadValue<float>() > 0.1f);
+        RightTeleportation.SetActive(RightCancel.action.ReadValue<float>() == 0 && RightActivate.action.ReadValue<float>() > 0.1f);
     }
 }

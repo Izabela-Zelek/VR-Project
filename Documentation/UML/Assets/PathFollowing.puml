@@ -1,0 +1,8 @@
+@startuml
+class PathFollowing {
+}
+class "Action`1"<T> {
+}
+MonoBehaviour <|-- PathFollowing
+PathFollowing o-> "OnNewPathCreated<IEnumerable<Vector3>>" "Action`1"
+@enduml

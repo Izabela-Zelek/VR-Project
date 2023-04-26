@@ -8,13 +8,13 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class LargeItem : MonoBehaviour
 {
-    public bool inSlot = false;
-    public Vector3 slotRotation;
-    public Slot currentSlot = null;
-    public bool isHeld = false;
-    public InputActionProperty rightSelect;
-    public float targetTime = 1.0f;
-    public GameObject parent;
+    public bool InSlot = false;
+    public Vector3 SlotRotation;
+    public Slot CurrentSlot = null;
+    public bool IsHeld = false;
+    public InputActionProperty RightSelect;
+    public float TargetTime = 1.0f;
+    public GameObject Parent;
 
     /// <summary>
     /// Upon colliding with player hand, removes object from inventory slot
@@ -24,22 +24,22 @@ public class LargeItem : MonoBehaviour
     {
         if (other.tag == "RightHand")
         {
-            if (rightSelect.action.ReadValue<float>() > 0.1f) 
+            if (RightSelect.action.ReadValue<float>() > 0.1f) 
             {
-                isHeld = true;
-                targetTime = 2.0f;
-                if (currentSlot != null)
+                IsHeld = true;
+                TargetTime = 2.0f;
+                if (CurrentSlot != null)
                 {
-                    currentSlot.RemoveItem();
-                    gameObject.transform.SetParent(parent.transform, false);
+                    CurrentSlot.RemoveItem();
+                    gameObject.transform.SetParent(Parent.transform, false);
                     Vector3 scale = gameObject.transform.localScale;
 
                     scale.Set(0.5f, 0.5f, 0.5f);
 
                     gameObject.transform.localScale = scale;
                     gameObject.transform.position = other.gameObject.transform.position;
-                    inSlot = false;
-                    currentSlot = null;
+                    InSlot = false;
+                    CurrentSlot = null;
                     gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 
                 }
@@ -51,14 +51,14 @@ public class LargeItem : MonoBehaviour
 
     private void Update()
     {
-        if (targetTime > 0 && isHeld)
+        if (TargetTime > 0 && IsHeld)
         { 
-            targetTime -= Time.deltaTime; 
+            TargetTime -= Time.deltaTime; 
         }
 
-        if (rightSelect.action.ReadValue<float>() == 0 && targetTime <= 0)
+        if (RightSelect.action.ReadValue<float>() == 0 && TargetTime <= 0)
         {
-            isHeld = false;
+            IsHeld = false;
         }
     }
 }

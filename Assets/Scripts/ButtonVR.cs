@@ -5,22 +5,23 @@ using UnityEngine.Events;
 /// </summary>
 public class ButtonVR : MonoBehaviour
 {
-    public int price;
-    public GameObject button;
-    public GameObject boughtObject;
-    public UnityEvent onPress;
-    public UnityEvent onRelease;
-    private GameObject presser;
+    public int Price;
+    public GameObject Button;
+    public GameObject BoughtObject;
+    public UnityEvent OnPress;
+    public UnityEvent OnRelease;
+
+    private GameObject _presser;
     private AudioSource sound;
-    bool isPressed;
+    private bool _isPressed;
 
     /// <summary>
     /// Loads button press audio upon start
     /// </summary>
-    void Start()
+    private void Start()
     {
         sound = GetComponent<AudioSource>();
-        isPressed = false;
+        _isPressed = false;
     }
 
     /// <summary>
@@ -29,13 +30,13 @@ public class ButtonVR : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if(!isPressed && other.gameObject.layer == 11)
+        if(!_isPressed && other.gameObject.layer == 11)
         {
-            button.transform.localPosition = new Vector3(0, 0.02f, 0);
-            presser = other.gameObject;
-            onPress.Invoke();
+            Button.transform.localPosition = new Vector3(0, 0.02f, 0);
+            _presser = other.gameObject;
+            OnPress.Invoke();
             sound.Play();
-            isPressed = true;
+            _isPressed = true;
         }
     }
 
@@ -47,9 +48,9 @@ public class ButtonVR : MonoBehaviour
     {
         if (other.gameObject)
         {
-            button.transform.localPosition = new Vector3(0, 0.035f, 0);
-            onRelease.Invoke();
-            isPressed = false;
+            Button.transform.localPosition = new Vector3(0, 0.035f, 0);
+            OnRelease.Invoke();
+            _isPressed = false;
         }
     }
     /// <summary>
@@ -58,11 +59,11 @@ public class ButtonVR : MonoBehaviour
     /// </summary>
     public void SpawnObject()
     {
-        if (price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
+        if (Price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
         {
-            GameObject.Find("GameManager").GetComponent<GameManager>().MinusMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - price);
+            GameObject.Find("GameManager").GetComponent<GameManager>().MinusMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - Price);
             Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y - 0.1f, transform.position.z - 0.24f);
-            GameObject boughtItem = Instantiate(boughtObject, spawnPos, Quaternion.identity);
+            GameObject boughtItem = Instantiate(BoughtObject, spawnPos, Quaternion.identity);
         }
     }
 }

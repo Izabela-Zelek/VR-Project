@@ -1,0 +1,9 @@
+@startuml
+class AnimateHand {
+    Update() : void
+}
+MonoBehaviour <|-- AnimateHand
+AnimateHand --> "pinchAnimationAction" InputActionProperty
+AnimateHand --> "gripAnimationAction" InputActionProperty
+AnimateHand --> "handAnimator" Animator
+@enduml

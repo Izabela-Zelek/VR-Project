@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Handles the pairing between the NPCs and their houses
+/// </summary>
 public class NPCHouseController : MonoBehaviour
 {
     private int _assignedNPC;
     private GameObject _npcObject;
     private int _startMoveTime;
-    private bool doOnce = false;
-    private bool shopKeeper = false;
-    // Start is called before the first frame update
-    void Start()
+    private bool _doOnce = false;
+    private bool _shopKeeper = false;
+
+    /// <summary>
+    /// Separates the id of the house from the name and finds the NPC with the corresponding name
+    /// </summary>
+    private void Start()
     {
         string[] nameSplit = name.Split(new string[] { "ShopGuyHouse" }, System.StringSplitOptions.None);
         if (int.TryParse(nameSplit[1], out _assignedNPC))
@@ -23,17 +28,19 @@ public class NPCHouseController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Grabs the wake up time of the assigned NPC and enables them when the time of the day is equal
+    /// </summary>
+    private void Update()
     {
         if (_npcObject)
         {
-            if (!doOnce)
+            if (!_doOnce)
             {
                 if (_npcObject.GetComponent<ShopKeeperMover>())
                 {
                     _startMoveTime = _npcObject.GetComponent<ShopKeeperMover>().GetStartTime();
-                    shopKeeper = true;
+                    _shopKeeper = true;
                 }
                 else if (_npcObject.GetComponent<PathMover>().isActiveAndEnabled)
                 {
@@ -44,11 +51,11 @@ public class NPCHouseController : MonoBehaviour
                     _startMoveTime = _npcObject.GetComponent<NPCContoller>().GetStartTime();
                 }
                 _npcObject.SetActive(false);
-                doOnce = true;
+                _doOnce = true;
             }
             if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour == _startMoveTime - 1 && GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Minute == 55)
             {
-                if (shopKeeper)
+                if (_shopKeeper)
                 {
                     if (_npcObject.GetComponent<ShopKeeperMover>().WorkToday())
                     {

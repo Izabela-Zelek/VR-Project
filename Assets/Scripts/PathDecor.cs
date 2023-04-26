@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
+/// <summary>
+/// UNUSED Handles the drawing of a line to follow the custom path - left in for archival and version control purposes. Provides a record of the previous versions and iterations of the project
+/// </summary>
 public class PathDecor : MonoBehaviour
 {
-    public List<Transform> waypoints;
+    public List<Transform> Waypoints;
+    public Color DebugColour = Color.white;
+
     [SerializeField]
-    private bool alwaysDrawPath;
+    private bool _alwaysDrawPath;
     [SerializeField]
-    private bool drawAsLoop;
+    private bool _drawAsLoop;
     [SerializeField]
-    private bool drawNumbers;
-    public Color debugColour = Color.white;
+    private bool _drawNumbers;
+
 #if UNITY_EDITOR
     public void OnDrawGizmos()
     {
@@ -22,6 +26,9 @@ public class PathDecor : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Using each waypoint, draws the path on screen
+    /// </summary>
     public void DrawPath()
     {
         for (int i = 0; i < waypoints.Count; i++)

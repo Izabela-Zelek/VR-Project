@@ -9,16 +9,18 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI moneyText;
+    private TextMeshProUGUI _moneyText;
     [SerializeField]
-    private CapsuleController sleepArea;
-    private int money = 100;
-    private int addedMoney = 0;
-    private bool addMoney = false;
-    public bool asleep = false;
-    public bool shopOpen = true;
-    private bool inMap = false;
-    public GameObject player;
+    private CapsuleController _sleepArea;
+
+    public bool Asleep = false;
+    public bool ShopOpen = true;
+    public GameObject Player;
+
+    private int _money = 100;
+    private int _addedMoney = 0;
+    private bool _addMoney = false;
+    private bool _inMap = false;
     private int _birdDirection;
     private int _randTime;
     private GameObject _bird;
@@ -28,9 +30,9 @@ public class GameManager : MonoBehaviour
     /// Loads bird flock prefab
     /// Randomises flock direction and spawn time
     /// </summary>
-    void Start()
+    private void Start()
     {
-        moneyText.text = "$" + money.ToString();
+        _moneyText.text = "$" + _money.ToString();
         _bird = Resources.Load("BirdForm") as GameObject;
         _birdDirection = Random.Range(0, 4);
         _randTime = Random.Range(2, 4);
@@ -42,12 +44,12 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (addMoney && sleepArea.asleep)
+        if (_addMoney && _sleepArea.asleep)
         {
-            money = money + addedMoney;
-            moneyText.text = "$" + money.ToString();
-            addedMoney = 0;
-            addMoney = false;
+            _money = _money + _addedMoney;
+            _moneyText.text = "$" + _money.ToString();
+            _addedMoney = 0;
+            _addMoney = false;
         }
     }
 
@@ -57,8 +59,8 @@ public class GameManager : MonoBehaviour
     /// <param name="newMoney"></param>
     public void UpdateMoney(int newMoney)
     {
-        addedMoney = addedMoney + newMoney;
-        addMoney = true;
+        _addedMoney = _addedMoney + newMoney;
+        _addMoney = true;
     }
 
     /// <summary>
@@ -67,8 +69,8 @@ public class GameManager : MonoBehaviour
     /// <param name="newMoney"></param>
     public void MinusMoney(int newMoney)
     {
-        money = newMoney;
-        moneyText.text = "$" + money.ToString();
+        _money = newMoney;
+        _moneyText.text = "$" + _money.ToString();
     }
 
     /// <summary>
@@ -77,7 +79,7 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     public int GetMoney()
     {
-        return money;
+        return _money;
     }
 
     /// <summary>
@@ -87,25 +89,25 @@ public class GameManager : MonoBehaviour
     /// <param name="enter"></param>
     public void EnterMap(bool enter)
     {
-        inMap = enter;
+        _inMap = enter;
 
-        if(inMap)
+        if(_inMap)
         {
-            player.GetComponent<ActionBasedContinuousMoveProvider>().enabled = false;
-            player.GetComponent<ActionBasedContinuousTurnProvider>().enabled = false;
-            player.GetComponent<TeleportationProvider>().enabled = false;
-            player.GetComponent<ActivateTeleportationRay>().enabled = false;
-            player.transform.GetChild(0).GetChild(3).gameObject.SetActive(false);
-            player.transform.GetChild(0).GetChild(4).gameObject.SetActive(true);
+            Player.GetComponent<ActionBasedContinuousMoveProvider>().enabled = false;
+            Player.GetComponent<ActionBasedContinuousTurnProvider>().enabled = false;
+            Player.GetComponent<TeleportationProvider>().enabled = false;
+            Player.GetComponent<ActivateTeleportationRay>().enabled = false;
+            Player.transform.GetChild(0).GetChild(3).gameObject.SetActive(false);
+            Player.transform.GetChild(0).GetChild(4).gameObject.SetActive(true);
         }
         else
         {
-            player.GetComponent<ActionBasedContinuousMoveProvider>().enabled = true;
-            player.GetComponent<ActionBasedContinuousTurnProvider>().enabled = true;
-            player.GetComponent<TeleportationProvider>().enabled = true;
-            player.GetComponent<ActivateTeleportationRay>().enabled = true;
-            player.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
-            player.transform.GetChild(0).GetChild(4).gameObject.SetActive(false);
+            Player.GetComponent<ActionBasedContinuousMoveProvider>().enabled = true;
+            Player.GetComponent<ActionBasedContinuousTurnProvider>().enabled = true;
+            Player.GetComponent<TeleportationProvider>().enabled = true;
+            Player.GetComponent<ActivateTeleportationRay>().enabled = true;
+            Player.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
+            Player.transform.GetChild(0).GetChild(4).gameObject.SetActive(false);
         }
     }
 
@@ -115,7 +117,7 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     public bool IsInMap()
     {
-        return inMap;
+        return _inMap;
     }
 
     /// <summary>
@@ -163,7 +165,7 @@ public class GameManager : MonoBehaviour
     /// Randomises direction and spawn time of future flock
     /// </summary>
     /// <returns></returns>
-    IEnumerator birdTimer()
+    private IEnumerator birdTimer()
     {
         while (true)
         {

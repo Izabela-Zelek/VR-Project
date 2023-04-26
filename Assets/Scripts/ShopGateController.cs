@@ -1,24 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+/// <summary>
+/// Stores the two possible animation states
+/// </summary>
 public enum GateAnimStates
 {
     Open = 0,
     Closed = 1,
 }   
+/// <summary>
+/// Handles the animations of the shopping stalls opening and closing
+/// </summary>
 public class ShopGateController : MonoBehaviour
 {
-    public Animator _animator;
+    public Animator Animator;
     public static readonly int State = Animator.StringToHash("State");
-    public GateAnimStates animState;
-    // Start is called before the first frame update
-    void Start()
+    public GateAnimStates AnimState;
+
+    private void Start()
     {
-        animState = GateAnimStates.Closed;
-        _animator.SetInteger(State, (int)animState);
+        AnimState = GateAnimStates.Closed;
+        Animator.SetInteger(State, (int)AnimState);
 
     }
 
+    /// <summary>
+    /// Grabs the current time of day
+    /// If time == 7am, plays the opening stall animation
+    /// If time == 5pm, plays the closing stall animation
+    /// </summary>
     private void Update()
     {
         if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "17:00")
@@ -34,13 +45,13 @@ public class ShopGateController : MonoBehaviour
     }
     public void CloseShop()
     {
-        animState = GateAnimStates.Closed;
-        _animator.SetInteger(State, (int)animState);
+        AnimState = GateAnimStates.Closed;
+        Animator.SetInteger(State, (int)AnimState);
     }
 
     public void OpenShop()
     {
-        animState = GateAnimStates.Open;
-        _animator.SetInteger(State, (int)animState);
+        AnimState = GateAnimStates.Open;
+        Animator.SetInteger(State, (int)AnimState);
     }
 }

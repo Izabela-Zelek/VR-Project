@@ -1,0 +1,5 @@
+@startuml
+class MapCapsule {
+}
+MonoBehaviour <|-- MapCapsule
+@enduml

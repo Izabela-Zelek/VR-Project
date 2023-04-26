@@ -1,0 +1,7 @@
+@startuml
+class WalkController {
+    Start() : void
+    Update() : void
+}
+MonoBehaviour <|-- WalkController
+@enduml

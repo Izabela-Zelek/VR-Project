@@ -1,0 +1,15 @@
+@startuml
+class GameManager {
+    + asleep : bool = false
+    + shopOpen : bool = true
+    Start() : void
+    + UpdateMoney(newMoney:int) : void
+    + MinusMoney(newMoney:int) : void
+    + GetMoney() : int
+    + EnterMap(enter:bool) : void
+    + IsInMap() : bool
+    birdTimer() : IEnumerator
+}
+MonoBehaviour <|-- GameManager
+GameManager --> "player" GameObject
+@enduml

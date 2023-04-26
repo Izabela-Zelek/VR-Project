@@ -1,0 +1,21 @@
+@startuml
+class ParkerPathMover {
+    + speed : float = 5.0f
+    + mass : float = 5.0f
+    + maxSteer : float = 15.0f
+    + pathRadius : float = 1.0f
+    + currentWaypointIndex : int = 0
+    + id : int
+    + hadLoiter : bool = false
+    + canChangeY : bool = true
+    + first : bool = false
+    + inside : bool = false
+    Start() : void
+    + SetDefaultPath(newId:int) : void
+    Update() : void
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- ParkerPathMover
+ParkerPathMover --> "path<GameObject>" "List`1"
+@enduml

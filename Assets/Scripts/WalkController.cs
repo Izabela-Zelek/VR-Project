@@ -2,18 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-
+/// <summary>
+/// Handles the walking audio
+/// </summary>
 public class WalkController : MonoBehaviour
 {
-    //public XRNode _leftInputSource;
-    //public XRNode _rightInputSource;
     private AudioSource _walk;
-    void Start()
+
+    private void Start()
     {
         _walk = transform.Find("Feet").GetComponent<AudioSource>();
     }
 
-    void Update()
+    /// <summary>
+    /// If taking in walking input, starts looping through walk audio
+    /// If no input, stops walking audio
+    /// </summary>
+    private void Update()
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");

@@ -97,7 +97,7 @@ public class CSVWriter : MonoBehaviour
 
     }
 
-    void RefreshEditorProjectWindow()
+    private void RefreshEditorProjectWindow()
     {
         #if UNITY_EDITOR
                  UnityEditor.AssetDatabase.Refresh();

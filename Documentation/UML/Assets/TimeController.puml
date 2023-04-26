@@ -1,0 +1,12 @@
+@startuml
+class TimeController {
+    + dayNr : int = 1
+    Start() : void
+    Update() : void
+    UpdateSettings() : void
+    + newDay() : void
+    + GetDayOfWeek() : int
+}
+MonoBehaviour <|-- TimeController
+TimeController --> "currentTime" DateTime
+@enduml

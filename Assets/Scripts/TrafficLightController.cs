@@ -1,30 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Handles the traffic light system, decides which lights turns green and turns the others red
+/// </summary>
 public class TrafficLightController : MonoBehaviour
 {
+    public Material Red;
+    public Material LitRed;
+    public Material Green;
+    public Material LitGreen;
+
     private int _trafficWait = 10;
     private int _currentGreen1 = 0;
     private int _currentGreen2 = 4;
     private GameObject _trafficLight01;
     private GameObject _trafficLight23;
     private GameObject _trafficLight45;
-    public Material Red;
-    public Material LitRed;
-    public Material Green;
-    public Material LitGreen;
 
     private void Start()
     {
-        StartCoroutine(changeLights1());
-        StartCoroutine(changeLights2());
+        StartCoroutine(ChangeLights1());
+        StartCoroutine(ChangeLights2());
         _trafficLight01 = GameObject.Find("Traffic light 4 Prefab 01");
         _trafficLight23 = GameObject.Find("Traffic light 4 Prefab 23");
         _trafficLight45 = GameObject.Find("Traffic light 4 Prefab 45");
     }
 
-    private IEnumerator changeLights1()
+    /// <summary>
+    /// Every ten seconds, In the first road intersection,increments the id of the traffic light lit up green, turns the others red
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ChangeLights1()
     {
         while (true)
         {
@@ -112,8 +119,11 @@ public class TrafficLightController : MonoBehaviour
             }
         }
     }
-
-    private IEnumerator changeLights2()
+    /// <summary>
+    /// Every ten seconds, In the second road intersection,increments the id of the traffic light lit up green, turns the others red
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ChangeLights2()
     {
         while (true)
         {

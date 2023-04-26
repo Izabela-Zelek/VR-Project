@@ -1,0 +1,11 @@
+@startuml
+class TrafficLightController {
+    + ReturnGreen1() : int
+    + ReturnGreen2() : int
+}
+MonoBehaviour <|-- TrafficLightController
+TrafficLightController --> "Red" Material
+TrafficLightController --> "LitRed" Material
+TrafficLightController --> "Green" Material
+TrafficLightController --> "LitGreen" Material
+@enduml

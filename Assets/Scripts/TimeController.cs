@@ -3,53 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
-
+/// <summary>
+/// Handles the passage of time, changing day to night and night to day, and random grass growing each day
+/// </summary>
 public class TimeController : MonoBehaviour
 {
     [SerializeField]
-    private float TimeMultiplier; 
+    private float _timeMultiplier; 
     [SerializeField]
-    private float startHour;
+    private float _startHour;
     [SerializeField]
-    private Light sun;
+    private Light _sun;
     [SerializeField]
-    private Light moon;
+    private Light _moon;
     [SerializeField]
-    private float sunriseHour;
+    private float _sunriseHour;
     [SerializeField]
-    private float sunsetHour;
+    private float _sunsetHour;
     [SerializeField]
-    private Color dayAmbientLight;
+    private Color _dayAmbientLight;
     [SerializeField]
-    private Color nightAmbientLight;
+    private Color _nightAmbientLight;
     [SerializeField]
-    private AnimationCurve lightChange;
+    private AnimationCurve _lightChange;
     [SerializeField]
-    private float maxSunIntensity;    
+    private float _maxSunIntensity;    
     [SerializeField]
-    private float maxMoonIntensity;
+    private float _maxMoonIntensity;
     [SerializeField]
-    private TextMeshProUGUI dayText;
+    private TextMeshProUGUI _dayText;
     [SerializeField]
-    private TextMeshProUGUI timeText;
+    private TextMeshProUGUI _timeText;
     [SerializeField]
-    private TextMeshProUGUI wordDayText;
+    private TextMeshProUGUI _wordDayText;
 
-    public DateTime currentTime;
-    private TimeSpan sunriseTime;
-    private TimeSpan sunsetTime;
-    public int dayNr = 1;
+    public DateTime CurrentTime;
+    public int DayNr = 1;
 
+    private TimeSpan _sunriseTime;
+    private TimeSpan _sunsetTime;
     private GameObject _grass1;
     private GameObject _grass2;
     private Transform _grassParent;
     private AudioSource _birdsAmb;
-    void Start()
+
+    private void Start()
     {
-        currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
-        sunriseTime = TimeSpan.FromHours(sunriseHour);
-        sunsetTime = TimeSpan.FromHours(sunsetHour);
-        dayText.text = "Day " + dayNr.ToString();
+        CurrentTime = DateTime.Now.Date + TimeSpan.FromHours(_startHour);
+        _sunriseTime = TimeSpan.FromHours(_sunriseHour);
+        _sunsetTime = TimeSpan.FromHours(_sunsetHour);
+        _dayText.text = "Day " + DayNr.ToString();
         DecideOnDay();
         _grass1 = Resources.Load("Grass_1_1") as GameObject;
         _grass2 = Resources.Load("Grass_1_2") as GameObject;
@@ -57,14 +60,16 @@ public class TimeController : MonoBehaviour
         _birdsAmb = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Updates the current time, moves sun across the sky and plays ambient sounds of birds singing
+    /// </summary>
+    private void Update()
     {
         UpdateTime();
         RotateSun();
         UpdateSettings();
 
-        if(currentTime.Hour > sunriseHour - 1 && currentTime.Hour < sunsetHour - 1)
+        if(CurrentTime.Hour > _sunriseHour - 1 && CurrentTime.Hour < _sunsetHour - 1)
         {
             if(!_birdsAmb.isPlaying)
             {
@@ -80,12 +85,22 @@ public class TimeController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the time based on real time passing multiplied by a speed multiplier
+    /// Updates the text on the watch
+    /// </summary>
     private void UpdateTime()
     {
-        currentTime = currentTime.AddSeconds(Time.deltaTime * TimeMultiplier);
+        CurrentTime = CurrentTime.AddSeconds(Time.deltaTime * _timeMultiplier);
 
-       timeText.text =  currentTime.ToString("HH:mm");
+       _timeText.text =  CurrentTime.ToString("HH:mm");
     }
+    /// <summary>
+    /// Calculates the time between two given times
+    /// </summary>
+    /// <param name="fromTime"></param>
+    /// <param name="toTime"></param>
+    /// <returns></returns>
     private TimeSpan CalculateTime(TimeSpan fromTime, TimeSpan toTime)
     {
         TimeSpan difference = toTime - fromTime;
@@ -96,50 +111,62 @@ public class TimeController : MonoBehaviour
         }
         return difference;
     }
+    /// <summary>
+    /// Moves the sun across the sky and changes the light level of the world based on the position of the sun
+    /// </summary>
     private void RotateSun()
     {
         float sunLightRotation;
-        if(currentTime.TimeOfDay > sunriseTime && currentTime.TimeOfDay < sunsetTime)
+        if(CurrentTime.TimeOfDay > _sunriseTime && CurrentTime.TimeOfDay < _sunsetTime)
         {
-            TimeSpan sunriseToSunsetDuration = CalculateTime(sunriseTime, sunsetTime);
-            TimeSpan timeSinceSunrise = CalculateTime(sunriseTime, currentTime.TimeOfDay);
+            TimeSpan sunriseToSunsetDuration = CalculateTime(_sunriseTime, _sunsetTime);
+            TimeSpan timeSinceSunrise = CalculateTime(_sunriseTime, CurrentTime.TimeOfDay);
 
             double percentage = timeSinceSunrise.TotalMinutes / sunriseToSunsetDuration.TotalMinutes;
             sunLightRotation = Mathf.Lerp(0, 180, (float)percentage);
         }
         else
         {
-            TimeSpan sunsetToSunriseDuration = CalculateTime(sunsetTime, sunriseTime);
-            TimeSpan timeSinceSunset = CalculateTime(sunsetTime, currentTime.TimeOfDay);
+            TimeSpan sunsetToSunriseDuration = CalculateTime(_sunsetTime, _sunriseTime);
+            TimeSpan timeSinceSunset = CalculateTime(_sunsetTime, CurrentTime.TimeOfDay);
 
             double percentage = timeSinceSunset.TotalMinutes / sunsetToSunriseDuration.TotalMinutes;
             sunLightRotation = Mathf.Lerp(180, 360, (float)percentage);
         }
-        sun.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right);
+        _sun.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right);
     }
 
-    void UpdateSettings()
+    /// <summary>
+    /// Changes the light intensity of the sun and moon based on the sun position
+    /// </summary>
+    private void UpdateSettings()
     {
-        float dotProduct = Vector3.Dot(sun.transform.forward, Vector3.down);
-        sun.intensity = Mathf.Lerp(0, maxSunIntensity, lightChange.Evaluate(dotProduct));
-        moon.intensity = Mathf.Lerp(maxMoonIntensity, 0, lightChange.Evaluate(dotProduct));
-        RenderSettings.ambientLight = Color.Lerp(nightAmbientLight, dayAmbientLight, lightChange.Evaluate(dotProduct));
+        float dotProduct = Vector3.Dot(_sun.transform.forward, Vector3.down);
+        _sun.intensity = Mathf.Lerp(0, _maxSunIntensity, _lightChange.Evaluate(dotProduct));
+        _moon.intensity = Mathf.Lerp(_maxMoonIntensity, 0, _lightChange.Evaluate(dotProduct));
+        RenderSettings.ambientLight = Color.Lerp(_nightAmbientLight, _dayAmbientLight, _lightChange.Evaluate(dotProduct));
     }
 
-    public void newDay()
+    /// <summary>
+    /// Updates the daynr to a new day
+    /// </summary>
+    public void NewDay()
     {
-        dayNr += 1;
-        dayText.text = "Day " + dayNr.ToString();
-        currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
+        DayNr += 1;
+        _dayText.text = "Day " + DayNr.ToString();
+        CurrentTime = DateTime.Now.Date + TimeSpan.FromHours(_startHour);
         DecideOnDay();
         Spawn();
     }
 
+    /// <summary>
+    /// Decides on which day of the week it is based on the day nr, updates the watch
+    /// </summary>
     private void DecideOnDay()
     {
         string dayOfWeek = "";
 
-        switch(dayNr % 7)
+        switch(DayNr % 7)
         {
             case 0:
                 dayOfWeek = "SUNDay";
@@ -164,14 +191,17 @@ public class TimeController : MonoBehaviour
                 break;
         }
 
-        wordDayText.text = dayOfWeek.ToString();
+        _wordDayText.text = dayOfWeek.ToString();
     }
 
     public int GetDayOfWeek()
     {
-        return dayNr % 7;
+        return DayNr % 7;
     }
 
+    /// <summary>
+    /// Spawns a random amount of grass within game bounds
+    /// </summary>
     private void Spawn()
     {
 

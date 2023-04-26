@@ -1,0 +1,13 @@
+@startuml
+class RoadCellController {
+    + InFrontOfLight : bool
+    + IsParking : bool
+    + HasCar : bool
+    + TrafficLightInFront : int
+    + setParked(parked:bool) : void
+    + GetNeighbour1() : int
+    + GetNeighbour2() : int
+    + GetParkingNr() : int
+}
+MonoBehaviour <|-- RoadCellController
+@enduml

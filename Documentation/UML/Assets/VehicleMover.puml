@@ -1,0 +1,18 @@
+@startuml
+class VehicleMover {
+    + speed : float = 5.0f
+    + mass : float = 5.0f
+    + maxSteer : float = 15.0f
+    + pathRadius : float = 1.0f
+    + currentWaypointIndex : int = 0
+    + id : int
+    Start() : void
+    + SetPointsByChildren(parent:GameObject) : void
+    Update() : void
+    + setMove(move:bool) : void
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- VehicleMover
+VehicleMover --> "path<GameObject>" "List`1"
+@enduml
