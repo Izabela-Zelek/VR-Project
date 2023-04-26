@@ -6,11 +6,11 @@ using UnityEngine;
 /// </summary>
 public class StreetLampController : MonoBehaviour
 {
-    private TimeController _timeManager;
+    private TimeController timeManager;
 
     private void Start()
     {
-        _timeManager = GameObject.Find("GameManager").GetComponent<TimeController>();
+        timeManager = GameObject.Find("GameManager").GetComponent<TimeController>();
     }
     /// <summary>
     /// Turns on each streetlamp at beginning of game and at 8pm
@@ -18,14 +18,14 @@ public class StreetLampController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if(_timeManager.CurrentTime.Hour == 20 || _timeManager.CurrentTime.Hour == 3)
+        if(timeManager.currentTime.Hour == 20 || timeManager.currentTime.Hour == 3)
         {
             for(int i = 0; i < transform.childCount;i++)
             {
                 transform.GetChild(i).GetChild(0).GetChild(0).gameObject.SetActive(true);
             }
         }
-        if (_timeManager.CurrentTime.Hour == 7)
+        if (timeManager.currentTime.Hour == 7)
         {
             for (int i = 0; i < transform.childCount; i++)
             {

@@ -5,23 +5,22 @@ using UnityEngine.Events;
 /// </summary>
 public class AnimalShop : MonoBehaviour
 {
-    public int Price;
-    public GameObject Button;
-    public GameObject BoughtObject;
-    public Transform Pos;
-    public UnityEvent OnPress;
-    public UnityEvent OnRelease;
-
-    private AudioSource _sound;
-    private bool _isPressed;
+    public int price;
+    public GameObject button;
+    public GameObject boughtObject;
+    public Transform pos;
+    private AudioSource sound;
+    public UnityEvent onPress;
+    public UnityEvent onRelease;
+    bool isPressed;
 
     /// <summary>
     /// Loads button press audio upon start
     /// </summary>
-    private void Start()
+    void Start()
     {
-        _sound = GetComponent<AudioSource>();
-        _isPressed = false;
+        sound = GetComponent<AudioSource>();
+        isPressed = false;
     }
 
     /// <summary>
@@ -30,12 +29,12 @@ public class AnimalShop : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if(!_isPressed && other.gameObject.layer == 11)
+        if(!isPressed && other.gameObject.layer == 11)
         {
-            Button.transform.localPosition = new Vector3(0, 0.02f, 0);
-            OnPress.Invoke();
-            _sound.Play();
-            _isPressed = true;
+            button.transform.localPosition = new Vector3(0, 0.02f, 0);
+            onPress.Invoke();
+            sound.Play();
+            isPressed = true;
         }
     }
 
@@ -47,9 +46,9 @@ public class AnimalShop : MonoBehaviour
     {
         if (other.gameObject)
         {
-            Button.transform.localPosition = new Vector3(0, 0.035f, 0);
-            OnRelease.Invoke();
-            _isPressed = false;
+            button.transform.localPosition = new Vector3(0, 0.035f, 0);
+            onRelease.Invoke();
+            isPressed = false;
         }
     }
 
@@ -59,10 +58,10 @@ public class AnimalShop : MonoBehaviour
     /// </summary>
     public void SpawnObject()
     {
-        if (Price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().ShopOpen)
+        if (price <= GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() && GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen)
         {
-            GameObject.Find("GameManager").GetComponent<GameManager>().MinusMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - Price);
-            GameObject boughtItem = Instantiate(BoughtObject, Pos.position, Quaternion.identity,GameObject.Find("Animals").transform);
+            GameObject.Find("GameManager").GetComponent<GameManager>().MinusMoney(GameObject.Find("GameManager").GetComponent<GameManager>().GetMoney() - price);
+            GameObject boughtItem = Instantiate(boughtObject, pos.position, Quaternion.identity,GameObject.Find("Animals").transform);
         }
     }
 }

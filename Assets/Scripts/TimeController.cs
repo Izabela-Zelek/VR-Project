@@ -9,50 +9,49 @@ using System;
 public class TimeController : MonoBehaviour
 {
     [SerializeField]
-    private float _timeMultiplier; 
+    private float TimeMultiplier; 
     [SerializeField]
-    private float _startHour;
+    private float startHour;
     [SerializeField]
-    private Light _sun;
+    private Light sun;
     [SerializeField]
-    private Light _moon;
+    private Light moon;
     [SerializeField]
-    private float _sunriseHour;
+    private float sunriseHour;
     [SerializeField]
-    private float _sunsetHour;
+    private float sunsetHour;
     [SerializeField]
-    private Color _dayAmbientLight;
+    private Color dayAmbientLight;
     [SerializeField]
-    private Color _nightAmbientLight;
+    private Color nightAmbientLight;
     [SerializeField]
-    private AnimationCurve _lightChange;
+    private AnimationCurve lightChange;
     [SerializeField]
-    private float _maxSunIntensity;    
+    private float maxSunIntensity;    
     [SerializeField]
-    private float _maxMoonIntensity;
+    private float maxMoonIntensity;
     [SerializeField]
-    private TextMeshProUGUI _dayText;
+    private TextMeshProUGUI dayText;
     [SerializeField]
-    private TextMeshProUGUI _timeText;
+    private TextMeshProUGUI timeText;
     [SerializeField]
-    private TextMeshProUGUI _wordDayText;
+    private TextMeshProUGUI wordDayText;
 
-    public DateTime CurrentTime;
-    public int DayNr = 1;
+    public DateTime currentTime;
+    private TimeSpan sunriseTime;
+    private TimeSpan sunsetTime;
+    public int dayNr = 1;
 
-    private TimeSpan _sunriseTime;
-    private TimeSpan _sunsetTime;
     private GameObject _grass1;
     private GameObject _grass2;
     private Transform _grassParent;
     private AudioSource _birdsAmb;
-
-    private void Start()
+    void Start()
     {
-        CurrentTime = DateTime.Now.Date + TimeSpan.FromHours(_startHour);
-        _sunriseTime = TimeSpan.FromHours(_sunriseHour);
-        _sunsetTime = TimeSpan.FromHours(_sunsetHour);
-        _dayText.text = "Day " + DayNr.ToString();
+        currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
+        sunriseTime = TimeSpan.FromHours(sunriseHour);
+        sunsetTime = TimeSpan.FromHours(sunsetHour);
+        dayText.text = "Day " + dayNr.ToString();
         DecideOnDay();
         _grass1 = Resources.Load("Grass_1_1") as GameObject;
         _grass2 = Resources.Load("Grass_1_2") as GameObject;
@@ -63,13 +62,13 @@ public class TimeController : MonoBehaviour
     /// <summary>
     /// Updates the current time, moves sun across the sky and plays ambient sounds of birds singing
     /// </summary>
-    private void Update()
+    void Update()
     {
         UpdateTime();
         RotateSun();
         UpdateSettings();
 
-        if(CurrentTime.Hour > _sunriseHour - 1 && CurrentTime.Hour < _sunsetHour - 1)
+        if(currentTime.Hour > sunriseHour - 1 && currentTime.Hour < sunsetHour - 1)
         {
             if(!_birdsAmb.isPlaying)
             {
@@ -84,16 +83,15 @@ public class TimeController : MonoBehaviour
             }
         }
     }
-
     /// <summary>
     /// Updates the time based on real time passing multiplied by a speed multiplier
     /// Updates the text on the watch
     /// </summary>
     private void UpdateTime()
     {
-        CurrentTime = CurrentTime.AddSeconds(Time.deltaTime * _timeMultiplier);
+        currentTime = currentTime.AddSeconds(Time.deltaTime * TimeMultiplier);
 
-       _timeText.text =  CurrentTime.ToString("HH:mm");
+       timeText.text =  currentTime.ToString("HH:mm");
     }
     /// <summary>
     /// Calculates the time between two given times
@@ -117,48 +115,45 @@ public class TimeController : MonoBehaviour
     private void RotateSun()
     {
         float sunLightRotation;
-        if(CurrentTime.TimeOfDay > _sunriseTime && CurrentTime.TimeOfDay < _sunsetTime)
+        if(currentTime.TimeOfDay > sunriseTime && currentTime.TimeOfDay < sunsetTime)
         {
-            TimeSpan sunriseToSunsetDuration = CalculateTime(_sunriseTime, _sunsetTime);
-            TimeSpan timeSinceSunrise = CalculateTime(_sunriseTime, CurrentTime.TimeOfDay);
+            TimeSpan sunriseToSunsetDuration = CalculateTime(sunriseTime, sunsetTime);
+            TimeSpan timeSinceSunrise = CalculateTime(sunriseTime, currentTime.TimeOfDay);
 
             double percentage = timeSinceSunrise.TotalMinutes / sunriseToSunsetDuration.TotalMinutes;
             sunLightRotation = Mathf.Lerp(0, 180, (float)percentage);
         }
         else
         {
-            TimeSpan sunsetToSunriseDuration = CalculateTime(_sunsetTime, _sunriseTime);
-            TimeSpan timeSinceSunset = CalculateTime(_sunsetTime, CurrentTime.TimeOfDay);
+            TimeSpan sunsetToSunriseDuration = CalculateTime(sunsetTime, sunriseTime);
+            TimeSpan timeSinceSunset = CalculateTime(sunsetTime, currentTime.TimeOfDay);
 
             double percentage = timeSinceSunset.TotalMinutes / sunsetToSunriseDuration.TotalMinutes;
             sunLightRotation = Mathf.Lerp(180, 360, (float)percentage);
         }
-        _sun.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right);
+        sun.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right);
     }
-
     /// <summary>
     /// Changes the light intensity of the sun and moon based on the sun position
     /// </summary>
-    private void UpdateSettings()
+    void UpdateSettings()
     {
-        float dotProduct = Vector3.Dot(_sun.transform.forward, Vector3.down);
-        _sun.intensity = Mathf.Lerp(0, _maxSunIntensity, _lightChange.Evaluate(dotProduct));
-        _moon.intensity = Mathf.Lerp(_maxMoonIntensity, 0, _lightChange.Evaluate(dotProduct));
-        RenderSettings.ambientLight = Color.Lerp(_nightAmbientLight, _dayAmbientLight, _lightChange.Evaluate(dotProduct));
+        float dotProduct = Vector3.Dot(sun.transform.forward, Vector3.down);
+        sun.intensity = Mathf.Lerp(0, maxSunIntensity, lightChange.Evaluate(dotProduct));
+        moon.intensity = Mathf.Lerp(maxMoonIntensity, 0, lightChange.Evaluate(dotProduct));
+        RenderSettings.ambientLight = Color.Lerp(nightAmbientLight, dayAmbientLight, lightChange.Evaluate(dotProduct));
     }
-
     /// <summary>
     /// Updates the daynr to a new day
     /// </summary>
-    public void NewDay()
+    public void newDay()
     {
-        DayNr += 1;
-        _dayText.text = "Day " + DayNr.ToString();
-        CurrentTime = DateTime.Now.Date + TimeSpan.FromHours(_startHour);
+        dayNr += 1;
+        dayText.text = "Day " + dayNr.ToString();
+        currentTime = DateTime.Now.Date + TimeSpan.FromHours(startHour);
         DecideOnDay();
         Spawn();
     }
-
     /// <summary>
     /// Decides on which day of the week it is based on the day nr, updates the watch
     /// </summary>
@@ -166,7 +161,7 @@ public class TimeController : MonoBehaviour
     {
         string dayOfWeek = "";
 
-        switch(DayNr % 7)
+        switch(dayNr % 7)
         {
             case 0:
                 dayOfWeek = "SUNDay";
@@ -191,14 +186,13 @@ public class TimeController : MonoBehaviour
                 break;
         }
 
-        _wordDayText.text = dayOfWeek.ToString();
+        wordDayText.text = dayOfWeek.ToString();
     }
 
     public int GetDayOfWeek()
     {
-        return DayNr % 7;
+        return dayNr % 7;
     }
-
     /// <summary>
     /// Spawns a random amount of grass within game bounds
     /// </summary>

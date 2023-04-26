@@ -6,45 +6,47 @@ using UnityEngine;
 /// </summary>
 public class NPCCreator : MonoBehaviour
 {
-    private GameObject _newNPC;
-    private int _pathId = -1;
-    private int _oldChosen = -1;
-    private GameObject _path;
-    private int _closestPath = -1;
-    private float _closestDistance = float.MaxValue;
-
+    private GameObject newNPC;
+    private int pathId = -1;
+    private int oldChosen = -1;
+    private GameObject path;
+    private int closestPath = -1;
+    float closestDistance = float.MaxValue;
+    /// <summary>
+    /// Finds the closest path to the placed NPC
+    /// </summary>
+    /// <param name="npc"></param>
     private void Start()
     {
-        _path = GameObject.Find("Paths");
+        path = GameObject.Find("Paths");
 
     }
     /// <summary>
     /// Finds the closest path to the placed NPC
     /// </summary>
     /// <param name="npc"></param>
-    public void SetNPC(GameObject npc)
+    public void setNPC(GameObject npc)
     {
-        _newNPC = npc;
-        if (_pathId != -1)
+        newNPC = npc;
+        if (pathId != -1)
         {
-            _newNPC.GetComponent<PathMover>().SetDefaultPath(_pathId);
+            newNPC.GetComponent<PathMover>().SetDefaultPath(pathId);
         }
         else
         {
             FindClosestPath(npc.transform.position);
-            _newNPC.GetComponent<PathMover>().SetDefaultPath(_closestPath);
+            newNPC.GetComponent<PathMover>().SetDefaultPath(closestPath);
             ClearMap();
 
         }
     }
-
     /// <summary>
     /// Turns on markers for the selected path so that it displays on the Map/Level Editor
     /// </summary>
     /// <param name="npcPath"></param>
-    public void SetPath(int npcPath)
+    public void setPath(int npcPath)
     {
-        _pathId = npcPath;
+        pathId = npcPath;
 
         GameObject chosenPath = GameObject.Find("Path" + npcPath);
         for (int i = 0; i < chosenPath.transform.childCount; i++)
@@ -52,23 +54,22 @@ public class NPCCreator : MonoBehaviour
             chosenPath.transform.GetChild(i).GetChild(0).gameObject.SetActive(true);
         }
 
-        if(_oldChosen != -1 && npcPath != _oldChosen)
+        if(oldChosen != -1 && npcPath != oldChosen)
         {
-            chosenPath = GameObject.Find("Path" + _oldChosen);
+            chosenPath = GameObject.Find("Path" + oldChosen);
             for (int i = 0; i < chosenPath.transform.childCount; i++)
             {
                 chosenPath.transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
             }
         }
         
-        _oldChosen = npcPath;
+        oldChosen = npcPath;
     }
-
     /// <summary>
     /// Hides the markers for each cell of the passed in path id
     /// </summary>
     /// <param name="npcPath"></param>
-    public void HidePath(int npcPath)
+    public void hidePath(int npcPath)
     {
         GameObject chosenPath = GameObject.Find("Path" + npcPath);
         for (int i = 0; i < chosenPath.transform.childCount; i++)
@@ -83,7 +84,7 @@ public class NPCCreator : MonoBehaviour
     {
         GameObject pathParent = GameObject.Find("Paths");
 
-        for (int i = 0; i < pathParent.transform.childCount;i++)
+        for (int i = 0; i < pathParent.transform.childCount; i++)
         {
             pathParent.transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
         }
@@ -91,21 +92,21 @@ public class NPCCreator : MonoBehaviour
     /// <summary>
     /// Clears the markers for the current path if the id is not -1
     /// </summary>
-    private void ClearMap()
+    public void ClearMap()
     {
-        if (_pathId != -1)
+        if (pathId != -1)
         {
-            GameObject chosenPath = GameObject.Find("Path" + _pathId);
+            GameObject chosenPath = GameObject.Find("Path" + pathId);
             for (int i = 0; i < chosenPath.transform.childCount; i++)
             {
                 chosenPath.transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
             }
         }
 
-        _pathId = -1;
-        _oldChosen = -1;
-        _closestPath = -1;
-        _closestDistance = float.MaxValue;
+        pathId = -1;
+        oldChosen = -1;
+        closestPath = -1;
+        closestDistance = float.MaxValue;
 }
     /// <summary>
     /// Loops through all possible paths and finds the path closest to the placed NPC
@@ -113,24 +114,24 @@ public class NPCCreator : MonoBehaviour
     /// <param name="npcPos"></param>
     private void FindClosestPath(Vector3 npcPos)
     {
-        for(int i = 0; i < _path.transform.childCount; i++)
+        for(int i = 0; i < path.transform.childCount; i++)
         {
-            Transform pathObject = _path.transform.GetChild(i);
+            Transform pathObject = path.transform.GetChild(i);
             for (int j = 0; j < pathObject.childCount; j++)
             {
                 float distance = Vector3.Distance(pathObject.GetChild(j).position, npcPos);
-                if(distance < _closestDistance && j != pathObject.childCount - 1)
+                if(distance < closestDistance && j != pathObject.childCount - 1)
                 {
-                    _closestDistance = distance;
-                    _closestPath = i + 1;
+                    closestDistance = distance;
+                    closestPath = i + 1;
 
-                    if(_closestPath == 5)
+                    if(closestPath == 5)
                     {
-                        _closestPath = 6;
+                        closestPath = 6;
                     }
-                    else if(_closestPath == 4)
+                    else if(closestPath == 4)
                     {
-                        _closestPath = 5;
+                        closestPath = 5;
                     }
                 }
             }

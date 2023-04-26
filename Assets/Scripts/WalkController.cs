@@ -8,17 +8,15 @@ using UnityEngine.XR;
 public class WalkController : MonoBehaviour
 {
     private AudioSource _walk;
-
-    private void Start()
+    void Start()
     {
         _walk = transform.Find("Feet").GetComponent<AudioSource>();
     }
-
     /// <summary>
     /// If taking in walking input, starts looping through walk audio
     /// If no input, stops walking audio
     /// </summary>
-    private void Update()
+    void Update()
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");

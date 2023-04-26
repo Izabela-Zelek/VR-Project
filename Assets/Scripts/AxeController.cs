@@ -4,7 +4,7 @@ using UnityEngine;
 /// </summary>
 public class AxeController : MonoBehaviour
 {
-    private bool _colliding = false;
+    private bool colliding = false;
     private AudioSource _chop;
 
     private void Start()
@@ -20,7 +20,7 @@ public class AxeController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.up, out hit, 0.1f))
         {
-            if (hit.collider.tag == "Tree" && !_colliding)
+            if (hit.collider.tag == "Tree" && !colliding)
             {
                 GameObject tree = hit.collider.gameObject;
                 while (tree.transform.parent.tag != "Parent")
@@ -30,12 +30,12 @@ public class AxeController : MonoBehaviour
                
                 tree.GetComponent<TreeController>().MinusLife(hit.point);
                 _chop.Play();
-                _colliding = true;
+                colliding = true;
             }
         }
         else
         {
-            _colliding = false;
+            colliding = false;
         }
     }
 }

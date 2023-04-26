@@ -6,31 +6,30 @@ using UnityEngine;
 /// </summary>
 public class PlantController : MonoBehaviour
 {
-    public GameObject Turnip;
-    public GameObject Carrot;
-    public GameObject Tomato;   
+    public GameObject turnip;
+    public GameObject carrot;
+    public GameObject tomato;   
     public GameObject FruitTurnip;
     public GameObject FruitCarrot;
     public GameObject FruitTomato;
-
     /// <summary>
     /// Returns the correct plant gameobject based on the passed in plant name
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public GameObject GetPlant(string name)
+    public GameObject getPlant(string name)
     {
         GameObject plant = new GameObject();
         switch (name)
         {
             case "Turnip":
-                plant = Turnip.gameObject;
+                plant = turnip.gameObject;
                 break;
             case "Carrot":
-                plant = Carrot.gameObject;
+                plant = carrot.gameObject;
                 break;
             case "Tomato":
-                plant = Tomato.gameObject;
+                plant = tomato.gameObject;
                 break;
             default:
                 break;
@@ -42,7 +41,7 @@ public class PlantController : MonoBehaviour
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public GameObject GetFruit(string name)
+    public GameObject getFruit(string name)
     {
         GameObject plant = new GameObject();
         switch (name)

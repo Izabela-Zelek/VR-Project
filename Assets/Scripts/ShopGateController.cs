@@ -8,23 +8,22 @@ public enum GateAnimStates
 {
     Open = 0,
     Closed = 1,
-}   
+}
 /// <summary>
 /// Handles the animations of the shopping stalls opening and closing
 /// </summary>
 public class ShopGateController : MonoBehaviour
 {
-    public Animator Animator;
+    public Animator _animator;
     public static readonly int State = Animator.StringToHash("State");
-    public GateAnimStates AnimState;
+    public GateAnimStates animState;
 
-    private void Start()
+    void Start()
     {
-        AnimState = GateAnimStates.Closed;
-        Animator.SetInteger(State, (int)AnimState);
+        animState = GateAnimStates.Closed;
+        _animator.SetInteger(State, (int)animState);
 
     }
-
     /// <summary>
     /// Grabs the current time of day
     /// If time == 7am, plays the opening stall animation
@@ -32,26 +31,26 @@ public class ShopGateController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.ToString("HH:mm") == "17:00")
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "17:00")
         {
             CloseShop();
-            GameObject.Find("GameManager").GetComponent<GameManager>().ShopOpen = false;
+            GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen = false;
         }
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.ToString("HH:mm") == "07:00")
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "07:00")
         {
             OpenShop();
-            GameObject.Find("GameManager").GetComponent<GameManager>().ShopOpen = true;
+            GameObject.Find("GameManager").GetComponent<GameManager>().shopOpen = true;
         }
     }
     public void CloseShop()
     {
-        AnimState = GateAnimStates.Closed;
-        Animator.SetInteger(State, (int)AnimState);
+        animState = GateAnimStates.Closed;
+        _animator.SetInteger(State, (int)animState);
     }
 
     public void OpenShop()
     {
-        AnimState = GateAnimStates.Open;
-        Animator.SetInteger(State, (int)AnimState);
+        animState = GateAnimStates.Open;
+        _animator.SetInteger(State, (int)animState);
     }
 }

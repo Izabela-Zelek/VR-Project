@@ -6,13 +6,13 @@ using UnityEngine;
 /// </summary>
 public class MultiFruitStemController : MonoBehaviour
 {
-    public int ChildCount;
+    public int childCount;
 
     /// <summary>
     /// Decrements a child upon harvest
     /// </summary>
     public void MinusChild()
     {
-        ChildCount--;
+        childCount--;
     }
 }

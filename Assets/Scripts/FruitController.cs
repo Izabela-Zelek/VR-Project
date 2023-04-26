@@ -7,24 +7,22 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class FruitController : MonoBehaviour
 {
-    public int Price;
-
     [SerializeField]
-    private GameObject _stem;
+    private GameObject stem;
+    private Transform parent;
+    private bool pickedUp = false;
+    private XRDirectInteractor rightInteractor;
+    private XRDirectInteractor leftInteractor;
     [SerializeField]
-    private InputActionProperty _rightSelect;
-
-    private Transform _parent;
-    private bool _pickedUp = false;
-    private XRDirectInteractor _rightInteractor;
-    private XRDirectInteractor _leftInteractor;
+    private InputActionProperty rightSelect;
+    public int price;
 
 
     private void Start()
     {
-        _rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
-        _leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
-        _parent = GameObject.Find("SmallStuff").transform;
+        rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
+        leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
+        parent = GameObject.Find("SmallStuff").transform;
 
     }
    /// <summary>
@@ -32,28 +30,28 @@ public class FruitController : MonoBehaviour
    /// If stem is now at 0 children, destroys stem gameobject
    /// Removes constraints of fruit which stopped its reaction to gravity
    /// </summary>
-    private void Update()
+    void Update()
     {
-        if(_stem != null && !_pickedUp)
+        if(stem != null && !pickedUp)
         {
-            if ((_rightInteractor.interactablesSelected.Count > 0 && _rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (_leftInteractor.interactablesSelected.Count > 0 && _leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+            if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
             {
-                if (_rightSelect.action.ReadValue<float>() >= 0.1f)
+                if (rightSelect.action.ReadValue<float>() >= 0.1f)
                 {
-                    _stem.GetComponent<MultiFruitStemController>().MinusChild();
-                    if (_stem.GetComponent<MultiFruitStemController>().ChildCount == 0)
+                    stem.GetComponent<MultiFruitStemController>().MinusChild();
+                    if (stem.GetComponent<MultiFruitStemController>().childCount == 0)
                     { 
-                        Destroy(_stem.gameObject); 
+                        Destroy(stem.gameObject); 
                     }
                     GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                    _pickedUp = true;
+                    pickedUp = true;
                 }
             }
         }
-        if(_pickedUp)
+        if(pickedUp)
         {
             gameObject.transform.SetParent(null);
-            gameObject.transform.SetParent(_parent);
+            gameObject.transform.SetParent(parent);
         }
     }
 }

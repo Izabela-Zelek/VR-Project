@@ -8,35 +8,33 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// </summary>
 public class SeedBagController : MonoBehaviour
 {
-    public string PlantType;
-    public GameObject Seed;
-    public InputActionProperty RightSelect;
-    public string PlotName;
+    public string plantType;
+    public GameObject seed;
+    public InputActionProperty rightSelect;
+    private XRDirectInteractor rightInteractor;
+    private XRDirectInteractor leftInteractor;
+    private int max_seed = 20;
+    private int seed_count = 0;
+    public string plotName;
+    private bool pickedPlot = false;
     public Transform SpawnPoint;
-
-    private XRDirectInteractor _rightInteractor;
-    private XRDirectInteractor _leftInteractor;
-    private int _maxSeed = 20;
-    private int _seedCount = 0;
-    private bool _pickedPlot = false;
-    private float _timer = 0.5f;
-    private PlantController _plantController;
+    float timer = 0.5f;
+    private PlantController plantController;
     private AudioSource _seedsFall;
-
     private void Start()
     {
-        _plantController = GameObject.Find("GameManager").GetComponent<PlantController>();
-        _rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
-        _leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
+        plantController = GameObject.Find("GameManager").GetComponent<PlantController>();
+        rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
+        leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
         _seedsFall = GetComponent<AudioSource>();
     }
     private void Update()
     {
-        if (_seedCount >= _maxSeed - 1)
+        if (seed_count >= max_seed - 1)
         {
-            _timer -= Time.deltaTime;
+            timer -= Time.deltaTime;
 
-            if (_timer <= 0)
+            if (timer <= 0)
             {
                 Destroy(gameObject);
             }
@@ -50,36 +48,36 @@ public class SeedBagController : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
 
-        if ((_rightInteractor.interactablesSelected.Count > 0 && _rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (_leftInteractor.interactablesSelected.Count > 0 && _leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+        if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
         {
-            if (other.tag == "SeedArea" && RightSelect.action.ReadValue<float>() >= 0.1f)
+            if (other.tag == "SeedArea" && rightSelect.action.ReadValue<float>() >= 0.1f)
             {
 
                 if ((transform.rotation.eulerAngles.x >= 105 && transform.rotation.eulerAngles.x <= 255) || (transform.rotation.eulerAngles.x <= -105 && transform.rotation.eulerAngles.x >= -255) ||
                     (transform.rotation.eulerAngles.z >= 105 && transform.rotation.eulerAngles.z <= 255) || (transform.rotation.eulerAngles.z <= -105 && transform.rotation.eulerAngles.z >= -255))
                 {
-                    if (!_pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().PlantState == PlantState.Bare)
+                    if (!pickedPlot && other.gameObject.transform.parent.GetComponent<FarmScript>().plantState == PlantState.Bare)
                     {
                         float number = Random.Range(0.0f, 5.0f);
                         other.gameObject.transform.parent.name = other.gameObject.transform.parent.name + number.ToString();
-                        PlotName = other.gameObject.transform.parent.name;
-                        _pickedPlot = true;
+                        plotName = other.gameObject.transform.parent.name;
+                        pickedPlot = true;
                     }
-                    if (other.gameObject.transform.parent.name == PlotName)
+                    if (other.gameObject.transform.parent.name == plotName)
                     {
                         if (!_seedsFall.isPlaying)
                         {
                             _seedsFall.Play();
                         }
-                        if (_seedCount < _maxSeed)
+                        if (seed_count < max_seed)
                         {
-                            Instantiate(Seed, SpawnPoint.position, Quaternion.identity);
-                            _seedCount++;
+                            Instantiate(seed, SpawnPoint.position, Quaternion.identity);
+                            seed_count++;
                         }
                         else
                         {
-                            other.gameObject.transform.parent.GetComponent<FarmScript>().PlantSeeds(_plantController.GetPlant(PlantType));
-                            other.gameObject.transform.parent.GetComponent<FarmScript>().SetFruitType(_plantController.GetFruit(PlantType));
+                            other.gameObject.transform.parent.GetComponent<FarmScript>().plantSeeds(plantController.getPlant(plantType));
+                            other.gameObject.transform.parent.GetComponent<FarmScript>().setFruitType(plantController.getFruit(plantType));
                         }
                     }
                 }

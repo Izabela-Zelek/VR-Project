@@ -14,7 +14,7 @@ public class VehicleCollision : MonoBehaviour
     }
     private void Update()
     {
-        transform.parent.GetComponent<VehicleMover>().SetMove(true);
+        transform.parent.GetComponent<VehicleMover>().setMove(true);
     }
     /// <summary>
     /// If constantly colliding with collider object, stops movement and plays honking sound if its an NPC or Player
@@ -24,7 +24,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.gameObject.layer != LayerMask.NameToLayer("Ground") && collision.gameObject.layer != LayerMask.NameToLayer("Boundary") && collision.gameObject.layer != LayerMask.NameToLayer("Lights") && collision.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().SetMove(false);
+            transform.parent.GetComponent<VehicleMover>().setMove(false);
 
             if (collision.gameObject.layer == LayerMask.NameToLayer("NPC") || collision.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
@@ -40,7 +40,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.gameObject.layer != LayerMask.NameToLayer("Ground") && collision.gameObject.layer != LayerMask.NameToLayer("Boundary") && collision.gameObject.layer != LayerMask.NameToLayer("Lights") && collision.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().SetMove(false);
+            transform.parent.GetComponent<VehicleMover>().setMove(false);
 
             if (collision.gameObject.layer == LayerMask.NameToLayer("NPC") || collision.gameObject.layer == LayerMask.NameToLayer("NPC"))
              {
@@ -57,7 +57,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.gameObject.layer != LayerMask.NameToLayer("Ground") && collision.gameObject.layer != LayerMask.NameToLayer("Boundary") && collision.gameObject.layer != LayerMask.NameToLayer("Lights") && collision.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().SetMove(true);
+            transform.parent.GetComponent<VehicleMover>().setMove(true);
         }
     }
     /// <summary>
@@ -68,7 +68,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Curb") && other.gameObject.layer != LayerMask.NameToLayer("Ground") && other.gameObject.layer != LayerMask.NameToLayer("Boundary") && other.gameObject.layer != LayerMask.NameToLayer("Lights") && other.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().SetMove(false);
+            transform.parent.GetComponent<VehicleMover>().setMove(false);
 
             if (other.gameObject.layer == LayerMask.NameToLayer("NPC")|| other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
@@ -76,7 +76,6 @@ public class VehicleCollision : MonoBehaviour
             }
         }
     }
-
     /// <summary>
     /// If colliding with trigger object, stops movement and plays honking sound if its an NPC or Player
     /// </summary>
@@ -85,7 +84,7 @@ public class VehicleCollision : MonoBehaviour
     {
         if (other.gameObject.layer != LayerMask.NameToLayer("Curb") && other.gameObject.layer != LayerMask.NameToLayer("Ground") && other.gameObject.layer != LayerMask.NameToLayer("Boundary") && other.gameObject.layer != LayerMask.NameToLayer("Lights") && other.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().SetMove(false);
+            transform.parent.GetComponent<VehicleMover>().setMove(false);
 
             if (other.gameObject.layer == LayerMask.NameToLayer("NPC") || other.gameObject.layer == LayerMask.NameToLayer("Player"))
             {
@@ -97,11 +96,11 @@ public class VehicleCollision : MonoBehaviour
     ///  If not colliding with a trigger object anymore, resumes movement
     /// </summary>
     /// <param name="collision"></param>
-    private void OnTriggerExit(Collider collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Curb") && collision.gameObject.layer != LayerMask.NameToLayer("Ground") && collision.gameObject.layer != LayerMask.NameToLayer("Boundary") && collision.gameObject.layer != LayerMask.NameToLayer("Lights") && collision.transform.tag != "EntryPoints")
         {
-            transform.parent.GetComponent<VehicleMover>().SetMove(true);
+            transform.parent.GetComponent<VehicleMover>().setMove(true);
         }
     }
 }

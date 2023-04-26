@@ -7,44 +7,44 @@ using UnityEngine.AI;
 /// </summary>
 public class ParkerPathMover : MonoBehaviour
 {
-    public List<GameObject> Path;
-    public float Speed = 5.0f;
-    public float Mass = 5.0f;
-    public float MaxSteer = 15.0f;
-    public float PathRadius = 1.0f;
-    public int CurrentWaypointIndex = 0;
-    public int Id = -1;
-    public bool HadLoiter = false;
-    public bool CanChangeY = true;
-    public bool First = false;
-    public bool Inside = false;
+    public List<GameObject> path;
+    public float speed = 5.0f;
+    public float mass = 5.0f;
+    public float maxSteer = 15.0f;
+    public float pathRadius = 1.0f;
+    public int currentWaypointIndex = 0;
+    private Animator animator;
 
-    private Animator _animator;
-    private bool _isStopped = false;
-    private Vector3 _targetWaypoint;
-    private Vector3 _desiredVelocity;
-    private Vector3 _steeringForce;
-    private Rigidbody _rb;
-    private float _yPos;
-    private bool _pathForward = true;
-    private bool _onGround = true;
-    private float _startTime;
-    private float _duration = 10.0f;
-    private float _elapsedTime;
+    private bool isStopped = false;
+    private Vector3 targetWaypoint;
+    private Vector3 desiredVelocity;
+    private Vector3 steeringForce;
+    private Rigidbody rb;
+    private float yPos;
+    private bool pathForward = true;
+    public int id = -1;
+    private bool onGround = true;
 
+    public bool hadLoiter = false;
+    public bool canChangeY = true;
+    private float startTime;
+    private float duration = 10.0f;
+    private float elapsedTime;
+    public bool first = false;
+    public bool inside = false;
     /// <summary>
     /// Calls for function to set up initial path
     /// </summary>
     private void Start()
     {
-        if (Id == -1)
+        if (id == -1)
         {
-            Id = Random.Range(1, 8);
+            id = Random.Range(1, 8);
         }
-        _rb = GetComponent<Rigidbody>();
-        SetPointsByChildren(First);
-        _yPos = 0.1f;
-        _animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
+        SetPointsByChildren(first);
+        yPos = 0.1f;
+        animator = GetComponent<Animator>();
     }
 
     /// <summary>
@@ -54,28 +54,28 @@ public class ParkerPathMover : MonoBehaviour
     /// <param name="first"></param>
     private void SetPointsByChildren(bool first)
     {
-        if (Id != -1 && Path.Count == 0)
+        if (id != -1 && path.Count == 0)
         {
-            if(first)
+            if (first)
             {
                 GameObject pathObject = GameObject.Find("Path" + 0.1);
                 for (int i = 0; i < pathObject.transform.childCount; i++)
                 {
-                    Path.Add(pathObject.transform.GetChild(i).gameObject);
+                    path.Add(pathObject.transform.GetChild(i).gameObject);
                 }
 
             }
             else
             {
-                GameObject pathObject = GameObject.Find("Path" + Id);
+                GameObject pathObject = GameObject.Find("Path" + id);
                 for (int i = 0; i < pathObject.transform.childCount; i++)
                 {
-                    Path.Add(pathObject.transform.GetChild(i).gameObject);
+                    path.Add(pathObject.transform.GetChild(i).gameObject);
                 }
 
             }
 
-            _targetWaypoint = GetClosestPointOnPath(transform.position);
+            targetWaypoint = GetClosestPointOnPath(transform.position);
         }
     }
 
@@ -90,91 +90,91 @@ public class ParkerPathMover : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        _elapsedTime = Time.time - _startTime;
-        if (Path.Count > 0 && !Inside)
+        elapsedTime = Time.time - startTime;
+        if (path.Count > 0 && !inside)
         {
-            float distance = Vector3.Distance(transform.position, _targetWaypoint);
+            float distance = Vector3.Distance(transform.position, targetWaypoint);
 
-            if (distance <= PathRadius)
+            if (distance <= pathRadius)
             {
-                if (Path[CurrentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime() > 0 && !HadLoiter)
+                if (path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime() > 0 && !hadLoiter)
                 {
-                    _rb.velocity = Vector3.zero;
-                    _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
-                    _isStopped = true;
-                    StartCoroutine(Loiter(Path[CurrentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
+                    rb.velocity = Vector3.zero;
+                    animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
+                    isStopped = true;
+                    StartCoroutine(Loiter(path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
                 }
 
-                if(Path[CurrentWaypointIndex].GetComponent<PathCellController>().GetAtShop())
+                if (path[currentWaypointIndex].GetComponent<PathCellController>().GetAtShop())
                 {
                     Hide();
                     int hideFor = Random.Range(9, 20);
                     StartCoroutine(LoiterInside(hideFor));
                 }
-                if (!_isStopped && !Inside)
+                if (!isStopped && !inside)
                 {
-                    if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                    if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                     {
-                        _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
-                        HadLoiter = false;
+                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                        hadLoiter = false;
                     }
-                    if (_pathForward)
+                    if (pathForward)
                     {
-                        CurrentWaypointIndex++;
-                        HadLoiter = false;
+                        currentWaypointIndex++;
+                        hadLoiter = false;
                     }
-                    else if (!_pathForward)
+                    else if (!pathForward)
                     {
-                        CurrentWaypointIndex--;
-                        HadLoiter = false;
+                        currentWaypointIndex--;
+                        hadLoiter = false;
                     }
-                    if (CurrentWaypointIndex >= Path.Count - 1 && _pathForward)
+                    if (currentWaypointIndex >= path.Count - 1 && pathForward)
                     {
-                        if(First)
+                        if (first)
                         {
-                            First = false;
-                            Path.Clear();
-                            Id = Random.Range(1, 8);
-                            SetPointsByChildren(First);
+                            first = false;
+                            path.Clear();
+                            id = Random.Range(1, 8);
+                            SetPointsByChildren(first);
                         }
                         else
                         {
-                            _pathForward = false;
-                            CurrentWaypointIndex = Path.Count - 1;
+                            pathForward = false;
+                            currentWaypointIndex = path.Count - 1;
                         }
                     }
-                    else if (CurrentWaypointIndex < 0 && !_pathForward)
+                    else if (currentWaypointIndex < 0 && !pathForward)
                     {
-                        _pathForward = true;
-                        CurrentWaypointIndex = 0;
+                        pathForward = true;
+                        currentWaypointIndex = 0;
                     }
-                    _targetWaypoint = Path[CurrentWaypointIndex].transform.position;
+                    targetWaypoint = path[currentWaypointIndex].transform.position;
                 }
 
             }
 
-            if (!_isStopped)
+            if (!isStopped)
             {
-                _desiredVelocity = (_targetWaypoint - transform.position).normalized * Speed;
-                _steeringForce = _desiredVelocity - _rb.velocity;
-                _steeringForce /= Mass;
+                desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
+                steeringForce = desiredVelocity - rb.velocity;
+                steeringForce /= mass;
 
-                if (_steeringForce.magnitude > MaxSteer)
+                if (steeringForce.magnitude > maxSteer)
                 {
-                    _steeringForce = _steeringForce.normalized * MaxSteer;
+                    steeringForce = steeringForce.normalized * maxSteer;
                 }
 
-                _rb.AddForce(_steeringForce);
-                if (_rb.velocity != Vector3.zero)
+                rb.AddForce(steeringForce);
+                if (rb.velocity != Vector3.zero)
                 {
-                    Quaternion lookRotation = Quaternion.LookRotation(_rb.velocity, Vector3.up);
+                    Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
                     transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
                 }
-                transform.localPosition = new Vector3(transform.localPosition.x, _yPos, transform.localPosition.z);
-                transform.position = new Vector3(transform.position.x, _yPos, transform.position.z);
+                transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
+                transform.position = new Vector3(transform.position.x, yPos, transform.position.z);
 
             }
-            
+
         }
     }
     /// <summary>
@@ -187,15 +187,15 @@ public class ParkerPathMover : MonoBehaviour
         Vector3 closestPoint = Vector3.zero;
         float closestDistance = Mathf.Infinity;
 
-        for (int i = 0; i < Path.Count; i++)
+        for (int i = 0; i < path.Count; i++)
         {
-            Vector3 pathPoint = Path[i].transform.position;
+            Vector3 pathPoint = path[i].transform.position;
             float distance = Vector3.Distance(position, pathPoint);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
                 closestPoint = pathPoint;
-                CurrentWaypointIndex = i;
+                currentWaypointIndex = i;
             }
         }
 
@@ -209,8 +209,8 @@ public class ParkerPathMover : MonoBehaviour
     private IEnumerator Loiter(int time)
     {
         yield return new WaitForSeconds(time);
-        _isStopped = false;
-        HadLoiter = true;
+        isStopped = false;
+        hadLoiter = true;
     }
 
     /// <summary>
@@ -219,24 +219,24 @@ public class ParkerPathMover : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (_elapsedTime >= _duration)
+        if (elapsedTime >= duration)
         {
-            _startTime = Time.time;
-            CanChangeY = true;
+            startTime = Time.time;
+            canChangeY = true;
         }
-        if (other.gameObject.layer == LayerMask.NameToLayer("Curb") && CanChangeY)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Curb") && canChangeY)
         {
-            if(_onGround)
+            if (onGround)
             {
-                _yPos = transform.localPosition.y + 0.05f;
-                _onGround = false;
+                yPos = transform.localPosition.y + 0.05f;
+                onGround = false;
             }
-           else
+            else
             {
-                _yPos = transform.localPosition.y - 0.05f;
-                _onGround = false;
+                yPos = transform.localPosition.y - 0.05f;
+                onGround = false;
             }
-            CanChangeY = false;
+            canChangeY = false;
         }
     }
     /// <summary>
@@ -244,12 +244,12 @@ public class ParkerPathMover : MonoBehaviour
     /// </summary>
     private void Hide()
     {
-        for(int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(false);
         }
-        _rb.velocity = Vector3.zero;
-        _rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        rb.velocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
     }
     /// <summary>
@@ -270,8 +270,8 @@ public class ParkerPathMover : MonoBehaviour
     private IEnumerator LoiterInside(int time)
     {
         yield return new WaitForSeconds(time);
-        _rb.constraints = RigidbodyConstraints.FreezePositionY;
-        Inside = false;
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
+        inside = false;
         Unhide();
     }
 }

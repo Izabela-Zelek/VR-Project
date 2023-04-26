@@ -18,18 +18,18 @@ public enum PlantState
 /// </summary>
 public class FarmScript : MonoBehaviour
 {
-    public GameObject Seeds;
-    public GameObject GrowingPlant;
-    public Material DryMat;
-    public Material WetMat;
-    public PlantState PlantState;
+    public GameObject seeds;
+    public GameObject growingPlant;
+    private GameObject grownPlant;
+    private GameObject fruitType;
+    public Material dryMat;
+    public Material wetMat;
+    public PlantState plantState;
+    private int currentDay;
+    private bool watered = false;
+    private CapsuleController sleepArea;
 
-    private GameObject _grownPlant;
-    private GameObject _fruitType;
-    private int _currentDay;
-    private bool _watered = false;
-    private CapsuleController _sleepArea;
-    private ParticleCollisionEvent[] _collisionEvents = new ParticleCollisionEvent[16];
+    private ParticleCollisionEvent[] collisionEvents = new ParticleCollisionEvent[16];
 
     /// <summary>
     /// Sets initial state to Base - no seeds planted
@@ -37,33 +37,33 @@ public class FarmScript : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        PlantState = PlantState.Bare;
-        _currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().DayNr;
-        _sleepArea = GameObject.Find("Bed").gameObject.transform.GetChild(0).gameObject.transform.Find("Collider").GetComponent<CapsuleController>();
+        plantState = PlantState.Bare;
+        currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
+        sleepArea = GameObject.Find("Bed").gameObject.transform.GetChild(0).gameObject.transform.Find("Collider").GetComponent<CapsuleController>();
     }
     /// <summary>
     /// If state is Bare, spawns seeds and changes state
     /// Saves type of planted seed
     /// </summary>
     /// <param name="t_plant"></param>
-    public void PlantSeeds(GameObject t_plant)
+    public void plantSeeds(GameObject t_plant)
     {
-        if (PlantState == PlantState.Bare)
+        if (plantState == PlantState.Bare)
         {
             Vector3 pos = new Vector3(transform.position.x, 0.02625f, transform.position.z);
-            Instantiate(Seeds, pos, Quaternion.identity, gameObject.transform);
-            PlantState = PlantState.Seed;
+            Instantiate(seeds, pos, Quaternion.identity, gameObject.transform);
+            plantState = PlantState.Seed;
 
-            _grownPlant = t_plant;
+            grownPlant = t_plant;
         }
     }
     /// <summary>
     /// Saves the passed in fully-grown fruit gameobject
     /// </summary>
     /// <param name="t_plant"></param>
-    public void SetFruitType(GameObject t_plant)
+    public void setFruitType(GameObject t_plant)
     {
-        _fruitType = t_plant;
+        fruitType = t_plant;
     }
     /// <summary>
     /// Checks if player has been asleep, checks if watered
@@ -72,57 +72,57 @@ public class FarmScript : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (_sleepArea.Asleep)
+        if (sleepArea.asleep)
         {
-            if (PlantState == PlantState.Seed && _watered)
+            if (plantState == PlantState.Seed && watered)
             {
-                _currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().DayNr;
-                PlantState++;
-                Debug.Log(PlantState);
+                currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
+                plantState++;
+                Debug.Log(plantState);
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
                 Destroy(gameObject.transform.GetChild(1).gameObject);
-                Instantiate(GrowingPlant, pos, Quaternion.identity, gameObject.transform);
+                Instantiate(growingPlant, pos, Quaternion.identity, gameObject.transform);
             }
-            else if (PlantState == PlantState.Growing && _watered)
+            else if (plantState == PlantState.Growing && watered)
             {
-                _currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().DayNr;
-                PlantState++;
-                Debug.Log(PlantState);
+                currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
+                plantState++;
+                Debug.Log(plantState);
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
                 Destroy(gameObject.transform.GetChild(1).gameObject);
-                Instantiate(_grownPlant, pos, Quaternion.identity, gameObject.transform);
+                Instantiate(grownPlant, pos, Quaternion.identity, gameObject.transform);
             }
-            else if (PlantState == PlantState.Grown && _watered)
+            else if (plantState == PlantState.Grown && watered)
             {
-                _currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().DayNr;
-                PlantState++;
-                Debug.Log(PlantState);
+                currentDay = GameObject.Find("GameManager").GetComponent<TimeController>().dayNr;
+                plantState++;
+                Debug.Log(plantState);
                 Vector3 pos = gameObject.transform.GetChild(1).transform.position;
-                pos.y = CheckFruitYPos(_fruitType.name);
+                pos.y = checkFruitYPos(fruitType.name);
                 Destroy(gameObject.transform.GetChild(1).gameObject);
-                Instantiate(_fruitType, pos, Quaternion.identity, gameObject.transform);
+                Instantiate(fruitType, pos, Quaternion.identity, gameObject.transform);
             }
         }
 
-        if (_sleepArea.Asleep)
+        if (sleepArea.asleep)
         {
-            gameObject.GetComponent<MeshRenderer>().material = DryMat;
-            _watered = false;
+            gameObject.GetComponent<MeshRenderer>().material = dryMat;
+            watered = false;
         }
 
         if (gameObject.transform.childCount == 1)
         {
-            PlantState = PlantState.Bare;
+            plantState = PlantState.Bare;
         }
     }
    
     /// <summary>
     /// Changes colour of field to show it watered
     /// </summary>
-    public void MakeWatered()
+    public void makeWatered()
     {
-        gameObject.GetComponent<MeshRenderer>().material = WetMat;
-        _watered = true;
+        gameObject.GetComponent<MeshRenderer>().material = wetMat;
+        watered = true;
     }
 
     /// <summary>
@@ -130,7 +130,7 @@ public class FarmScript : MonoBehaviour
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    private float CheckFruitYPos(string name)
+    private float checkFruitYPos(string name)
     {
         float value = gameObject.transform.GetChild(1).transform.position.y;
 

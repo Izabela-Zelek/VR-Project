@@ -6,37 +6,32 @@ using UnityEngine;
 /// </summary>
 public class NPCContoller : MonoBehaviour
 {
-    [SerializeField]
-    private float _circleRadius = 500.0f;
-    [SerializeField]
-    private float _distance = 300.0f;
-    [SerializeField]
-    private float _wanderWeight = 1.0f;
-    [SerializeField]
-    private float _maxSpeed = 2.0f;
-    [SerializeField]
-    private float _maxForce = 100.0f;
+    public float circleRadius = 100;
+    public float distance = 40;
+    public float wanderWeight = 10.0f;
+    public float maxSpeed = 8;
+    public float maxForce = 10;
+
+    private Animator animator;
+    private Rigidbody rb;
+    private float yPos;
+    private float angle;
+    private bool _avoid = false;
     [SerializeField]
     private bool _startPath = false;
     [SerializeField]
     private int _startTime = 8;
 
-    private Animator _animator;
-    private Rigidbody _rb;
-    private float _yPos;
-    private float _angle;
-    private bool _avoid = false;
-
-   /// <summary>
-   /// Generates a random angle for rotation
-   /// Generates a random wake up time
-   /// </summary>
+    /// <summary>
+    /// Generates a random angle for rotation
+    /// Generates a random wake up time
+    /// </summary>
     private void Start()
     {
-        _rb = GetComponent<Rigidbody>();
-        _angle = Random.Range(0, 360) * Mathf.Deg2Rad;
-        _yPos = transform.localPosition.y;
-        _animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
+        angle = Random.Range(0, 360) * Mathf.Deg2Rad;
+        yPos = transform.localPosition.y;
+        animator = GetComponent<Animator>();
         _startTime = Random.Range(7, 13);
     }
 
@@ -48,12 +43,12 @@ public class NPCContoller : MonoBehaviour
     {
         if (!_startPath)
         {
-            if (_startTime == GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour)
+            if (_startTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
             {
                 _startPath = true;
-                if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                 {
-                    _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                    animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
                 }
             }
         }
@@ -62,37 +57,37 @@ public class NPCContoller : MonoBehaviour
         {
             if (!_avoid)
             {
-                _rb.AddForce(Wander() * _wanderWeight);
+                rb.AddForce(Wander() * wanderWeight);
 
-                if (_rb.velocity != Vector3.zero)
+                if (rb.velocity != Vector3.zero)
                 {
-                    Quaternion lookRotation = Quaternion.LookRotation(_rb.velocity, Vector3.up);
+                    Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
                     transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
-                    transform.localPosition = new Vector3(transform.localPosition.x, _yPos, transform.localPosition.z);
+                    transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
                 }
             }
         }
     }
     /// <summary>
-    /// Moves the NPC by adding a randomly generated small angle value to the rotation of the character and adding force 
+    /// Checks for the world time to equal their starting time, then enables the NPC and starts movement
+    /// 
     /// </summary>
-    /// <returns></returns>
     private Vector3 Wander()
     {
-        _angle = _angle + Random.Range(-20, 20) * Mathf.Deg2Rad;
+        angle = angle + Random.Range(-20, 20) * Mathf.Deg2Rad;
 
-        Vector3 futurePos = transform.position + _rb.velocity * _distance;
+        Vector3 futurePos = transform.position + rb.velocity * distance;
         Vector3 pointOnCircle = futurePos;
-        pointOnCircle.x = pointOnCircle.x + (_circleRadius * Mathf.Cos(_angle));
-        pointOnCircle.z = pointOnCircle.z + (_circleRadius * Mathf.Sin(_angle));
+        pointOnCircle.x = pointOnCircle.x + (circleRadius * Mathf.Cos(angle));
+        pointOnCircle.z = pointOnCircle.z + (circleRadius * Mathf.Sin(angle));
 
-        Vector3 desVelocity = (pointOnCircle - transform.position).normalized * _maxSpeed;
+        Vector3 desVelocity = (pointOnCircle - transform.position).normalized * maxSpeed;
 
-        Vector3 steer = desVelocity - _rb.velocity;
+        Vector3 steer = desVelocity - rb.velocity;
 
-        if (steer.magnitude > _maxForce)
+        if (steer.magnitude > maxForce)
         {
-            steer = steer.normalized * _maxForce;
+            steer = steer.normalized * maxForce;
         }
 
         return steer;
@@ -104,25 +99,24 @@ public class NPCContoller : MonoBehaviour
     /// </summary>
     private void SimpleWander()
     {
-        _angle = _angle + Random.Range(-180, 180) * Mathf.Deg2Rad;
+        angle = angle + Random.Range(-180, 180) * Mathf.Deg2Rad;
     }
 
     public void Avoid(bool shouldAvoid)
     {
         _avoid = shouldAvoid;
     }
-
     /// <summary>
     /// Adds the passed in force to allow the NPC to avoid the object in front of them
     /// </summary>
     /// <param name="force"></param>
     public void Avoid(Vector3 force)
     {
-        if (_rb == null)
+        if (rb == null)
         {
-            _rb = GetComponent<Rigidbody>();
+            rb = GetComponent<Rigidbody>();
         }
-        _rb.AddForce(force);
+        rb.AddForce(force);
     }
 
     public int GetStartTime()

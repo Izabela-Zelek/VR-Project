@@ -5,29 +5,29 @@ using UnityEngine;
 /// </summary>
 public class CapsuleController : MonoBehaviour
 {
-    public AnimController Animator;
-    public GameObject AwakeSpawn;
-    public bool Asleep = false;
-    private bool _called = false;
+    public AnimController animator;
+    public GameObject awakeSpawn;
+    public bool asleep = false;
+    private bool called = false;
 
     /// <summary>
     /// When in-game tinme is at midnight, calls for the falling asleep animation and starts coroutine
     /// </summary>
     private void Update()
     {
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.ToString("HH:mm") == "00:00" && !_called)
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "00:00" && !called)
         {
             if (!GameObject.Find("GameManager").GetComponent<GameManager>().IsInMap())
             {
-                Animator.GetComponent<AnimController>().getTired();
-                Asleep = true;
+                animator.GetComponent<AnimController>().getTired();
+                asleep = true;
                 StartCoroutine(Wait(10.0f, GameObject.Find("XR Origin").gameObject));
-                _called = true;
+                called = true;
             }
         }
-        if (GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.ToString("HH:mm") == "07:00" && _called)
+        if (GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.ToString("HH:mm") == "07:00" && called)
         {
-            _called = false;
+            called = false;
         }
     }
     /// <summary>
@@ -36,10 +36,10 @@ public class CapsuleController : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == 6 && !Asleep)
+        if(other.gameObject.layer == 6 && !asleep)
         {
-            Animator.GetComponent<AnimController>().getTired();
-            Asleep = true;
+            animator.GetComponent<AnimController>().getTired();
+            asleep = true;
             StartCoroutine(Wait(10.0f, other.gameObject));
         }
     }
@@ -52,14 +52,14 @@ public class CapsuleController : MonoBehaviour
     /// <param name="time"></param>
     /// <param name="other"></param>
     /// <returns></returns>
-    private IEnumerator Wait(float time, GameObject other)
+    IEnumerator Wait(float time, GameObject other)
     {
-        Animator.GetComponent<AnimController>().getTired();
+        animator.GetComponent<AnimController>().getTired();
         yield return new WaitForSeconds(time);
-        other.transform.position = AwakeSpawn.transform.position;
-        Animator.GetComponent<AnimController>().awaken();
-        Asleep = false;
-        GameObject.Find("GameManager").GetComponent<TimeController>().NewDay();    
+        other.transform.position = awakeSpawn.transform.position;
+        animator.GetComponent<AnimController>().awaken();
+        asleep = false;
+        GameObject.Find("GameManager").GetComponent<TimeController>().newDay();    
     }
 
 }

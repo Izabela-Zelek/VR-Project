@@ -8,21 +8,19 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class Slot : MonoBehaviour
 {
-    public GameObject ItemInSlot;
-    public Image SlotImage;
-    public Transform AttachPoint;
-    public InputActionProperty RightSelect;
-
-    private Color _originalColour;
-    private bool _canPutIn = true;
+    public GameObject itemInSlot;
+    public Image slotImage;
+    public Transform attachPoint;
+    Color originalColour;
+    bool _canPutIn = true;
+    public InputActionProperty rightSelect;
 
 
     private void Start()
     {
-        SlotImage = GetComponentInChildren<Image>();
-        _originalColour = SlotImage.color;
+        slotImage = GetComponentInChildren<Image>();
+        originalColour = slotImage.color;
     }
-
     /// <summary>
     /// Upon collision with an object, checks if item can be placed in inventory
     /// If select button is pressed, changes colour of slot to show collision
@@ -32,15 +30,15 @@ public class Slot : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!_canPutIn) return;
-        if (ItemInSlot != null) return;
+        if (itemInSlot != null) return;
         GameObject obj = other.gameObject;
         if (!IsItem(obj)) return;
-        if (RightSelect.action.ReadValue<float>() >= 0.1f && obj.GetComponent<Item>().IsHeld && other.gameObject.GetComponent<Item>().InSlot == false)
+        if (rightSelect.action.ReadValue<float>() >= 0.1f && obj.GetComponent<Item>().isHeld && other.gameObject.GetComponent<Item>().inSlot == false)
         { 
-            SlotImage.color = new Color(0.6156863f, 0.4156863f, 0.5215687f); 
+            slotImage.color = new Color(0.6156863f, 0.4156863f, 0.5215687f); 
         }
 
-        if (RightSelect.action.ReadValue<float>() == 0 && obj.GetComponent<Item>().IsHeld && other.gameObject.GetComponent<Item>().InSlot == false)
+        if (rightSelect.action.ReadValue<float>() == 0 && obj.GetComponent<Item>().isHeld && other.gameObject.GetComponent<Item>().inSlot == false)
         {
             InsertItem(obj);
         }
@@ -52,9 +50,9 @@ public class Slot : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
-        if (ItemInSlot != null)
+        if (itemInSlot != null)
         {
-            if (ItemInSlot == other.gameObject)
+            if (itemInSlot == other.gameObject)
             {
                 other.GetComponent<Item>().Remove();
             }
@@ -63,23 +61,21 @@ public class Slot : MonoBehaviour
         {
             GameObject obj = other.gameObject;
             if (!IsItem(obj)) return;
-            if (RightSelect.action.ReadValue<float>() >= 0.1f)
+            if (rightSelect.action.ReadValue<float>() >= 0.1f)
             {
-                SlotImage.color = _originalColour;
+                slotImage.color = originalColour;
             }
         }
     }
-
     /// <summary>
     /// Returns whether the colliding item can be put in inventory
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    private bool IsItem(GameObject obj)
+    bool IsItem(GameObject obj)
     {
         return obj.GetComponent<Item>();
     }
-
     /// <summary>
     /// Freezes the position and rotation of the item being put into inventory
     /// Sets the item to be a child of the current slot
@@ -88,18 +84,18 @@ public class Slot : MonoBehaviour
     /// If it is a large item, scales the object down
     /// </summary>
     /// <param name="obj"></param>
-    private void InsertItem(GameObject obj)
+    void InsertItem(GameObject obj)
     {
-        if (!obj.GetComponent<Item>().IsLarge)
+        if (!obj.GetComponent<Item>().isLarge)
         {
             obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
             obj.gameObject.transform.SetParent(gameObject.transform, true);
-            obj.gameObject.transform.position = AttachPoint.position;
-            obj.gameObject.transform.eulerAngles = obj.GetComponent<Item>().SlotRotation;
-            obj.GetComponent<Item>().InSlot = true;
-            obj.GetComponent<Item>().CurrentSlot = this;
-            ItemInSlot = obj;
-            SlotImage.color = Color.gray;
+            obj.gameObject.transform.position = attachPoint.position;
+            obj.gameObject.transform.eulerAngles = obj.GetComponent<Item>().slotRotation;
+            obj.GetComponent<Item>().inSlot = true;
+            obj.GetComponent<Item>().currentSlot = this;
+            itemInSlot = obj;
+            slotImage.color = Color.gray;
 
             if(obj.GetComponent<BoxCollider>())
             {
@@ -120,12 +116,12 @@ public class Slot : MonoBehaviour
             scale.Set(0.25f, 0.25f, 0.25f);
 
             obj.gameObject.transform.localScale = scale;
-            obj.gameObject.transform.position = AttachPoint.position;
-            obj.gameObject.transform.rotation = Quaternion.Euler(obj.GetComponent<Item>().SlotRotation);
-            obj.GetComponent<Item>().InSlot = true;
-            obj.GetComponent<Item>().CurrentSlot = this;
-            ItemInSlot = obj;
-            SlotImage.color = Color.gray;
+            obj.gameObject.transform.position = attachPoint.position;
+            obj.gameObject.transform.rotation = Quaternion.Euler(obj.GetComponent<Item>().slotRotation);
+            obj.GetComponent<Item>().inSlot = true;
+            obj.GetComponent<Item>().currentSlot = this;
+            itemInSlot = obj;
+            slotImage.color = Color.gray;
             if (obj.GetComponent<BoxCollider>())
             {
                 obj.GetComponent<BoxCollider>().isTrigger = true;
@@ -145,9 +141,9 @@ public class Slot : MonoBehaviour
     /// </summary>
     public void RemoveItem()
     {
-        ItemInSlot.transform.SetParent(null, true);
-        ItemInSlot = null;
-        SlotImage.color = _originalColour;
+        itemInSlot.transform.SetParent(null, true);
+        itemInSlot = null;
+        slotImage.color = originalColour;
     }
 
     public void SetPutIn(bool put)

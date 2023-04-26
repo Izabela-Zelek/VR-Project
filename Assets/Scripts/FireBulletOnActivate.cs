@@ -7,12 +7,12 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class FireBulletOnActivate : MonoBehaviour
 {
-    public GameObject Bullet;
-    public Transform SpawnPoint;
-    public float FireSpeed = 20;
+    public GameObject bullet;
+    public Transform spawnPoint;
+    public float fireSpeed = 20;
     private AudioSource _shoot;
     // Start is called before the first frame update
-    private void Start()
+    void Start()
     {
         XRGrabInteractable grabbable = GetComponent<XRGrabInteractable>();
         grabbable.activated.AddListener(FireBullet);
@@ -20,7 +20,7 @@ public class FireBulletOnActivate : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    void Update()
     {
         
     }
@@ -28,9 +28,9 @@ public class FireBulletOnActivate : MonoBehaviour
     public void FireBullet(ActivateEventArgs arg)
     {
         _shoot.Play();
-        GameObject spawnedBullet = Instantiate(Bullet);
-        spawnedBullet.transform.position = SpawnPoint.position;
-        spawnedBullet.GetComponent<Rigidbody>().velocity = SpawnPoint.forward * FireSpeed;
+        GameObject spawnedBullet = Instantiate(bullet);
+        spawnedBullet.transform.position = spawnPoint.position;
+        spawnedBullet.GetComponent<Rigidbody>().velocity = spawnPoint.forward * fireSpeed;
         Destroy(spawnedBullet, 15);
     }
 }

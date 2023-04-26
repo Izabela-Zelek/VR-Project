@@ -7,10 +7,10 @@ using UnityEngine;
 public class SellItemController : MonoBehaviour
 {
     [SerializeField]
-    private int _price;
+    private int Price;
    
     public int GetPrice()
     {
-        return _price;
+        return Price;
     }
 }

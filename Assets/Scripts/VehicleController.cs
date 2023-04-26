@@ -11,12 +11,11 @@ public class VehicleController : MonoBehaviour
     private Object[] _carTypes;
     private GameObject _chosenCar;
     private GameObject _newCar;
-    
     /// <summary>
     /// Generates a random time interval before next vehicle spawn, generates a random id of a roadpath to assign
     /// Generates a random car model from a list of all car models
     /// </summary>
-    private void Start()
+    void Start()
     {
         _carTypes = Resources.LoadAll("Vehicles", typeof(GameObject));
         _nextSpawn = Random.Range(7, 15);
@@ -40,7 +39,6 @@ public class VehicleController : MonoBehaviour
 
         StartCoroutine(WaitForSpawn());
     }
-
     /// <summary>
     /// Spawns a vehicle each time the wait interval is over and assigns them their roadpath
     /// Generates a random time interval before next vehicle spawn for next car, generates a random id of a roadpath to assign for next car

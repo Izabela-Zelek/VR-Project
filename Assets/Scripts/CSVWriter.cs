@@ -5,7 +5,7 @@ using System.IO;
 using System;
 
 /// <summary>
-/// A class which saves data to CSV file
+/// Handles writing path positions to CSV file
 /// </summary>
 public class CSVWriter : MonoBehaviour
 {
@@ -97,7 +97,7 @@ public class CSVWriter : MonoBehaviour
 
     }
 
-    private void RefreshEditorProjectWindow()
+    void RefreshEditorProjectWindow()
     {
         #if UNITY_EDITOR
                  UnityEditor.AssetDatabase.Refresh();

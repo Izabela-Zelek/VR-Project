@@ -5,11 +5,11 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class InventoryVR : MonoBehaviour
 {
-    public InputActionProperty LeftActivate;
+    public InputActionProperty leftActivate;
+
     public GameObject Inventory;
     public GameObject Anchor;
-
-    private bool _UIActive;
+    bool UIActive;
 
     /// <summary>
     /// Sets initial state of inventory to inactive
@@ -17,7 +17,7 @@ public class InventoryVR : MonoBehaviour
     private void Start()
     {
         Inventory.SetActive(false);
-        _UIActive = false;
+        UIActive = false;
 
     }
 
@@ -29,17 +29,17 @@ public class InventoryVR : MonoBehaviour
     private void Update()
     {
        
-        if (LeftActivate.action.ReadValue<float>() > 0.1f)
+        if (leftActivate.action.ReadValue<float>() > 0.1f)
         {
-            _UIActive = true;
-            Inventory.SetActive(_UIActive);
+            UIActive = true;
+            Inventory.SetActive(UIActive);
         }
         else
         {
-            _UIActive = false;
-            Inventory.SetActive(_UIActive);
+            UIActive = false;
+            Inventory.SetActive(UIActive);
         }
-        if (_UIActive)
+        if (UIActive)
         {
             Inventory.transform.position = Anchor.transform.position;
             Inventory.transform.eulerAngles = new Vector3(Anchor.transform.eulerAngles.x + 15, Anchor.transform.eulerAngles.y, 0);

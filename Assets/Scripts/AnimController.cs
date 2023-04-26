@@ -12,17 +12,16 @@ public enum TiredAnimStates
 /// </summary>
 public class AnimController : MonoBehaviour
 {
-    public Animator Animator;
+    public Animator _animator;
     public static readonly int State = Animator.StringToHash("State");
-    public TiredAnimStates AnimState;
-
+    public TiredAnimStates animState;
     /// <summary>
     /// Sets initial animation state to waking up
     /// </summary>
     void Start()
     {
-        AnimState = TiredAnimStates.Woke;
-        Animator.SetInteger(State, (int)AnimState);
+        animState = TiredAnimStates.Woke;
+        _animator.SetInteger(State, (int)animState);
 
     }
 
@@ -31,15 +30,15 @@ public class AnimController : MonoBehaviour
     /// </summary>
     public void getTired()
     {
-        AnimState = TiredAnimStates.Slep;
-        Animator.SetInteger(State, (int)AnimState);
+        animState = TiredAnimStates.Slep;
+        _animator.SetInteger(State, (int)animState);
     }
     /// <summary>
     /// Sets animation state to waking up
     /// </summary>
     public void awaken()
     {
-        AnimState = TiredAnimStates.Woke;
-        Animator.SetInteger(State, (int)AnimState);
+        animState = TiredAnimStates.Woke;
+        _animator.SetInteger(State, (int)animState);
     }
 }

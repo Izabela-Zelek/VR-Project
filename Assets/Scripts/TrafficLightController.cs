@@ -6,32 +6,30 @@ using UnityEngine;
 /// </summary>
 public class TrafficLightController : MonoBehaviour
 {
-    public Material Red;
-    public Material LitRed;
-    public Material Green;
-    public Material LitGreen;
-
     private int _trafficWait = 10;
     private int _currentGreen1 = 0;
     private int _currentGreen2 = 4;
     private GameObject _trafficLight01;
     private GameObject _trafficLight23;
     private GameObject _trafficLight45;
+    public Material Red;
+    public Material LitRed;
+    public Material Green;
+    public Material LitGreen;
 
     private void Start()
     {
-        StartCoroutine(ChangeLights1());
-        StartCoroutine(ChangeLights2());
+        StartCoroutine(changeLights1());
+        StartCoroutine(changeLights2());
         _trafficLight01 = GameObject.Find("Traffic light 4 Prefab 01");
         _trafficLight23 = GameObject.Find("Traffic light 4 Prefab 23");
         _trafficLight45 = GameObject.Find("Traffic light 4 Prefab 45");
     }
-
     /// <summary>
     /// Every ten seconds, In the first road intersection,increments the id of the traffic light lit up green, turns the others red
     /// </summary>
     /// <returns></returns>
-    private IEnumerator ChangeLights1()
+    private IEnumerator changeLights1()
     {
         while (true)
         {
@@ -123,7 +121,7 @@ public class TrafficLightController : MonoBehaviour
     /// Every ten seconds, In the second road intersection,increments the id of the traffic light lit up green, turns the others red
     /// </summary>
     /// <returns></returns>
-    private IEnumerator ChangeLights2()
+    private IEnumerator changeLights2()
     {
         while (true)
         {

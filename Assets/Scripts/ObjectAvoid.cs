@@ -7,12 +7,11 @@ using UnityEngine;
 public class ObjectAvoid : MonoBehaviour
 {
     private float _raycastDistance = 2;
-    private float _newAngle;
-
+    private float newAngle;
     /// <summary>
     /// Casts a raycast in front of the NPC and if it hits any object that isn't the ground, tells the NPC to avoid
     /// </summary>
-    private void Update()
+    void Update()
     {
         RaycastHit hit;
         if(Physics.Raycast(transform.position,transform.forward,out hit, _raycastDistance))
@@ -24,15 +23,15 @@ public class ObjectAvoid : MonoBehaviour
                 Vector3 hitDirection = Vector3.Reflect(transform.forward, hitNormal);
                 float angle = Vector3.Angle(transform.forward, hitDirection);
 
-                _newAngle = angle;
+                newAngle = angle;
             }
             GetComponent<NPCContoller>().Avoid(true);         
-            transform.Rotate(0, _newAngle, 0);
+            transform.Rotate(0, newAngle, 0);
         }
         else
         {
             GetComponent<NPCContoller>().Avoid(false);
-            _newAngle = 0;
+            newAngle = 0;
         }
     }
 }

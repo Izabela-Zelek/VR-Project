@@ -5,7 +5,7 @@ using UnityEngine;
 public class BirdFormController : MonoBehaviour
 {
 
-    private Vector3 _endPos;
+    Vector3 endPos;
 
     /// <summary>
     /// Uses passed in position to face direction of movement

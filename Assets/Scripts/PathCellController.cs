@@ -9,11 +9,9 @@ public class PathCellController : MonoBehaviour
 {
     [SerializeField]
     private int _loiterTime = 0;
-    [SerializeField]
-    private bool _atShop = false;
-
     private float _startTime = 0;
-
+    [SerializeField]
+    private bool atShop = false;
     public int GetLoiterTime()
     {
         return _loiterTime;
@@ -39,11 +37,11 @@ public class PathCellController : MonoBehaviour
         }
     }
     /// <summary>
-    /// Retunrs whether or not the cell is at a shop
+    /// Returns whether or not the cell is at a shop
     /// </summary>
     /// <returns></returns>
     public bool GetAtShop()
     {
-        return _atShop;
+        return atShop;
     }
 }

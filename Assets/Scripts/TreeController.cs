@@ -6,20 +6,17 @@ using UnityEngine;
 /// </summary>
 public class TreeController : MonoBehaviour
 {
-    public int WoodCount;
-
-    private int _life = 3;
+    private int life = 3;
+    public int woodCount;
     private GameObject _log;
     private AudioSource _treeFall;
     private bool _falling = false;
     private Quaternion _oppRot;
-
     private void Start()
     {
         _log = Resources.Load("Firewood") as GameObject;
         _treeFall = GetComponent<AudioSource>();
     }
-
     /// <summary>
     /// If the tree is set to falling, rotates the tree to fall in opposite direction of hit
     /// Destroys tree once it reaches the opposite rotation
@@ -43,10 +40,10 @@ public class TreeController : MonoBehaviour
     /// <param name="hitPoint"></param>
     public void MinusLife(Vector3 hitPoint)
     {
-        _life--;
-        if (_life == 0)
+        life--;
+        if (life == 0)
         {
-            for(int i = 0; i < WoodCount;i++)
+            for(int i = 0; i < woodCount;i++)
             {
                 Instantiate(_log, transform.Find("Spawn").position, Quaternion.identity);
             }

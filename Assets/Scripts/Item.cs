@@ -8,17 +8,16 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// </summary>
 public class Item : MonoBehaviour
 {
-    public bool InSlot = false;
-    public Vector3 SlotRotation = Vector3.zero;
-    public Slot CurrentSlot = null;
-    public bool IsHeld = false;
-    public InputActionProperty RightSelect;
-    public float TargetTime = 1.0f;
-    public bool IsLarge = false;
-
-    private GameObject _parent;
-    private XRDirectInteractor _rightInteractor;
-    private XRDirectInteractor _leftInteractor;
+    public bool inSlot = false;
+    public Vector3 slotRotation = Vector3.zero;
+    public Slot currentSlot = null;
+    public bool isHeld = false;
+    public InputActionProperty rightSelect;
+    public float targetTime = 1.0f;
+    private GameObject parent;
+    public bool isLarge = false;
+    private XRDirectInteractor rightInteractor;
+    private XRDirectInteractor leftInteractor;
     private Vector3 _originalScale;
 
     /// <summary>
@@ -27,9 +26,9 @@ public class Item : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        _rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
-        _leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
-        _parent = GameObject.Find("SmallStuff");
+        rightInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(2).GetComponent<XRDirectInteractor>();
+        leftInteractor = GameObject.Find("XR Origin").transform.GetChild(0).transform.GetChild(1).GetComponent<XRDirectInteractor>();
+        parent = GameObject.Find("SmallStuff");
         _originalScale = transform.localScale;
     }
 
@@ -39,16 +38,16 @@ public class Item : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsLarge)
+        if (!isLarge)
         {
             if (other.tag == "RightHand")
             {
-                if ((_rightInteractor.interactablesSelected.Count > 0 && _rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (_leftInteractor.interactablesSelected.Count > 0 && _leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+                if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
                 {
-                    if (RightSelect.action.ReadValue<float>() > 0.1f)
+                    if (rightSelect.action.ReadValue<float>() > 0.1f)
                     {
-                        IsHeld = true;
-                        TargetTime = 2.0f;
+                        isHeld = true;
+                        targetTime = 2.0f;
                         RemoveSmall();
 
                     }
@@ -59,12 +58,12 @@ public class Item : MonoBehaviour
         {
             if (other.tag == "RightHand")
             {
-                if (RightSelect.action.ReadValue<float>() > 0.1f)
+                if (rightSelect.action.ReadValue<float>() > 0.1f)
                 {
-                    if ((_rightInteractor.interactablesSelected.Count > 0 && _rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (_leftInteractor.interactablesSelected.Count > 0 && _leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
+                    if ((rightInteractor.interactablesSelected.Count > 0 && rightInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()) || (leftInteractor.interactablesSelected.Count > 0 && leftInteractor.interactablesSelected[0] == this.GetComponent<IXRSelectInteractable>()))
                     {
-                        IsHeld = true;
-                        TargetTime = 2.0f;
+                        isHeld = true;
+                        targetTime = 2.0f;
                         Remove();
                     }
                 }
@@ -79,17 +78,17 @@ public class Item : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (TargetTime > 0 && IsHeld)
+        if (targetTime > 0 && isHeld)
         { 
-            TargetTime -= Time.deltaTime; 
+            targetTime -= Time.deltaTime; 
         }
 
-        if (RightSelect.action.ReadValue<float>() == 0 && TargetTime <= 0)
+        if (rightSelect.action.ReadValue<float>() == 0 && targetTime <= 0)
         {
-            IsHeld = false;
+            isHeld = false;
         }
 
-        if(!InSlot && gameObject.transform.localScale != _originalScale)
+        if(!inSlot && gameObject.transform.localScale != _originalScale)
         {
             gameObject.transform.localScale = _originalScale;
         }
@@ -101,14 +100,14 @@ public class Item : MonoBehaviour
     /// </summary>
     public void Remove()
     {
-        if (CurrentSlot != null)
+        if (currentSlot != null)
         {
-            CurrentSlot.RemoveItem();
-            CurrentSlot.SetPutIn(false);
+            currentSlot.RemoveItem();
+            currentSlot.SetPutIn(false);
             gameObject.transform.SetParent(null);
 
             gameObject.transform.localScale = _originalScale;
-            InSlot = false;
+            inSlot = false;
             gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 
             if(GetComponent<MeshCollider>())
@@ -121,8 +120,8 @@ public class Item : MonoBehaviour
                 gameObject.GetComponent<BoxCollider>().isTrigger = false;
 
             }
-            StartCoroutine(WaitForItem(CurrentSlot));
-            CurrentSlot = null;
+            StartCoroutine(WaitForItem(currentSlot));
+            currentSlot = null;
 
         }
     }
@@ -132,14 +131,14 @@ public class Item : MonoBehaviour
     /// </summary>
     public void RemoveSmall()
     {
-        if (CurrentSlot != null)
+        if (currentSlot != null)
         {
-            CurrentSlot.RemoveItem();
-            CurrentSlot.SetPutIn(false);
+            currentSlot.RemoveItem();
+            currentSlot.SetPutIn(false);
             gameObject.transform.SetParent(null);
 
             gameObject.transform.localScale = _originalScale;
-            InSlot = false;
+            inSlot = false;
             gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 
             if (GetComponent<MeshCollider>())
@@ -152,8 +151,8 @@ public class Item : MonoBehaviour
                 gameObject.GetComponent<BoxCollider>().isTrigger = false;
 
             }
-            StartCoroutine(WaitForItem(CurrentSlot));
-            CurrentSlot = null;
+            StartCoroutine(WaitForItem(currentSlot));
+            currentSlot = null;
         }
     }
 
@@ -162,7 +161,7 @@ public class Item : MonoBehaviour
     /// </summary>
     /// <param name="_slot"></param>
     /// <returns></returns>
-    private IEnumerator WaitForItem(Slot _slot)
+    IEnumerator WaitForItem(Slot _slot)
     {
         yield return new WaitForSeconds(2);
         _slot.SetPutIn(true);

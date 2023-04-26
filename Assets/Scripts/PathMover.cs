@@ -7,51 +7,51 @@ using UnityEngine.AI;
 /// </summary>
 public class PathMover : MonoBehaviour
 {
-    public List<GameObject> Path;
-    public float Speed = 5.0f;
-    public float Mass = 5.0f;
-    public float MaxSteer = 15.0f;
-    public float PathRadius = 1.0f;
-    public int CurrentWaypointIndex = 0;
-    public int Id = -1;
-    public bool HadLoiter = false;
-    public bool CanChangeY = true;
-    public int StartWalkTime = 8;
-    public int EndWalkTime = 17;
-    public bool First = false;
-    public bool Late = false;
-    public bool Inside = false;
+    public List<GameObject> path;
+    public float speed = 5.0f;
+    public float mass = 5.0f;
+    public float maxSteer = 15.0f;
+    public float pathRadius = 1.0f;
+    public int currentWaypointIndex = 0;
+    private Animator animator;
 
-    private Animator _animator;
-    private bool _isStopped = false;
-    private Vector3 _targetWaypoint;
-    private Vector3 _desiredVelocity;
-    private Vector3 _steeringForce;
-    private Rigidbody _rb;
-    private float _yPos;
-    private bool _onGround = true;
-    private float _startTime;
-    private float _duration = 10.0f;
-    private float _elapsedTime;
-    private bool _startPath = false;
-    
+    private bool isStopped = false;
+    private Vector3 targetWaypoint;
+    private Vector3 desiredVelocity;
+    private Vector3 steeringForce;
+    private Rigidbody rb;
+    private float yPos;
+    public int id = -1;
+    private bool onGround = true;
+
+    public bool hadLoiter = false;
+    public bool canChangeY = true;
+    private float startTime;
+    private float duration = 10.0f;
+    private float elapsedTime;
+    private bool startPath = false;
+    public int startWalkTime = 8;
+    public int endWalkTime = 17;
+    public bool first = false;
+    public bool late = false;
+    public bool inside = false;
     /// <summary>
     /// Calls for function to set up initial path - initially a path leading NPC out of NPC estate
     /// Generates a random wake up and sleep time
     /// </summary>
-    private void Start()
+    void Start()
     {
-        if (Id == -1)
+        if (id == -1)
         {
-            Id = Random.Range(10, 10000);
+            id = Random.Range(10, 10000);
         }
-        _rb = GetComponent<Rigidbody>();
-        SetPointsByChildren(First);
-        _yPos = transform.localPosition.y;
-        _animator = GetComponent<Animator>();
-        StartWalkTime = Random.Range(7, 13);
-        EndWalkTime = Random.Range(17, 21);
-        _startTime = Time.time;
+        rb = GetComponent<Rigidbody>();
+        SetPointsByChildren(first);
+        yPos = transform.localPosition.y;
+        animator = GetComponent<Animator>();
+        startWalkTime = Random.Range(7, 13);
+        endWalkTime = Random.Range(17, 21);
+        startTime = Time.time;
     }
 
     /// <summary>
@@ -62,25 +62,26 @@ public class PathMover : MonoBehaviour
     /// <param name="newId"></param>
     public void SetDefaultPath(int newId)
     {
-        Path.Clear();
-        Id = newId;
-        GameObject pathObject = GameObject.Find("Path" + Id);
+        path.Clear();
+        id = newId;
+        GameObject pathObject = GameObject.Find("Path" + id);
         for (int i = 0; i < pathObject.transform.childCount; i++)
         {
-            Path.Add(pathObject.transform.GetChild(i).gameObject);
+            path.Add(pathObject.transform.GetChild(i).gameObject);
         }
 
-        if (Id == 1)
+        if (id == 1)
         {
             for (int i = pathObject.transform.childCount - 1; i > 0; i--)
             {
-                Path.Add(pathObject.transform.GetChild(i).gameObject);
+                path.Add(pathObject.transform.GetChild(i).gameObject);
             }
         }
 
-        _targetWaypoint = GetClosestPointOnPath(transform.position);
-        transform.LookAt(new Vector3(_targetWaypoint.x, 0, _targetWaypoint.z));
+        targetWaypoint = GetClosestPointOnPath(transform.position);
+        transform.LookAt(new Vector3(targetWaypoint.x, 0, targetWaypoint.z));
     }
+
     /// <summary>
     /// If current world time is equal to the NPC's sleep time, finds path which will lead NPC home
     /// If this is the first path the NPC is taking that current day, finds the path which will lead the NPC out of the NPC estate
@@ -90,9 +91,9 @@ public class PathMover : MonoBehaviour
     /// <param name="first"></param>
     private void SetPointsByChildren(bool first)
     {
-        if (Id != -1 && Path.Count == 0)
+        if (id != -1 && path.Count == 0)
         {
-            if (Late)
+            if (late)
             {
                 GameObject pathObject = GameObject.Find("Path" + 0.5);
                 if (transform.localPosition.z <= 12)
@@ -105,15 +106,15 @@ public class PathMover : MonoBehaviour
                         {
                             if (pathObject.transform.GetChild(i).name.Contains("Cell"))
                             {
-                                Path.Add(pathObject.transform.GetChild(i).gameObject);
+                                path.Add(pathObject.transform.GetChild(i).gameObject);
                             }
                             else if (pathObject.transform.GetChild(i).name.Contains("MeetingPoint"))
                             {
-                                Path.Add(pathObject.transform.GetChild(i).gameObject);
+                                path.Add(pathObject.transform.GetChild(i).gameObject);
                             }
                             else if (pathObject.transform.GetChild(i).name == npcNr.ToString())
                             {
-                                Path.Add(pathObject.transform.GetChild(i).gameObject);
+                                path.Add(pathObject.transform.GetChild(i).gameObject);
                                 break;
                             }
                         }
@@ -127,15 +128,15 @@ public class PathMover : MonoBehaviour
                     {
                         if (pathObject.transform.GetChild(i).name.Contains("Cell1"))
                         {
-                            Path.Add(pathObject.transform.GetChild(i).gameObject);
+                            path.Add(pathObject.transform.GetChild(i).gameObject);
                         }
                         else if (pathObject.transform.GetChild(i).name.Contains("MeetingPoint"))
                         {
-                            Path.Add(pathObject.transform.GetChild(i).gameObject);
+                            path.Add(pathObject.transform.GetChild(i).gameObject);
                         }
                         else if (pathObject.transform.GetChild(i).name == npcNr.ToString())
                         {
-                            Path.Add(pathObject.transform.GetChild(i).gameObject);
+                            path.Add(pathObject.transform.GetChild(i).gameObject);
                             break;
                         }
                     }
@@ -146,28 +147,28 @@ public class PathMover : MonoBehaviour
                 GameObject pathObject = GameObject.Find("Path" + 0);
                 for (int i = 0; i < pathObject.transform.childCount; i++)
                 {
-                    Path.Add(pathObject.transform.GetChild(i).gameObject);
+                    path.Add(pathObject.transform.GetChild(i).gameObject);
                 }
 
             }
             else
             {
-                GameObject pathObject = GameObject.Find("Path" + Id);
+                GameObject pathObject = GameObject.Find("Path" + id);
                 for (int i = 0; i < pathObject.transform.childCount; i++)
                 {
-                    Path.Add(pathObject.transform.GetChild(i).gameObject);
+                    path.Add(pathObject.transform.GetChild(i).gameObject);
                 }
 
-                if (Id == 1)
+                if (id == 1)
                 {
                     for (int i = pathObject.transform.childCount - 1; i > 0; i--)
                     {
-                        Path.Add(pathObject.transform.GetChild(i).gameObject);
+                        path.Add(pathObject.transform.GetChild(i).gameObject);
                     }
                 }
             }
 
-            _targetWaypoint = GetClosestPointOnPath(transform.position);
+            targetWaypoint = GetClosestPointOnPath(transform.position);
         }
     }
 
@@ -181,108 +182,109 @@ public class PathMover : MonoBehaviour
     /// Assigns a new random path once NPC reaches the end of current one
     /// Adds force to gameobject to move in the direction of the next point - with smoothing
     /// </summary>
-    private void Update()
+    void Update()
     {
-        _elapsedTime = Time.time - _startTime;
-        if (EndWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour)
+        elapsedTime = Time.time - startTime;
+        if (endWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
         {
-            Path.Clear();
-            Late = true;
-            _startPath = true;
-            _isStopped = false;
+            path.Clear();
+            late = true;
+            startPath = true;
+            isStopped = false;
             Unhide();
             SetPointsByChildren(false);
         }
-        if (Path.Count > 0 && !Inside)
+        if (path.Count > 0 && !inside)
         {
-            if (!_startPath)
+            if (!startPath)
             {
-                if (StartWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().CurrentTime.Hour)
+                if (startWalkTime == GameObject.Find("GameManager").GetComponent<TimeController>().currentTime.Hour)
                 {
-                    _startPath = true;
-                    if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                    startPath = true;
+                    if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                     {
-                        _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
                     }
                 }
             }
-            if (_startPath)
+            if (startPath)
             {
-                float distance = Vector3.Distance(transform.position, _targetWaypoint);
+                float distance = Vector3.Distance(transform.position, targetWaypoint);
 
-                if (distance <= PathRadius)
+                if (distance <= pathRadius)
                 {
-                    if (Path[CurrentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime() > 0 && !HadLoiter)
+                    if (path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime() > 0 && !hadLoiter)
                     {
-                        _rb.velocity = Vector3.zero;
-                        _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
-                        _isStopped = true;
-                        StartCoroutine(Loiter(Path[CurrentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
+                        rb.velocity = Vector3.zero;
+                        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
+                        isStopped = true;
+                        StartCoroutine(Loiter(path[currentWaypointIndex].GetComponent<PathCellController>().GetLoiterTime()));
                     }
 
-                    if(Path[CurrentWaypointIndex].GetComponent<PathCellController>().GetAtShop())
+                    if(path[currentWaypointIndex].GetComponent<PathCellController>().GetAtShop())
                     {
                         Hide();
                         int hideFor = Random.Range(9, 20);
                         StartCoroutine(LoiterInside(hideFor));
                     }
-                    if (!_isStopped && !Inside)
+                    if (!isStopped && !inside)
                     {
-                        if (_animator.runtimeAnimatorController.name != "BasicMotions@Walk")
+                        if (animator.runtimeAnimatorController.name != "BasicMotions@Walk")
                         {
-                            _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
-                            HadLoiter = false;
+                            animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+                            hadLoiter = false;
                         }
 
-                        CurrentWaypointIndex++;
-                        HadLoiter = false;
+                        currentWaypointIndex++;
+                        hadLoiter = false;
                       
-                        if (CurrentWaypointIndex >= Path.Count)
+                        if (currentWaypointIndex >= path.Count)
                         {
-                            if(Late)
+                            if(late)
                             {
-                                First = true;
-                                Path.Clear();
-                                Id = Random.Range(1, 8);
-                                SetPointsByChildren(First);
+                                first = true;
+                                path.Clear();
+                                id = Random.Range(1, 8);
+                                SetPointsByChildren(first);
                                 gameObject.SetActive(false);
                             }
-                            else if(First)
+                            else if(first)
                             {
-                                First = false;
-                                Path.Clear();
-                                SetPointsByChildren(First);
+                                first = false;
+                                path.Clear();
+                                SetPointsByChildren(first);
                             }
                             else
                             {
-                                Path.Clear();
-                                Id = Random.Range(1, 8);
-                                SetPointsByChildren(First);
+                                path.Clear();
+                                id = Random.Range(1, 8);
+                                SetPointsByChildren(first);
                             }
                         }
-                        _targetWaypoint = Path[CurrentWaypointIndex].transform.position;
+                        targetWaypoint = path[currentWaypointIndex].transform.position;
                     }
 
                 }
 
-                if (!_isStopped)
+                if (!isStopped)
                 {
-                    _desiredVelocity = (_targetWaypoint - transform.position).normalized * Speed;
-                    _steeringForce = _desiredVelocity - _rb.velocity;
-                    _steeringForce /= Mass;
+                    desiredVelocity = (targetWaypoint - transform.position).normalized * speed;
+                    steeringForce = desiredVelocity - rb.velocity;
+                    steeringForce /= mass;
 
-                    if (_steeringForce.magnitude > MaxSteer)
+                    if (steeringForce.magnitude > maxSteer)
                     {
-                        _steeringForce = _steeringForce.normalized * MaxSteer;
+                        steeringForce = steeringForce.normalized * maxSteer;
                     }
 
-                    _rb.AddForce(_steeringForce);
-                    if (_rb.velocity != Vector3.zero)
+                    rb.AddForce(steeringForce);
+                    if (rb.velocity != Vector3.zero)
                     {
-                        Quaternion lookRotation = Quaternion.LookRotation(_rb.velocity, Vector3.up);
+                        Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
                         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
                     }
-                    transform.localPosition = new Vector3(transform.localPosition.x, _yPos, transform.localPosition.z);
+                    //rb.velocity += steeringForce;
+                    transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
 
                 }
             }
@@ -298,21 +300,20 @@ public class PathMover : MonoBehaviour
         Vector3 closestPoint = Vector3.zero;
         float closestDistance = Mathf.Infinity;
 
-        for (int i = 0; i < Path.Count; i++)
+        for (int i = 0; i < path.Count; i++)
         {
-            Vector3 pathPoint = Path[i].transform.position;
+            Vector3 pathPoint = path[i].transform.position;
             float distance = Vector3.Distance(position, pathPoint);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
                 closestPoint = pathPoint;
-                CurrentWaypointIndex = i;
+                currentWaypointIndex = i;
             }
         }
 
         return closestPoint;
     }
-
     /// <summary>
     /// Coroutine which allows the NPC to loiter at a particular position for an passed in amount of time
     /// </summary>
@@ -321,43 +322,41 @@ public class PathMover : MonoBehaviour
     private IEnumerator Loiter(int time)
     {
         yield return new WaitForSeconds(time);
-        _isStopped = false;
-        HadLoiter = true;
+        isStopped = false;
+        hadLoiter = true;
     }
-
     /// <summary>
     /// Checks for collisions with curb objects to boost the NPC up or down curbs
     /// </summary>
     /// <param name="other"></param>
+
     private void OnTriggerEnter(Collider other)
     {
-        if (_elapsedTime >= _duration)
+        if (elapsedTime >= duration)
         {
-            _startTime = Time.time;
-            CanChangeY = true;
+            startTime = Time.time;
+            canChangeY = true;
         }
-        if (other.gameObject.layer == LayerMask.NameToLayer("Curb") && CanChangeY)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Curb") && canChangeY)
         {
-            if(_onGround)
+            if(onGround)
             {
-                _yPos = transform.localPosition.y + 0.05f;
-                _onGround = false;
+                yPos = transform.localPosition.y + 0.05f;
+                onGround = false;
             }
            else
             {
-                _yPos = transform.localPosition.y - 0.05f;
-                _onGround = false;
+                yPos = transform.localPosition.y - 0.05f;
+                onGround = false;
             }
-            CanChangeY = false;
+            canChangeY = false;
         }
     }
 
-
     public int GetStartTime()
     {
-        return StartWalkTime;
+        return startWalkTime;
     }
-
     /// <summary>
     /// Disables the NPC model when entering a shop
     /// </summary>
@@ -367,8 +366,8 @@ public class PathMover : MonoBehaviour
         {
             transform.GetChild(i).gameObject.SetActive(false);
         }
-        _rb.velocity = Vector3.zero;
-        _rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        rb.velocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
     }
     /// <summary>
@@ -380,9 +379,8 @@ public class PathMover : MonoBehaviour
         {
             transform.GetChild(i).gameObject.SetActive(true);
         }
-        _rb.constraints = RigidbodyConstraints.FreezePositionY;
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
     }
-
     /// <summary>
     /// Coroutine which allows the NPC to loiter at a shop for an passed in amount of time
     /// </summary>
@@ -391,11 +389,10 @@ public class PathMover : MonoBehaviour
     private IEnumerator LoiterInside(int time)
     {
         yield return new WaitForSeconds(time);
-        _rb.constraints = RigidbodyConstraints.FreezePositionY;
-        Inside = false;
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
+        inside = false;
         Unhide();
     }
-
     /// <summary>
     /// Coroutine which allows the NPC to stop for a chat with an NPC they bump into
     /// </summary>
@@ -403,16 +400,16 @@ public class PathMover : MonoBehaviour
     /// <returns></returns>
     public IEnumerator Talk(int time, Vector3 pos)
     {
-        _rb.velocity = Vector3.zero;
-        _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
-        _isStopped = true;
+        rb.velocity = Vector3.zero;
+        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Talk") as RuntimeAnimatorController;
+        isStopped = true;
         Quaternion rotation = Quaternion.LookRotation(pos);
         transform.localRotation = new Quaternion(transform.localRotation.x, rotation.y, transform.localRotation.z,transform.localRotation.w);
-        _rb.velocity = Vector3.zero;
-        _rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        rb.velocity = Vector3.zero;
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         yield return new WaitForSeconds(time);
-        _isStopped = false;
-        _rb.constraints = RigidbodyConstraints.FreezePositionY;
-        _animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
+        isStopped = false;
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
+        animator.runtimeAnimatorController = Resources.Load("BasicMotions@Walk") as RuntimeAnimatorController;
     }
 }

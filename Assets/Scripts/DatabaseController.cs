@@ -5,31 +5,33 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.Networking;
-
+/// <summary>
+/// Handles sending path data to the database
+/// </summary>
 public class DatabaseController : MonoBehaviour
 {
     [System.Serializable]
 
     public class GameState
     {
-        public string Ip;
-        public int PathNr;
-        public string Cell1;
-        public string Cell2;
-        public string Cell3;
-        public string Cell4;
-        public string Cell5;
-        public string Cell6;
-        public string Cell7;
-        public string Cell8;
-        public string Cell9;
-        public string Cell10;
+        public string ip;
+        public int pathNr;
+        public string cell1;
+        public string cell2;
+        public string cell3;
+        public string cell4;
+        public string cell5;
+        public string cell6;
+        public string cell7;
+        public string cell8;
+        public string cell9;
+        public string cell10;
     }
     private string _ip;
     private int _pathNr;
     private List<Vector3> _cells;
 
-    private GameState _data = new GameState();
+    GameState data = new GameState();
 
     public void Start()
     {
@@ -40,19 +42,19 @@ public class DatabaseController : MonoBehaviour
     public void sendData(List<Vector3> t_cells)
     {
         
-        _data = new GameState
+        data = new GameState
         {
-            Ip = _ip,
-            Cell1 = t_cells[0].ToString(),
-            Cell2 = t_cells[1].ToString(),
-            Cell3 = t_cells[2].ToString(),
-            Cell4 = t_cells[3].ToString(),
-            Cell5 = t_cells[4].ToString(),
-            Cell6 = t_cells[5].ToString(),
-            Cell7 = t_cells[6].ToString(),
-            Cell8 = t_cells[7].ToString(),
-            Cell9 = t_cells[8].ToString(),
-            Cell10 = t_cells[9].ToString()
+            ip = _ip,
+            cell1 = t_cells[0].ToString(),
+            cell2 = t_cells[1].ToString(),
+            cell3 = t_cells[2].ToString(),
+            cell4 = t_cells[3].ToString(),
+            cell5 = t_cells[4].ToString(),
+            cell6 = t_cells[5].ToString(),
+            cell7 = t_cells[6].ToString(),
+            cell8 = t_cells[7].ToString(),
+            cell9 = t_cells[8].ToString(),
+            cell10 = t_cells[9].ToString()
         };
 
         postAfterGame();
@@ -62,7 +64,7 @@ public class DatabaseController : MonoBehaviour
     {
         Debug.Log("Start Sending Data");
 
-        string jsonData = JsonUtility.ToJson(_data);
+        string jsonData = JsonUtility.ToJson(data);
         StartCoroutine(PostMethod(jsonData));
 
         Debug.Log("Finished Sending Data");
@@ -96,7 +98,7 @@ public class DatabaseController : MonoBehaviour
 
     }
 
-    private string GetIP()
+    string GetIP()
     {
         string ipAddress = "";
 

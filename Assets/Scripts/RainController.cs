@@ -7,19 +7,19 @@ using UnityEngine.ParticleSystemJobs;
 /// </summary>
 public class RainController : MonoBehaviour
 {
-    private ParticleSystem _water;
+    private ParticleSystem water;
 
     private void Start()
     {
-        _water = GetComponent<ParticleSystem>();
-        _water.Stop();
+        water = GetComponent<ParticleSystem>();
+        water.Stop();
     }
     /// <summary>
     /// Changes angle of water based on the angle of the parent
     /// </summary>
-    private void Update()
+    void Update()
     {
-        if (_water.isPlaying)
+        if (water.isPlaying)
         { 
             transform.eulerAngles = new Vector3(transform.parent.parent.eulerAngles.x + 90, transform.parent.parent.eulerAngles.y, transform.parent.parent.eulerAngles.z + 90); 
         }
@@ -27,11 +27,11 @@ public class RainController : MonoBehaviour
 
     public void turnOnWater()
     {
-        _water.Play();
+        water.Play();
     }
 
     public void turnOffWater()
     {
-        _water.Stop();
+        water.Stop();
     }
 }

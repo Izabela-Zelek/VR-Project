@@ -17,7 +17,6 @@ public class PathFollowing : MonoBehaviour
     {
         _lineRenderer = GetComponent<LineRenderer>();
     }
-
     /// <summary>
     /// Casts raycast onto world, adds each point the hit touches if the distance between it and the previous one is greater than 1
     /// Clears the path is screen is clicked again
@@ -48,7 +47,6 @@ public class PathFollowing : MonoBehaviour
             OnNewPathCreated(_points);
         }
     }
-
     /// <summary>
     /// Calculates distance between current point and the point before it
     /// </summary>
