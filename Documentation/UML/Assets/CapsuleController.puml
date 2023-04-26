@@ -1,9 +1,0 @@
-@startuml
-class CapsuleController {
-    + asleep : bool = false
-    Wait(time:float, other:GameObject) : IEnumerator
-}
-MonoBehaviour <|-- CapsuleController
-CapsuleController --> "animator" AnimController
-CapsuleController --> "awakeSpawn" GameObject
-@enduml

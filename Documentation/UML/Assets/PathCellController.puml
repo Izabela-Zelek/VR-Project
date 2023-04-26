@@ -1,8 +1,0 @@
-@startuml
-class PathCellController {
-    + GetLoiterTime() : int
-    + IncreaseLoiterTime(newLoiter:int) : void
-    + GetAtShop() : bool
-}
-MonoBehaviour <|-- PathCellController
-@enduml

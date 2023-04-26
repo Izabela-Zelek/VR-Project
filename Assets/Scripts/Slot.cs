@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 /// <summary>
 /// Handles the interactions and item holding of a slot in the inventory
 /// </summary>
@@ -133,6 +134,8 @@ public class Slot : MonoBehaviour
 
 
         }
+
+        transform.GetChild(0).Find("ObjectName").GetComponent<TextMeshProUGUI>().text = obj.name;
     }
 
     /// <summary>
@@ -144,6 +147,7 @@ public class Slot : MonoBehaviour
         itemInSlot.transform.SetParent(null, true);
         itemInSlot = null;
         slotImage.color = originalColour;
+        transform.GetChild(0).Find("ObjectName").GetComponent<TextMeshProUGUI>().text = "";
     }
 
     public void SetPutIn(bool put)

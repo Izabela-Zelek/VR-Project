@@ -1,8 +1,0 @@
-@startuml
-class RainController {
-    Update() : void
-    + turnOnWater() : void
-    + turnOffWater() : void
-}
-MonoBehaviour <|-- RainController
-@enduml

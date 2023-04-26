@@ -1,5 +1,0 @@
-@startuml
-class AxeController {
-}
-MonoBehaviour <|-- AxeController
-@enduml

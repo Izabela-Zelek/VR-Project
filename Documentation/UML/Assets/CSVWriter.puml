@@ -1,9 +1,0 @@
-@startuml
-class CSVWriter {
-    + addFile() : void
-    + WriteCSV(path:List<Vector3>) : int
-    + DeleteFile(pathID:int) : void
-    RefreshEditorProjectWindow() : void
-}
-MonoBehaviour <|-- CSVWriter
-@enduml

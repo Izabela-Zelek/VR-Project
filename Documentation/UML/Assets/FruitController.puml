@@ -1,7 +1,0 @@
-@startuml
-class FruitController {
-    + price : int
-    Update() : void
-}
-MonoBehaviour <|-- FruitController
-@enduml

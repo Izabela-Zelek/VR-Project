@@ -1,8 +1,0 @@
-@startuml
-class VehicleController {
-    Start() : void
-    OnTriggerEnter(other:Collider) : void
-    OnCollisionEnter(collision:Collision) : void
-}
-MonoBehaviour <|-- VehicleController
-@enduml

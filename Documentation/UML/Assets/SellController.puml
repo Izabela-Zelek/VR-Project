@@ -1,5 +1,0 @@
-@startuml
-class SellController {
-}
-MonoBehaviour <|-- SellController
-@enduml

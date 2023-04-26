@@ -15,7 +15,7 @@ public class DatabaseController : MonoBehaviour
     public class GameState
     {
         public string ip;
-        public int pathNr;
+        public string pathNr;
         public string cell1;
         public string cell2;
         public string cell3;
@@ -39,12 +39,16 @@ public class DatabaseController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void sendData(List<Vector3> t_cells)
+    public void sendData(int nr,List<Vector3> t_cells)
     {
-        
+        while(t_cells.Count < 10)
+        {
+            t_cells.Add(new Vector3(0, 0, 0));
+        }
         data = new GameState
         {
-            ip = _ip,
+            ip = _ip.ToString(),
+            pathNr = nr.ToString(),
             cell1 = t_cells[0].ToString(),
             cell2 = t_cells[1].ToString(),
             cell3 = t_cells[2].ToString(),

@@ -1,5 +1,0 @@
-@startuml
-class VehicleCollision {
-}
-MonoBehaviour <|-- VehicleCollision
-@enduml

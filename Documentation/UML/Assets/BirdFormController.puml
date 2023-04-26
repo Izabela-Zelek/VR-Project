@@ -1,7 +1,0 @@
-@startuml
-class BirdFormController {
-    + setDirection(pos:Vector3) : void
-}
-MonoBehaviour <|-- BirdFormController
-BirdFormController --> "endPos" Vector3
-@enduml

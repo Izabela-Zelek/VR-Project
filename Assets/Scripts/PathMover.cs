@@ -43,7 +43,7 @@ public class PathMover : MonoBehaviour
     {
         if (id == -1)
         {
-            id = Random.Range(10, 10000);
+            GetClosestPath(transform.position);
         }
         rb = GetComponent<Rigidbody>();
         SetPointsByChildren(first);
@@ -283,7 +283,6 @@ public class PathMover : MonoBehaviour
                         Quaternion lookRotation = Quaternion.LookRotation(rb.velocity, Vector3.up);
                         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 10f * Time.deltaTime);
                     }
-                    //rb.velocity += steeringForce;
                     transform.localPosition = new Vector3(transform.localPosition.x, yPos, transform.localPosition.z);
 
                 }
@@ -314,6 +313,39 @@ public class PathMover : MonoBehaviour
 
         return closestPoint;
     }
+
+    private Vector3 GetClosestPath(Vector3 position)
+    {
+        Vector3 closestPoint = Vector3.zero;
+        int closestPath = -1;
+        float closestDistance = Mathf.Infinity;
+
+        for (int i = 0; i < 8; i++)
+        {
+            GameObject pathObject = GameObject.Find("Path" + i);
+            List<GameObject> tempPath = new List<GameObject>();
+            for (int j = 0; j < pathObject.transform.childCount; j++)
+            {
+                path.Add(pathObject.transform.GetChild(i).gameObject);
+            }
+            for (int j = 0; j < path.Count; j++)
+            {
+                Vector3 pathPoint = path[j].transform.position;
+                float distance = Vector3.Distance(position, pathPoint);
+                if (distance < closestDistance)
+                {
+                    closestPath = i;
+                    closestDistance = distance;
+                    closestPoint = pathPoint;
+                    currentWaypointIndex = j;
+                }
+            }
+        }
+
+        id = closestPath;
+        return closestPoint;
+    }
+
     /// <summary>
     /// Coroutine which allows the NPC to loiter at a particular position for an passed in amount of time
     /// </summary>

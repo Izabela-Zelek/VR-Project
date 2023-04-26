@@ -1,6 +1,0 @@
-@startuml
-class CanController {
-}
-MonoBehaviour <|-- CanController
-CanController --> "rightSelect" InputActionProperty
-@enduml

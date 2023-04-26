@@ -1,7 +1,0 @@
-@startuml
-class TreeController {
-    + woodCount : int
-    + MinusLife(hitPoint:Vector3) : void
-}
-MonoBehaviour <|-- TreeController
-@enduml

@@ -1,9 +1,0 @@
-@startuml
-class ActivateTeleportationRay {
-    Update() : void
-}
-MonoBehaviour <|-- ActivateTeleportationRay
-ActivateTeleportationRay --> "rightTeleportation" GameObject
-ActivateTeleportationRay --> "rightActivate" InputActionProperty
-ActivateTeleportationRay --> "rightCancel" InputActionProperty
-@enduml

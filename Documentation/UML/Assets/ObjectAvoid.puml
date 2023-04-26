@@ -1,6 +1,0 @@
-@startuml
-class ObjectAvoid {
-    Update() : void
-}
-MonoBehaviour <|-- ObjectAvoid
-@enduml

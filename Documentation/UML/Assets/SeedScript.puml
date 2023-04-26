@@ -1,5 +1,0 @@
-@startuml
-class SeedScript {
-}
-MonoBehaviour <|-- SeedScript
-@enduml

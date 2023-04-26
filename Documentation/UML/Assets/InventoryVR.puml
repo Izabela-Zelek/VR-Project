@@ -1,9 +1,0 @@
-@startuml
-class InventoryVR {
-    UIActive : bool
-}
-MonoBehaviour <|-- InventoryVR
-InventoryVR --> "leftActivate" InputActionProperty
-InventoryVR --> "Inventory" GameObject
-InventoryVR --> "Anchor" GameObject
-@enduml

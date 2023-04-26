@@ -1,9 +1,0 @@
-@startuml
-class PathDecor {
-}
-class "List`1"<T> {
-}
-MonoBehaviour <|-- PathDecor
-PathDecor --> "waypoints<Transform>" "List`1"
-PathDecor o-> "debugColour" Color
-@enduml

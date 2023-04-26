@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
 
 /// <summary>
 /// Handles all interactions with the Map/Level Editor - including placing objects, rearranging objects and spawning NPCs
@@ -32,8 +31,8 @@ public class MapEditor : MonoBehaviour
     private bool rotating = false;
     private bool editPath = false;
 
-    private bool unlockCustom5 = false;
-    private bool unlockCustom6 = false;
+    private bool unlockCustom8 = false;
+    private bool unlockCustom9 = false;
 
     private int hoverNPCCount = 0;
 
@@ -219,11 +218,11 @@ public class MapEditor : MonoBehaviour
         _option8.material = notChosenMat;
         _option9.material = notChosenMat;
         _option11.material = notChosenMat;
-        if(unlockCustom5)
+        if(unlockCustom8)
         {
             _option12.material = notChosenMat;
         }
-        if(unlockCustom6)
+        if(unlockCustom9)
         {
             _option13.material = notChosenMat;
         }
@@ -410,14 +409,14 @@ public class MapEditor : MonoBehaviour
     {
         if(customID == 5)
         {
-            unlockCustom5 = true;
+            unlockCustom8 = true;
             CustomPath1.SetActive(true);
             BinPath1.SetActive(true);
             _option12 = GameObject.Find("CustomPath1").GetComponent<MeshRenderer>();
         }
         else if (customID == 6)
         {
-            unlockCustom6 = true;
+            unlockCustom9 = true;
             CustomPath2.SetActive(true);
             BinPath2.SetActive(true);
             _option13 = GameObject.Find("CustomPath2").GetComponent<MeshRenderer>();
@@ -431,13 +430,13 @@ public class MapEditor : MonoBehaviour
     {
         if (customID == 5)
         {
-            unlockCustom5 = false;
+            unlockCustom8 = false;
             GameObject.Find("CustomPath1").gameObject.SetActive(false);
             GameObject.Find("BinPath1").gameObject.SetActive(false);
         }
         else if (customID == 6)
         {
-            unlockCustom6 = false;
+            unlockCustom9 = false;
             GameObject.Find("CustomPath2").gameObject.SetActive(false);
             GameObject.Find("BinPath2").gameObject.SetActive(false);
         }
@@ -570,7 +569,7 @@ public class MapEditor : MonoBehaviour
                 if (chosenOption != 10)
                 {
                     UpdatePathPos();
-                    GetComponent<CSVWriter>().addFile();
+                    int nr = GetComponent<CSVWriter>().addFile();
                     CreateNewPath(GetComponent<CSVWriter>().WriteCSV(customPath));
                     makingPath = false;
                     customPath.Clear();
@@ -589,11 +588,11 @@ public class MapEditor : MonoBehaviour
                 break;
             case "BinPath1":
                 GetComponent<CSVWriter>().DeleteFile(5);
-                Destroy(GameObject.Find("Path5"));
+                Destroy(GameObject.Find("Path8"));
                 break;
             case "BinPath2":
                 GetComponent<CSVWriter>().DeleteFile(6);
-                Destroy(GameObject.Find("Path6"));
+                Destroy(GameObject.Find("Path9"));
                 break;
             case "EditPath":
                 if (chosenOption != 11)
@@ -608,7 +607,7 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "CustomPath1":
-                if (chosenOption != 12 && unlockCustom5)
+                if (chosenOption != 12 && unlockCustom8)
                 {
                     GetComponent<NPCCreator>().setPath(5);
                     SetChoice(12, _option12);
@@ -620,7 +619,7 @@ public class MapEditor : MonoBehaviour
                 }
                 break;
             case "CustomPath2":
-                if (chosenOption != 13 && unlockCustom6)
+                if (chosenOption != 13 && unlockCustom9)
                 {
                     GetComponent<NPCCreator>().setPath(6);
                     SetChoice(13, _option13);

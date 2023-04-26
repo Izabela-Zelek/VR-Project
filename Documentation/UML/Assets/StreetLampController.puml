@@ -1,5 +1,0 @@
-@startuml
-class StreetLampController {
-}
-MonoBehaviour <|-- StreetLampController
-@enduml

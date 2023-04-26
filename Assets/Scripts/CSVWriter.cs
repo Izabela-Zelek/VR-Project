@@ -17,8 +17,8 @@ public class CSVWriter : MonoBehaviour
 
     private void Start()
     {
-        _filename1 = Application.dataPath + "/Resources/path5.csv";
-        _filename2 = Application.dataPath + "/Resources/path6.csv";
+        _filename1 = Application.dataPath + "/Resources/path8.csv";
+        _filename2 = Application.dataPath + "/Resources/path9.csv";
 
         if (File.Exists(_filename1))
         {
@@ -34,23 +34,25 @@ public class CSVWriter : MonoBehaviour
     {
         GetComponent<MapEditor>().Unlock(customID);
     }
-    public void addFile()
+    public int addFile()
     { 
         if(!File.Exists(_filename1))
         {
             _filename = _filename1;
-            _fileUsed = 5;
+            _fileUsed = 8;
         }
         else if(File.Exists(_filename1) && !File.Exists(_filename2))
         {
             _filename = _filename2;
-            _fileUsed = 6;
+            _fileUsed = 9;
         }
         else
         {
             _fileUsed = -1;
             _filename = null;
         }
+
+        return _fileUsed;
     }
 
     public int WriteCSV(List<Vector3> path)
@@ -66,11 +68,11 @@ public class CSVWriter : MonoBehaviour
 
             tw.Close();
 
-            if(_fileUsed == 5)
+            if(_fileUsed == 8)
             {
                 UnlockCustom(5);
             }
-            else if(_fileUsed == 6)
+            else if(_fileUsed == 9)
             {
                 UnlockCustom(6);
             }

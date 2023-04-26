@@ -1,8 +1,0 @@
-@startuml
-class HoeScript {
-}
-MonoBehaviour <|-- HoeScript
-HoeScript --> "dirtPatch" GameObject
-HoeScript --> "tip" Transform
-HoeScript --> "farm" GameObject
-@enduml

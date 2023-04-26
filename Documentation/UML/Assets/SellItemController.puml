@@ -1,6 +1,0 @@
-@startuml
-class SellItemController {
-    + GetPrice() : int
-}
-MonoBehaviour <|-- SellItemController
-@enduml
